@@ -1,4 +1,4 @@
-import { MessageStatus } from '../app/enums/message-status';
+import { MessageStatus } from '../enums/message-status';
 import { ChatMemberDto } from './ChatMemberDto';
 import { UserDto } from "./UserDto";
 

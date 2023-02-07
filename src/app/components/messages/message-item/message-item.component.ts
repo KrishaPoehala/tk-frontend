@@ -3,9 +3,9 @@ import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angu
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { RedirectionService } from 'src/app/services/redirection.service';
-import { ChatDto } from 'src/dtos/ChatDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import { DeleteMessageModalComponent } from '../../delete-message-modal/delete-message-modal.component';
-import { MessageDto } from 'src/dtos/MessageDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
 @Component({
   selector: 'app-message-item',

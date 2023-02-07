@@ -1,7 +1,7 @@
-import { ChatMemberDto } from './../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { Injectable } from "@angular/core";
-import { ChatDto } from "src/dtos/ChatDto";
-import { UserDto } from 'src/dtos/UserDto';
+import { ChatDto } from "src/app/dtos/ChatDto";
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable()
 export class UserService{

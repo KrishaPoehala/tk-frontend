@@ -1,5 +1,5 @@
 import { AuthService } from '../../services/auth.service';
-import { RegisterUserDto } from '../../../dtos/RegisterUserDto';
+import { RegisterUserDto } from '../../dtos/RegisterUserDto';
 import { GyazoService } from '../../services/gyazo.service';
 import { HttpService } from 'src/app/services/http.service';
 import { AbstractControl, EmailValidator, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';

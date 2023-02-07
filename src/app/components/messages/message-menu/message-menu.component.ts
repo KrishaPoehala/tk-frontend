@@ -1,7 +1,7 @@
-import { ChatMemberDto } from './../../../../dtos/ChatMemberDto';
-import { PermissionDto } from './../../../../dtos/PermissionDto';
+import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
+import { PermissionDto } from '../../../dtos/PermissionDto';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MessageDto } from 'src/dtos/MessageDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 import { PermissionsService } from './../../../services/permissions.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';

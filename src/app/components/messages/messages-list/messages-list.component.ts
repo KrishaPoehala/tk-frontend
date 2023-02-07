@@ -1,6 +1,6 @@
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
-import { ChatMemberDto } from './../../../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RedirectionService } from 'src/app/services/redirection.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 import { HttpService } from 'src/app/services/http.service';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { MessageDto } from 'src/dtos/MessageDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
 
 @Component({
@@ -69,7 +69,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     if(!this.userService.currentUserAsMember){
       this.userService.setCurrentUserAsMember();
     }
-    
+
     this.messageService.sendMessage(text, this.userService.currentUserAsMember,this.messageToReply)
       .subscribe(_ => this.scrollToBottom());
     this.messageForm.controls.message.setValue('');

@@ -1,4 +1,4 @@
-import { ChatDto } from '../dtos/ChatDto';
+import { ChatDto } from './dtos/ChatDto';
 import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-root',

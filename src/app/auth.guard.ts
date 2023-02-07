@@ -1,13 +1,13 @@
 import { NetworkService } from './services/network.service';
 import { UserService } from 'src/app/services/user.service';
 import { JwtFacadeService } from './services/jwt-facade.service';
-import { RefreshTokenDto } from '../dtos/RefreshTokenDto';
+import { RefreshTokenDto } from './dtos/RefreshTokenDto';
 import { HttpService } from 'src/app/services/http.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
-import { UserDto } from 'src/dtos/UserDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable({
   providedIn: 'root'

@@ -1,14 +1,14 @@
 import { PermissionsService } from './../../../services/permissions.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { PermissionsMenuComponent } from '../../permissions-menu/permissions-menu';
-import { ChatMemberDto } from './../../../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { AddMembersComponent } from './../../add-members/add-members.component';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { RedirectionService } from 'src/app/services/redirection.service';
-import { UserDto } from 'src/dtos/UserDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Component({
   selector: 'app-chat-details',
@@ -57,7 +57,7 @@ export class ChatDetailsComponent implements OnInit {
     if(selectedMember.id === currentUserAsMember.id){
       return;
     }
-    
+
     event.preventDefault();
     const modalRef = this.modal.open(PermissionsMenuComponent);
     modalRef.componentInstance.selectedMember = selectedMember

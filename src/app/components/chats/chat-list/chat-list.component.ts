@@ -1,6 +1,6 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { Component, Input, OnInit, HostListener, OnDestroy } from '@angular/core';
-import { ChatDto } from 'src/dtos/ChatDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({

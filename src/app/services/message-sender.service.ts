@@ -1,10 +1,10 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
-import { ChatMemberDto } from './../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { Injectable } from '@angular/core';
-import { NewMessageDto } from 'src/dtos/NewMessageDto';
-import { MessageDto } from 'src/dtos/MessageDto';
+import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from '../enums/message-status';
 import { DeleteMessageModalComponent } from '../components/delete-message-modal/delete-message-modal.component';
 

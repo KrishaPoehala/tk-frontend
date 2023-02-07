@@ -1,14 +1,14 @@
-import { ChatMemberDto } from './../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
 import { Observable } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { UserService } from './user.service';
 import { Inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ChatDto } from 'src/dtos/ChatDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import * as signalR from '@microsoft/signalr';
-import { MessageDto } from 'src/dtos/MessageDto';
-import { UserJoinedDto } from 'src/dtos/UserJoinedDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
+import { UserJoinedDto } from 'src/app/dtos/UserJoinedDto';
 import { MessageStatus } from '../enums/message-status';
 
 @Injectable({

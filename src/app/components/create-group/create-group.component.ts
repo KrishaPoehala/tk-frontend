@@ -1,16 +1,16 @@
-import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
-import { ChatDto } from './../../../dtos/ChatDto';
-import { NewGroupDto } from './../../../dtos/NewGroupDto';
-import { GyazoResponseDto } from '../../../dtos/GyazoResponseDto';
+import { ChatMemberDto } from '../../dtos/ChatMemberDto';
+import { ChatDto } from '../../dtos/ChatDto';
+import { NewGroupDto } from '../../dtos/NewGroupDto';
+import { GyazoResponseDto } from '../../dtos/GyazoResponseDto';
 import { GyazoService } from '../../services/gyazo.service';
-import { NewPrivateChatDto } from '../../../dtos/NewPrivateChatDto';
+import { NewPrivateChatDto } from '../../dtos/NewPrivateChatDto';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from '../../services/http.service';
 import { read } from '@popperjs/core';
 import { UserService } from 'src/app/services/user.service';
 import { FormBuilder } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { UserDto } from 'src/dtos/UserDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Component({
   selector: 'app-create-group',

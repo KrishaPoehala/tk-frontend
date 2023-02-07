@@ -1,12 +1,12 @@
 import { MessageService } from './message-sender.service';
-import { MessageDto } from './../../dtos/MessageDto';
+import { MessageDto } from '../dtos/MessageDto';
 import { Observable, of } from 'rxjs';
-import { ChatDto } from 'src/dtos/ChatDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import { HttpService } from './http.service';
 import { UserService } from 'src/app/services/user.service';
 import { Injectable } from '@angular/core';
-import { NewPrivateChatDto } from 'src/dtos/NewPrivateChatDto';
-import { UserDto } from 'src/dtos/UserDto';
+import { NewPrivateChatDto } from 'src/app/dtos/NewPrivateChatDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable({
   providedIn: 'root'

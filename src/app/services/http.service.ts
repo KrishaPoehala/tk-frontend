@@ -1,23 +1,23 @@
-import { PermissionDto } from './../../dtos/PermissionDto';
-import { ChatMemberDto } from './../../dtos/ChatMemberDto';
-import { AddMembersDto } from './../../dtos/AddMembersDto';
-import { NewGroupDto } from '../../dtos/NewGroupDto';
-import { RegisterUserDto } from '../../dtos/RegisterUserDto';
-import { RefreshTokenDto } from '../../dtos/RefreshTokenDto';
-import { LoginModel } from '../../dtos/LoginModel';
-import { NewPrivateChatDto } from '../../dtos/NewPrivateChatDto';
-import { AuthRepsonseDto } from '../../dtos/AuthResponseDto';
+import { PermissionDto } from '../dtos/PermissionDto';
+import { ChatMemberDto } from '../dtos/ChatMemberDto';
+import { AddMembersDto } from '../dtos/AddMembersDto';
+import { NewGroupDto } from '../dtos/NewGroupDto';
+import { RegisterUserDto } from '../dtos/RegisterUserDto';
+import { RefreshTokenDto } from '../dtos/RefreshTokenDto';
+import { LoginModel } from '../dtos/LoginModel';
+import { NewPrivateChatDto } from '../dtos/NewPrivateChatDto';
+import { AuthRepsonseDto } from '../dtos/AuthResponseDto';
 
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ChatDto } from "src/dtos/ChatDto";
+import { ChatDto } from "src/app/dtos/ChatDto";
 import { environment } from "src/environments/environment";
-import { NewMessageDto } from "src/dtos/NewMessageDto";
+import { NewMessageDto } from "src/app/dtos/NewMessageDto";
 import { first } from "rxjs";
-import { RefeshedTokenResponseDto } from 'src/dtos/RefeshedTokenResponseDto';
-import { GyazoResponseDto } from 'src/dtos/GyazoResponseDto';
-import { MessageDto } from 'src/dtos/MessageDto';
-import { UserDto } from 'src/dtos/UserDto';
+import { RefeshedTokenResponseDto } from 'src/app/dtos/RefeshedTokenResponseDto';
+import { GyazoResponseDto } from 'src/app/dtos/GyazoResponseDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable()
 export class HttpService{

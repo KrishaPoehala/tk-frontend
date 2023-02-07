@@ -4,7 +4,7 @@ import { PermissionsService } from '../../services/permissions.service';
 import { HttpService } from 'src/app/services/http.service';
 import { HttpClient } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../../dtos/ChatMemberDto';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

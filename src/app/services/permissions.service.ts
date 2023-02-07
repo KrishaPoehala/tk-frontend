@@ -1,8 +1,8 @@
 import { Permissions } from './../enums/permissions';
 import { Roles } from './../enums/roles';
 import { UserService } from 'src/app/services/user.service';
-import { ChatMemberDto } from './../../dtos/ChatMemberDto';
-import { MessageDto } from 'src/dtos/MessageDto';
+import { ChatMemberDto } from '../dtos/ChatMemberDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 import { Injectable } from '@angular/core';
 
 @Injectable({

@@ -1,10 +1,10 @@
-import { ChatDto } from './../../../dtos/ChatDto';
-import { NewGroupDto } from './../../../dtos/NewGroupDto';
+import { ChatDto } from '../../dtos/ChatDto';
+import { NewGroupDto } from '../../dtos/NewGroupDto';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
-import { AddMembersDto } from './../../../dtos/AddMembersDto';
-import { UserDto } from 'src/dtos/UserDto';
+import { AddMembersDto } from '../../dtos/AddMembersDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 import { UserService } from 'src/app/services/user.service';
 import { Component, Input, OnInit } from '@angular/core';
 

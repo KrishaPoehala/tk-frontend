@@ -1,4 +1,4 @@
-import { UserDto } from 'src/dtos/UserDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 export class NewPrivateChatDto{
     public name:string;
     public leftUserId!:number;

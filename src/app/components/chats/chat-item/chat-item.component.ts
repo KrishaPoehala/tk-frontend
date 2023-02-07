@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ChatDto } from 'src/dtos/ChatDto';
-import { UserDto } from 'src/dtos/UserDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
 import { MessageStatus } from 'src/app/enums/message-status';

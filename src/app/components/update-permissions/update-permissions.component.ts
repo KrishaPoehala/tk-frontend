@@ -1,8 +1,8 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
-import { PermissionDto } from './../../../dtos/PermissionDto';
+import { PermissionDto } from '../../dtos/PermissionDto';
 import { Permissions } from './../../enums/permissions';
-import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
+import { ChatMemberDto } from '../../dtos/ChatMemberDto';
 import { Component, Input, OnInit } from '@angular/core';
 import { Roles } from 'src/app/enums/roles';
 

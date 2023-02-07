@@ -2,7 +2,7 @@ import { NetworkService } from './../../services/network.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
-import { ChatDto } from 'src/dtos/ChatDto';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import { ChatDetailsComponent } from './../chats/chat-details/chat-details.component';
 import { Component, OnInit } from '@angular/core';
 

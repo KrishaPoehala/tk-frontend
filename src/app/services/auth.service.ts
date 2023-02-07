@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { NetworkService } from './network.service';
 import { UserService } from 'src/app/services/user.service';
 import { JwtFacadeService } from './jwt-facade.service';
-import { AuthRepsonseDto } from '../../dtos/AuthResponseDto';
+import { AuthRepsonseDto } from '../dtos/AuthResponseDto';
 import { Injectable } from '@angular/core';
-import { UserDto } from 'src/dtos/UserDto';
+import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable({
   providedIn: 'root'
