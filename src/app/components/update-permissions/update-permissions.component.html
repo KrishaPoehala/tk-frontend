@@ -1,10 +1,12 @@
 
 <div class="menu-container">
-    <div *ngFor="let model of getPermissionsInfo()" class="d-flex justify-content-between item"
+    <div *ngFor="let iterator of getIterator()" class="d-flex justify-content-between item"
     >
-    <span>{{model.decription}}</span>
-    <input type="checkbox" name="permission" [checked]="set[model.permission!.name]"
-    (click)="onChange(model.permission)" />
+    <span>{{iterator}}</span>
+    <div class="form-check form-switch">
+        <input type="checkbox" name="permission" [checked]="set[iterator]"
+         (click)="onChange(iterator)" class="form-check-input"/>
+    </div>
     </div>
     <button class="btn btn-success change-permissions" (click)="changePermissions()">Change</button>
 </div>

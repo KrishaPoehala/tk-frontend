@@ -1,3 +1,4 @@
+import { Permissions } from './../enums/permissions';
 import { Roles } from './../enums/roles';
 import { UserService } from 'src/app/services/user.service';
 import { ChatMemberDto } from './../../dtos/ChatMemberDto';
@@ -28,11 +29,35 @@ export class PermissionsService {
       return true;
     }
     
-    if(chatMember.role?.order > message.sender.role?.order){
+    if(chatMember.role!.order > message.sender.role!.order){
       return true;
     }
 
     return chatMember.user.id === message.sender.user.id;
+  }
+
+  hasPermissionsForSending(chatMember:ChatMemberDto){
+    if(!chatMember){
+      return true;
+    }
+    
+    if(chatMember.permissions.length === 0){
+      return true;
+    }
+
+    return chatMember.permissions.some(x => x.name === Permissions[Permissions.SendMessages]);
+  }
+
+  hasPermisisonsForRemovingUsers(chatMember:ChatMemberDto){
+    if(!chatMember){
+      return true;
+    }
+
+    if(chatMember.permissions.length === 0){
+      return true;
+    }
+
+    return chatMember.permissions.some(x => x.name === Permissions[Permissions.RemoveUsers]);
   }
 
   isAdminOrGreater(chatMember:ChatMemberDto){
@@ -54,5 +79,17 @@ export class PermissionsService {
     }
 
     return chatMember.role.name === Roles[Roles.Member];
+  }
+
+  canPromoteToAdmin(member:ChatMemberDto){
+    if(member.role?.name === Roles[Roles.Owner]){
+      return true;
+    }
+
+    if(member.role?.name === Roles[Roles.Admin]){
+      return member.permissions.some(x => x.name === Permissions[Permissions.AddNewAdmins]);
+    }
+
+    return false;
   }
 }

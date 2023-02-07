@@ -3,7 +3,7 @@
 (mouseleave)="onMouseLeaveHandler($event)"
 [ngClass]="{'flex-row-reverse':isCurrentUsersMessage()}"
 id="item-{{message.id}}">
-  <div class="image-container">
+  <div class="image-container" *ngIf="message.sender.user.id !== userService.currentUser.id">
     <div class="sender-image" (click)="onMessageTextClicked()">
       <img  src="{{message.sender.user.profilePhotoUrl}}" alt="">
     </div>

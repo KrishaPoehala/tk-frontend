@@ -6,6 +6,7 @@
 .member-img{
     clip-path: circle();
     height: 40px;
+    width: 40px;
     margin:7px;
 }
 .chat-info_text{

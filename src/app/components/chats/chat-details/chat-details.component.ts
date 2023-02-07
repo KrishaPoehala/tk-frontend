@@ -43,20 +43,23 @@ export class ChatDetailsComponent implements OnInit {
 
   onRigthClick(eventInfo:any){
     const event = eventInfo.event;
-    const selectedMember = eventInfo.selectedMember;
+    const selectedMember = eventInfo.selectedMember as ChatMemberDto;
     const currentUserAsMember = this.userService.selectedChat.members.find(x =>
       x.user.id === this.userService.currentUser.id);
-      if(!currentUserAsMember){
-        return;
-      }
-      if(!this.permissionsService.isAdminOrGreater(currentUserAsMember)){
-        return;
-      }
-      
-    event.preventDefault();
-    const options:any= {
+    if(!currentUserAsMember){
+      return;
     }
-    const modalRef = this.modal.open(PermissionsMenuComponent,options);
+
+    if(!this.permissionsService.isAdminOrGreater(currentUserAsMember)){
+      return;
+    }
+
+    if(selectedMember.id === currentUserAsMember.id){
+      return;
+    }
+    
+    event.preventDefault();
+    const modalRef = this.modal.open(PermissionsMenuComponent);
     modalRef.componentInstance.selectedMember = selectedMember
   }
 

@@ -1,3 +1,4 @@
+import { UserService } from 'src/app/services/user.service';
 import { UpdatePermissionsComponent } from './../update-permissions/update-permissions.component';
 import { PermissionsService } from '../../services/permissions.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -14,7 +15,8 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PermissionsMenuComponent implements OnInit {
 
   constructor(private modal:NgbModal,private http:HttpService,
-    readonly permissions:PermissionsService) { }
+    readonly permissions:PermissionsService,
+    readonly userService: UserService) { }
   @Input() selectedMember!:ChatMemberDto;
   ngOnInit(): void {
   }
@@ -29,6 +31,12 @@ export class PermissionsMenuComponent implements OnInit {
     const modalRef = this.modal.open(UpdatePermissionsComponent,{
     });
     modalRef.componentInstance.member = this.selectedMember;
-    
+  }
+
+  onRemoveUserClick(){
+    const memberIndex = this.userService.selectedChat.members.findIndex(X => X.id === this.selectedMember.id);
+    this.userService.selectedChat.members.splice(memberIndex,1);
+    this.modal.dismissAll();
+    this.http.removeUser(this.selectedMember.id).subscribe();
   }
 }

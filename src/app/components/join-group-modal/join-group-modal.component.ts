@@ -37,19 +37,17 @@ export class JoinGroupModalComponent implements OnInit {
   }
 
   onJoin(){
-    if(!this.userService.chats){
+    if(!this.userService.chats || this.userService.chats.length === 0){
       this.userService.chats = [...this.groups];
+      this.userService.setfirstChatAsSelected(0);
     }
     else{
       this.userService.chats.push(...this.groups);
     }
     
-    this.userService.selectedChat = this.userService.chats[0];
-    this.userService.setSelectedChatValues();
     this.network.connectUserTo(this.groups);
-    this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(() => {
-      
-    });
     this.modal.close();
+    this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(() => {
+    });
   }
 }

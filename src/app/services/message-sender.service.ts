@@ -17,6 +17,7 @@ export class MessageService {
     private modalService:NgbModal) { }
 
   public sendMessage(text:string, sender:ChatMemberDto,messageToReply:MessageDto | null){
+    console.log(sender);
     let newMessage = new NewMessageDto(text,sender,
     this.userService.selectedChat?.id, new Date(),messageToReply);
     const chatIndex = this.userService.chats.findIndex(x => x.id === newMessage.chatId);

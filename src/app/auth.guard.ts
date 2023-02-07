@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
+import { UserDto } from 'src/dtos/UserDto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,7 @@ import { Observable } from 'rxjs';
 export class AuthGuard implements CanActivate {
   constructor(private router:Router, private http:HttpService,
     private jwtFacade:JwtFacadeService,
-    private userService:UserService,
-    private network: NetworkService)
+    private userService:UserService)
   {}
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -25,7 +25,11 @@ export class AuthGuard implements CanActivate {
       const refreshToken = this.jwtFacade.getRefreshToken();
       const isNotExpired = !this.jwtFacade.isTokenExpired(accessToken);
       if(accessToken && isNotExpired){
-        this.userService.setCurrentUserFromToken(this.jwtFacade.decodeToken(accessToken));
+        const userId = Number(this.jwtFacade.decodeToken(accessToken)['id']);
+        this.userService.currentUser = new UserDto(userId, "","","");
+        this.http.getUserById(userId).subscribe(user => {
+          this.userService.currentUser = user;
+        });
         return true;
       }
 
@@ -35,7 +39,11 @@ export class AuthGuard implements CanActivate {
         isRefreshingSuccessfull = result.isRefreshingSuccessfull;
         if(isRefreshingSuccessfull){
           this.jwtFacade.setTokens(result.accessToken!, result.refreshToken!);
-          this.userService.setCurrentUserFromToken(this.jwtFacade.decodeToken(result.accessToken!));
+          const userId = Number(this.jwtFacade.decodeToken(result.accessToken!)['id']);
+         this.userService.currentUser = new UserDto(userId, "","","");
+          this.http.getUserById(userId).subscribe(user => {
+          this.userService.currentUser = user;
+          });
         }
       });
 

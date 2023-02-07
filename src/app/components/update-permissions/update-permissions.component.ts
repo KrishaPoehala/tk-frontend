@@ -4,6 +4,7 @@ import { PermissionDto } from './../../../dtos/PermissionDto';
 import { Permissions } from './../../enums/permissions';
 import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
 import { Component, Input, OnInit } from '@angular/core';
+import { Roles } from 'src/app/enums/roles';
 
 @Component({
   selector: 'app-update-permissions',
@@ -16,44 +17,52 @@ export class UpdatePermissionsComponent implements OnInit {
   @Input() member!:ChatMemberDto;
   ngOnInit(): void {
     this.set = {};
-  }
-
-  getPermissionsInfo(){
-    const all = Object.keys(Permissions).filter(x => isNaN(Number(x)))
-    .map(x => new PermissionDto(x));
-    const permissions = [];
-    for(let i =0;i < all.length; ++i){
-      const permission = this.member.permissions.find(x => x.name === all[i].name);
-      permissions.push({
-        decription:all[i].name,
-        has:permission !== undefined,
-        permission:all[i],
-      })
-
-      if(permission){
-        this.set[permission.name] = true;
-      }
-    }
-
-    return permissions;
-  }
-
-  selectedPermissions:PermissionDto[] = [];
-  onChange(permission:PermissionDto){
-    const index = this.selectedPermissions.findIndex(x => x.name === permission.name)
-    if(index === -1){
-      this.selectedPermissions.push(permission);
-    }
-    else{
-      this.selectedPermissions.splice(index,1);
-    }
-
-  }
-
-  changePermissions(){
-    this.http.updatePermissions(this.member,this.selectedPermissions).subscribe(_ =>
-      this.modal.dismissAll());
+    this.getPermissionsInfo();
   }
 
   set!:{[id:string]:boolean}
+  getPermissionsInfo(){
+    const all = this._getPermissionsForSelectedMember();
+    all.forEach(e => {
+      if(this.member.permissions.some(x => x.name === e)){
+        this.set[e] = true;
+      }
+      else{
+        this.set[e] = false;
+      }
+    });
+  }
+
+  _getPermissionsForSelectedMember(){
+    const all =Object.keys(Permissions).filter(x => isNaN(Number(x))); 
+    if(this.member.role?.name === Roles[Roles.Admin]){
+      return all;
+    }
+
+    const except = [Permissions[Permissions.AddNewAdmins], Permissions[Permissions.RemoveUsers]];
+    return all.filter(x => !except.some(y => y === x));
+  }
+
+  selectedPermissions:PermissionDto[] = [];
+  onChange(permissionName:string){
+    if(this.set[permissionName]){
+      this.set[permissionName] = false;
+      return;
+    }
+
+    this.set[permissionName] = true;
+  }
+
+  changePermissions(){
+    this.selectedPermissions = Object.keys(this.set).filter(x => this.set[x])
+    .map(x => new PermissionDto(x));
+    this.modal.dismissAll();
+    this.member.permissions = this.selectedPermissions;
+    this.http.updatePermissions(this.member,this.selectedPermissions).subscribe();
+  }
+
+  getIterator(){
+    return Array.from(Object.keys(this.set));
+  }
+
 }

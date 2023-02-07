@@ -69,8 +69,7 @@ export class CreateGroupComponent implements OnInit {
     const newGroupDto =this._getNewGroupDto(this.imagePath);
     const groupDto = this._toGroupDto(newGroupDto);
     this.userService.chats.unshift(groupDto);
-    this.userService.selectedChat = this.userService.chats[0];
-    this.userService.setSelectedChatValues();
+    this.userService.setfirstChatAsSelected(0);
     this.modal.close();
     this.gyazoService.uploadImage(this.imageFile)
     .then(async x => await x.json())

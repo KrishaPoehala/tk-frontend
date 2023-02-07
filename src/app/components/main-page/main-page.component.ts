@@ -15,12 +15,16 @@ export class MainPageComponent implements OnInit {
   { }
 
   ngOnInit(): void {
+    if(!this.userService.currentUser){
+      return;
+    }
+
     this.http.getUserChats(this.userService.currentUser.id)
     .subscribe(result => {
       this.userService.chats = result;
+      console.log(this.userService.chats);
       if(this.userService.chats && this.userService.chats.length > 0){
-        this.userService.selectedChat = this.userService.chats[0];
-        this.userService.setSelectedChatValues();
+        this.userService.setfirstChatAsSelected(0);
       }
       
       this.network.configureHub();

@@ -1,3 +1,4 @@
+import { ChatMemberDto } from './../../dtos/ChatMemberDto';
 import { Injectable } from "@angular/core";
 import { ChatDto } from "src/dtos/ChatDto";
 import { UserDto } from 'src/dtos/UserDto';
@@ -56,9 +57,26 @@ export class UserService{
             if(element.id === chat.id){
                 this.selectedChat = this.chats[i];
                 this.setSelectedChatValues();
+                this.setCurrentUserAsMember();
                 return;
             }
         }
+    }
+
+    setfirstChatAsSelected(chatNumber:number){
+        this.selectedChat = this.chats[chatNumber];
+        console.log(this.selectedChat);
+        this.setSelectedChatValues();
+        this.setCurrentUserAsMember();
+    }
+
+    currentUserAsMember!:ChatMemberDto;
+    setCurrentUserAsMember(){
+        this.currentUserAsMember = this.selectedChat.members.find(x => x.user.id === this.currentUser.id)!;
+        console.log(this.currentUserAsMember);
+        console.log(this.selectedChat.members);
+        console.log(this.selectedChat.members.some(x => x.user.id === this.currentUser.id));
+        console.log(this.currentUser.id);
     }
 
     setSelectedChatValues() {

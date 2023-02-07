@@ -6,7 +6,9 @@
 <hr/>
 <div class="d-flex flex-column justify-content-start">
     <button class="btn option" (click)="onPromoteToAdminClick()"
-    *ngIf="permissions.isMember(selectedMember)">Promote to admin</button>
+    *ngIf="permissions.isMember(selectedMember) && permissions.canPromoteToAdmin(userService.currentUserAsMember)">
+    Promote to admin</button>
     <button class="btn option m-2" (click)="onChangePermissionsClick()">Change permissions</button>
-    <button class="btn danger option ">Remove from group</button>
+    <button class="btn danger option " (click)="onRemoveUserClick()"
+    *ngIf="permissions.hasPermisisonsForRemovingUsers(userService.currentUserAsMember)">Remove from group</button>
 </div>

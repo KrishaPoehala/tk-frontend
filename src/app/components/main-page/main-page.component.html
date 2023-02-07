@@ -1,5 +1,5 @@
 
-<div class="d-flex">
+<div class="d-flex" *ngIf="userService.currentUser">
     <app-chat-list [chats]="userService.chats"></app-chat-list>
     
     <div style="flex-grow:1">

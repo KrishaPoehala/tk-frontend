@@ -1,3 +1,6 @@
+import { Permissions } from './../../../enums/permissions';
+import { PermissionsService } from './../../../services/permissions.service';
+import { ChatMemberDto } from './../../../../dtos/ChatMemberDto';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RedirectionService } from 'src/app/services/redirection.service';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -11,8 +14,6 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, 
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageDto } from 'src/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
-import { NewPrivateChatDto } from 'src/dtos/NewPrivateChatDto';
-import { DeleteMessageModalComponent } from '../../delete-message-modal/delete-message-modal.component';
 
 @Component({
   selector: 'app-messages-list',
@@ -25,18 +26,22 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    private modalService:NgbModal) { }
+    readonly permissionsService:PermissionsService) { }
   
   ngOnInit(): void {
+    if(this.permissionsService.hasPermissionsForSending(this.userService.currentUserAsMember)){
+      this.messageForm.get('message')?.enable()
+    }
+    else{
+      this.messageForm.get('message')?.disable();
+    }
   }
    
   messageForm = this.fb.group({
     message: ['',Validators.required],
-});
+  });
 
   messageToReply:MessageDto | null = null;
- 
-
   send(){
     if(!this.userService.selectedChat){
       return;
@@ -61,18 +66,22 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
     
-    const sender = this.userService.selectedChat.members
-    .find(x => x.user.id === this.userService.currentUser.id);
-    this.messageService.sendMessage(text,sender!,this.messageToReply).subscribe(_ => this.scrollToBottom());
+    if(!this.userService.currentUserAsMember){
+      this.userService.setCurrentUserAsMember();
+    }
+    
+    this.messageService.sendMessage(text, this.userService.currentUserAsMember,this.messageToReply)
+      .subscribe(_ => this.scrollToBottom());
     this.messageForm.controls.message.setValue('');
     this.messageToReply = null;
   }
 
   messagesToLoad=20;
-  private callsCount = 0;
+  callsCount = 0;
   isWorking = false;
   currentPage = 1;
-  onScroll(event :any){
+  sendMessage = Permissions[Permissions.SendMessages];
+  onScroll(){
     if(this.userService.selectedChat.id === -1){
       return;
     }

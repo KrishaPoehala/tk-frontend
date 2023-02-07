@@ -5,6 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { JwtFacadeService } from './jwt-facade.service';
 import { AuthRepsonseDto } from '../../dtos/AuthResponseDto';
 import { Injectable } from '@angular/core';
+import { UserDto } from 'src/dtos/UserDto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +16,24 @@ export class AuthService {
     private router:Router, private network: NetworkService, private http:HttpService) { }
 
   public logIn(authDto : AuthRepsonseDto){
+    console.log(authDto);
     if(authDto.isAuthSuccessfull === false){
       return;
     }
 
     this.jwt.setTokens(authDto.accessToken!,authDto.refreshToken!);
     const decodedToken = this.jwt.decodeToken(authDto.accessToken!);
-    this.userService.setCurrentUserFromToken(decodedToken);
+    const userId = Number(decodedToken['id']);
+    this.userService.currentUser = new UserDto(userId, "","","");
+    this.http.getUserById(userId).subscribe(user => {
+        this.userService.currentUser = user;
+    });
     this.router.navigate(['']);
-    this.http.getUserChats(this.userService.currentUser.id)
+    this.http.getUserChats(userId)
       .subscribe(result => {
         this.userService.chats = result;
         if(this.userService.chats){
-          this.userService.selectedChat = this.userService.chats[0];
-          this.userService.setSelectedChatValues();
+          this.userService.setfirstChatAsSelected(0);
         }
        
         this.network.configureHub();

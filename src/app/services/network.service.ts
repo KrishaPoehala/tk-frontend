@@ -23,9 +23,8 @@ export class NetworkService {
      
   }
 
-
   configureHub(){
-    this.connection = new HubConnectionBuilder().withUrl(environment.signalR,
+    this.connection = new HubConnectionBuilder().withUrl(environment.origin +'chat',
       {skipNegotiation:true, transport: signalR.HttpTransportType.WebSockets,
       accessTokenFactory: () => this.jwt.getAccessToken() || ''}
       )
@@ -41,6 +40,8 @@ export class NetworkService {
     this.privateChatCreatedSetUp();
     this.userJoinedSetUp();
     this.memberPromotedSetUp();
+    this.permissionsChangedSetUp();
+    this.userRemovedSetUp();
   }
 
   disconnect(){
@@ -49,6 +50,7 @@ export class NetworkService {
 
   private userJoinedSetUp(){
     this.connection?.on("UserJoined", (dto:UserJoinedDto) =>{
+      console.log(dto);
       for(let i =0;i<this.userService.chats.length;++i){
         if(this.userService.chats[i].id === dto.groupId){
           this.userService.chats[i].members.push(dto.joinedMember);
@@ -106,7 +108,6 @@ export class NetworkService {
 
   private messageSentSetUp() {
     this.connection?.on("MessageSent", (message: MessageDto) => {
-      console.log('HEEEERE')
       const chatIndex = this.userService.chats.findIndex(x => x.id === message.chatId);
       if(message.sender.user.id === this.userService.currentUser.id){
         const messageIndex = this.userService.chats[chatIndex].messages.findIndex(x => x.id === -1);
@@ -125,6 +126,22 @@ export class NetworkService {
       const memberIndex = this.userService.chats[chatIndex].members.findIndex(x => x.id === member.id);
       this.userService.chats[chatIndex].members[memberIndex].permissions = member.permissions;
       this.userService.chats[chatIndex].members[memberIndex].role = member.role;
+    });
+  }
+  
+  private permissionsChangedSetUp(){
+    this.connection?.on("PermissionsChanged", (member:ChatMemberDto) => {
+      const chatIndex = this.userService.chats.findIndex(x => x.id === member.chatId);
+      const memberIndex = this.userService.chats[chatIndex].members.findIndex(x => x.id === member.id);
+      this.userService.chats[chatIndex].members[memberIndex].permissions = member.permissions;
+    });
+  }
+
+  private userRemovedSetUp(){
+    this.connection?.on("UserRemoved", (memberId:number)=>{
+      const chatIndex = this.userService.chats.findIndex(x => x.members.some(y => y.id === memberId));
+      const memberIndex = this.userService.chats[chatIndex].members.findIndex(x => x.id === memberId);
+      this.userService.chats[chatIndex].members.splice(memberIndex, 1);
     });
   }
 }
