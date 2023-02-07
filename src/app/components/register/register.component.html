@@ -9,20 +9,44 @@
         <label  class="sr-only">Email address</label>
         <input type="email" id="email" name="username" formControlName="email"
           class="form-control" placeholder="Email Name" required>
+          <div class="danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors">
+            Wrong email format!
+          </div>
         <br/>
         <label class="sr-only">Password</label>
         <input type="password" id="password"
           class="form-control" placeholder="Password" required formControlName="password">
+          <div *ngIf="registerForm.get('password')?.errors && (registerForm.get('password')?.touched ||
+          registerForm.get('password')?.dirty)">
+            <div class="danger" *ngIf="(registerForm.get('password')?.touched ||
+             registerForm.get('password')?.dirty) &&
+            registerForm.get('password')?.errors!['upperCaseLetter']">
+            {{registerForm.get('password')?.errors!['upperCaseLetter']}}
+            </div>
+            <div class="danger" *ngIf="registerForm.get('password')?.errors!['required']">
+            {{registerForm.get('password')?.errors!['required']}}
+           </div>
+           <div class="danger" *ngIf="registerForm.get('password')?.errors!['oneDigit']">
+            {{registerForm.get('password')?.errors!['oneDigit']}}
+           </div>
+          </div>
         <br/>
         <label class="sr-only">Confirm password</label>
         <input type="password" id="confirmPassword"  
           class="form-control" placeholder="Confirm password"
            required formControlName="confirmPassword">
+           <div *ngIf="registerForm.get('confirmPassword')?.errors">
+            <div class="danger" *ngIf="(registerForm.get('confirmPassword')?.touched ||
+            registerForm.get('confirmPassword')?.dirty) &&
+           registerForm.get('confirmPassword')?.errors!['missMatch']">
+            {{registerForm.get('confirmPassword')?.errors!['missMatch']}}
+            </div>
+           </div>
         <br/>
         <label class="sr-only">Upload an avatar</label>
         <input class="form-control" type="file" accept="image/*" (change)="onFileSelected($event)">
         <button class="btn btn-lg btn-primary m-2" type="submit" 
-        [disabled]="registerForm.invalid">Register</button>
+        >Register</button>
         <a routerLink="../login">Back to login</a>
     </form>
   </div>
