@@ -1,0 +1,23 @@
+
+img{
+    margin-right: 10px;
+    height: 50px;
+    width: 50px;
+    clip-path: circle();
+}
+
+.option{
+    border:none;
+    background-color: white;
+}
+
+.danger{
+    color:red;
+}
+
+.update-permissions{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100px;
+}

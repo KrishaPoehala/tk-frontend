@@ -1,0 +1,12 @@
+
+<div class="d-flex justify-content-center">
+    <img [src]="selectedMember.user.profilePhotoUrl" alt="">
+    <p>{{selectedMember.user.name}}</p>
+</div>
+<hr/>
+<div class="d-flex flex-column justify-content-start">
+    <button class="btn option" (click)="onPromoteToAdminClick()"
+    *ngIf="permissions.isMember(selectedMember)">Promote to admin</button>
+    <button class="btn option m-2" (click)="onChangePermissionsClick()">Change permissions</button>
+    <button class="btn danger option ">Remove from group</button>
+</div>

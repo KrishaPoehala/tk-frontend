@@ -1,0 +1,15 @@
+.border-bottom{
+    border-bottom: 2px solid black;
+}
+
+.chat-info{
+    background-color:ghostwhite;
+    cursor: pointer;
+    padding: 10px;
+}
+
+img{
+    clip-path: circle();
+    height: 50px;
+    width: 50px;
+}

@@ -1,11 +1,13 @@
+import { ChatMemberDto } from './ChatMemberDto';
 import { MessageDto } from "./MessageDto";
-import { UserDto } from "./UserDto";
 
-export interface ChatDto{
-    id:number,
-    name:string,
-    messages: MessageDto[],
-    members: UserDto[],
-    imageUrl: string,
-    isGroup : boolean | null,
+export class ChatDto{
+    constructor(
+    public id:number,
+    public name:string,
+    public messages: MessageDto[],
+    public members: ChatMemberDto[],
+    public imageUrl: string,
+    public isGroup : boolean | null)
+    {}
 }

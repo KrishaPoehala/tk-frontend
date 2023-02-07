@@ -1,0 +1,144 @@
+img{
+    clip-path: circle();
+    height: 40px;
+    margin:7px;
+}
+
+.sender-name{
+    color:red;
+    margin:0;
+    padding:0;
+}
+
+.sender-image{
+    cursor: pointer;
+}
+
+.image-container{
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+.sender-name:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.text-start{
+    text-align: start;
+}
+.text-end{
+    text-align: end;
+}
+
+p{
+    word-break: break-all;
+    white-space: normal;
+    margin: 0;
+}
+.my-message-text{
+    background-color: coral;
+}
+
+.message-text, .my-message-text{
+    text-overflow:clip;
+    padding: 0 8px 0 8px;
+    padding-bottom: 0;
+    border-radius: 10px;
+    font-size:16px;
+}
+
+.sender-text{
+    display: flex;
+    max-width: 80vh;
+}
+
+.message-container{
+    margin: 5px;
+}
+
+.message-text{
+    background-color: lightcyan;
+}
+
+.selected-message{
+    background-color: cornflowerblue;
+}
+
+.sent-date{
+    text-align: end;
+    font-size:12px;
+    margin:0;
+    align-self:flex-end;
+}
+
+.sent-date:hover{
+    cursor: pointer;
+}
+
+.status{
+    text-align: end;
+}
+
+.status-container{
+    display: flex;
+    margin:0;
+    padding: 0;
+    transform: scale(0.5);
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.message-info-container{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.replied-message-text{
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100px;
+}
+
+.replied-message-container{
+    border-left: 2px solid lightblue;
+    padding: 2px 2px 2px 4px;
+}
+
+.replied-message-container:hover{
+    cursor: pointer;
+    background-color: rgb(249, 146, 108);
+}
+
+.replied-message-sender{
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+.replied{
+    background-color:rgb(160, 231, 231);
+    animation: fade 1.2s;
+
+   
+}
+.my-replied{
+    background-color: rgb(242, 172, 146);
+    animation: my-fade 1.2s;
+
+}
+.my-replied, .replied{
+    border-radius: 20px;
+}
+
+@keyframes my-fade{
+    0% {background-color:rgb(242, 172, 146);}
+    100%{background-color:transparent;}
+}
+@keyframes fade{
+    0% {background-color:rgb(160, 231, 231);;}
+    100%{background-color:transparent;}
+}

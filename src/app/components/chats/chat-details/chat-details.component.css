@@ -1,0 +1,79 @@
+.photo-url{
+    height: 280px;
+    width: 330px;
+}
+
+.member-img{
+    clip-path: circle();
+    height: 40px;
+    margin:7px;
+}
+.chat-info_text{
+    position: absolute;
+    bottom: 8px;
+    left:16px;
+    font-weight: bold;
+    color:white;
+    font-size: 20px;
+    text-align: left;
+}
+.chat-info_container{
+    position: relative;
+    text-align: center;
+    width: auto;
+}
+
+.scroll{
+    overflow-y: scroll;
+    height: 100vh;
+}
+.members-info{
+    text-align: left;
+    color:lightgray;
+    font-size: 13px;
+}
+.mat-icon{
+    font-size:25px
+}
+
+.info{
+    margin-right:25px
+}
+.chat-bio{
+    font-size: 20px;
+    color:black;
+}
+
+.member{
+    cursor: pointer;
+}
+
+.member:hover{
+    background-color:lightblue;
+}
+
+.border{
+    color:coral;
+    font-size: 20px;
+    text-align: center;
+}
+
+.role{
+    color:coral;
+    font-size: 14px;
+    margin-right: 5px;
+    align-self:center;
+}
+
+.add-members{
+    position: absolute;
+    background-color: lightblue;
+    border:none;
+    clip-path: circle();
+    width: 54px;
+    height: 54px;
+    padding:0;
+    right:3%;
+    bottom:2%;
+    font-size: 1.5rem;
+}

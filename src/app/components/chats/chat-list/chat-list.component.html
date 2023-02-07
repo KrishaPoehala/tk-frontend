@@ -1,0 +1,28 @@
+    
+
+    
+    <div class="chat-list-container">
+         <div class="p-2 d-flex justify-content-start">
+            <div  ngbDropdown role="group">
+                <button class="btn btn-link" type="button" ngbDropdownToggle> <mat-icon>menu</mat-icon></button>
+                <div ngbDropdownMenu>
+                    <app-menu></app-menu>
+                </div>
+            </div>
+                    
+            <div style="flex-grow: 1;">
+                <form [formGroup]="searchForm">
+                    <input type="text" class="form-control search" placeholder="Search..." (keyup.Enter)="onSearch()"
+                        formControlName="searchedChat"/>
+                </form>
+            </div>
+        </div>
+        <div *ngFor="let chatF of filteredChats.length === 0 ? chats : filteredChats">
+            <app-chat-item
+             [chat]="chatF"
+             >
+            </app-chat-item>
+       </div>
+    </div>
+       
+    

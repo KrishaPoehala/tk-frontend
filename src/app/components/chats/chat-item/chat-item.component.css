@@ -1,0 +1,44 @@
+img{
+    clip-path: circle();
+    height: 50px;
+    width: 50px;
+}
+
+.chat-container{
+    white-space: nowrap;
+    width:50vh;
+    overflow-x: hidden;
+    border-radius: 10px;
+    margin:2px;
+}
+
+.chat-photo{
+    align-self: center;
+    margin-right: 10px;
+}
+
+.chat-container:hover{
+    cursor:pointer;
+    background-color:cornsilk;
+}
+
+.active{
+    background-color: lightgray;
+}
+
+.text{
+    text-overflow:ellipsis;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

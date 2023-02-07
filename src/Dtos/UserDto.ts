@@ -1,6 +1,7 @@
-export interface UserDto{
-    id: number,
-    name: string,
-    email:string,
-    profilePhotoUrl:string,
+export class UserDto{
+   constructor( public id: number,
+    public name: string,
+    public email:string,
+    public profilePhotoUrl:string)
+    {}
 }

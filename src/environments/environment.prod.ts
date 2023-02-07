@@ -9,7 +9,9 @@ export const environment = {
   sendMessage:api +  "/Messages/send",
   editMessage :api +  "/Messages/edit",
   delete: api + "/Messages/delete/",
-  createPrivateChat:api +  "/Chats/privateChat/create",
+  createPrivateChat:api +  "/Chats/create",
   login: api + "/Accounts/login",
+  addMembers:api+"/Chats/addMembers",
   signalR: origin + "chat",
+  refresh:api + "Tokens/refresh"
 };

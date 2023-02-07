@@ -1,0 +1,78 @@
+.messages-container{
+    overflow-y:scroll;
+    height: 90vh;
+    
+    width: 80%;
+    padding-bottom: 5%;
+}
+
+.message-list{
+    background-size: 30%;
+    align-self: center;
+    background-image: url("https://oir.mobi/uploads/posts/2022-08/1661337097_1-oir-mobi-p-fon-dlya-telegram-oboi-1.png");
+    position:relative;
+    display: flex;
+    justify-content: center;
+}
+.center-label{
+    text-align: center;
+}
+
+.input-message{
+    margin-bottom: 2%;
+   
+}
+
+.message-send{
+    width: 40%;
+}
+
+.icon{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+body{
+    height: 100%;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+.message-input-container{
+    position: absolute;
+    left:50%;
+    width:50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    justify-content: center;
+    bottom:-5%;
+    background-color: transparent;
+}
+
+.message-input{
+    width: 100%;
+    border-radius: 15px;
+    padding:12px;
+}
+
+.replied-message-text{
+    white-space: nowrap;
+    max-width: 80%;
+    padding-right: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.replied-message{
+    background-color: white;
+    border-radius: 10px 10px 0 0;
+    font-size: 13px;
+    padding: 3px;
+}
+
+.replied-from{
+    font-size:small;
+     font-weight:bold;
+     margin:0px
+}
+
+

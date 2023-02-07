@@ -1,0 +1,33 @@
+
+.chat-list-container{
+    overflow-y: scroll;
+    height: 100vh;
+    border-right:2px solid black;
+    width:auto;
+}
+
+.chat-container{
+    position: relative;
+}
+
+.search{
+    width:100%;
+}
+
+.scroll-hidden{
+    overflow-y: hidden;
+}
+
+.menu-button{
+   border:0;
+   background-color:white;
+   padding-top: 4px;
+    margin-right: 3px;
+
+}
+.overlay{
+    position: absolute;
+    z-index: 9;
+    top:0;
+    right:0;
+}

@@ -1,0 +1,31 @@
+
+.menu-container button{
+    border:none;
+    text-align:center;
+    display: flex;
+    padding:0;
+    background-color: white;
+    font-size:14px;
+    padding-right: 50px;
+    font-weight:500;
+}
+
+.icon{
+    transform: scale(0.7);
+    align-self: flex-start;
+    margin:7px;
+}
+
+.menu-container button:hover{
+    background-color: lightblue;
+}
+
+.menu-container{
+    overflow: hidden;
+    display: flex;
+    border-radius: 20px;
+    padding:3px;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1000;
+}

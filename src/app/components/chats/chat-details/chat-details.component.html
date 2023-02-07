@@ -1,0 +1,43 @@
+
+
+<div class="d-flex flex-column scroll">
+    <div class="chat-info_container" style="flex-shrink:0">
+        <img class="photo-url" src="{{userService.selectedChatPhotoUrl}}" alt="">
+        <div class="chat-info_text">{{userService.selectedChatName}}
+            <div *ngIf="userService.selectedChat?.isGroup || userService.selectedChat?.isGroup === null"
+                 class="members-info">
+                {{userService.selectedChat.members.length}} members
+            </div>
+    
+            <div *ngIf="userService.selectedChat?.isGroup === false"
+                class="members-info">
+                last seen recently
+            </div>
+        </div>
+    </div>
+    <div style="padding:20px; background-color: lightblue; flex-shrink:0">
+        <div class="d-flex justify-content-start">
+            <div class="chat-bio">bio of the groupppp</div>
+            <div style="color:lightgray">Info</div>
+        </div>
+    </div>
+    <div class="border">Members</div>
+    <div class="members-container">
+        <div *ngFor="let member of userService.selectedChat.members" class="member d-flex justify-content-between"
+        (contextmenu)="onRigthClick({event:$event,selectedMember:member})"
+        (click)="onMemberClicked(member.user)">
+            <div class="d-flex justify-content-start m-2">
+                <img src="{{member.user.profilePhotoUrl}}" alt="member photo" class="member-img">
+                <div>
+                    <p *ngIf="userService.currentUser.id !== member.user.id">{{member.user.name}}</p>
+                    <p *ngIf="userService.currentUser.id === member.user.id">You</p>
+                    <div>last seen recently</div>
+                </div>
+            </div>
+            <div class="role" *ngIf="member.role?.order && member.role!.order > 0">{{member.role?.name }}</div>
+        </div>
+    </div>
+    <button class="add-members" (click)="onAddMembersClicked()" *ngIf="isGroup()">
+        <mat-icon>person_add</mat-icon>
+    </button>
+</div>

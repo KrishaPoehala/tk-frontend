@@ -1,0 +1,26 @@
+<div class="modal-body">
+    <div>
+        <div class="bottom-margin">
+            <form >
+                <input type="text" placeholder="Join some publicly available groups..."
+                class="form-control" >
+            </form>
+        </div>
+        <div class="scroll">
+            <div *ngFor="let group of publicGroups" class="d-flex group justify-content-between"
+            (click)="onAddGroupClick(group)">
+                <div class="d-flex">
+                    <div>
+                        <img src="{{group.imageUrl}}" alt="user photo" class="user-img">
+                    </div>
+                    <div>{{group.name}}</div>
+                </div>
+    
+                <div class="d-flex">
+                    <mat-icon *ngIf="selectedGroups[group.id]" class="left">check_circle</mat-icon>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-success" (click)="onJoin()">Go!</button>
+    </div>
+</div>

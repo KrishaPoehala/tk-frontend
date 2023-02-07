@@ -1,0 +1,36 @@
+
+<div class="d-flex message-container" (contextmenu)="onRigthClick($event)"
+(mouseleave)="onMouseLeaveHandler($event)"
+[ngClass]="{'flex-row-reverse':isCurrentUsersMessage()}"
+id="item-{{message.id}}">
+  <div class="image-container">
+    <div class="sender-image" (click)="onMessageTextClicked()">
+      <img  src="{{message.sender.user.profilePhotoUrl}}" alt="">
+    </div>
+  </div>
+     <div [class.my-message-text]="isCurrentUsersMessage()"
+     [class.message-text]="!isCurrentUsersMessage()">
+      <p *ngIf="shouldSenderNameBeShown()"
+        class="sender-name" (click)="onMessageTextClicked()"
+        [ngClass]="{'text-end':isCurrentUsersMessage()}">{{message.sender.user.name}}
+        </p>
+        <div *ngIf="message.replyMessage" class="replied-message-container"
+        (click)="onRepliedMessageClick()">
+          <p class="replied-message-sender">{{message.replyMessage.sender.user.name}}</p>
+          <p  class="replied-message-text"> {{message.replyMessage.text}}</p>
+        </div>
+        <p class="sender-text">{{message.text}}</p>
+        <div class="message-info-container">
+          <div class="sent-date"
+          >
+              {{message.sentAt | date: 'h:mm a'}}
+        </div>
+          <div class="status-container">
+            <mat-icon class="status" *ngIf="message.status === MessageStatus.InProgress">watch_later</mat-icon>
+            <mat-icon class="status" *ngIf="message.status === MessageStatus.Delivered">check</mat-icon>
+          </div>
+        </div>
+    </div>
+</div>
+
+ 

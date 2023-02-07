@@ -1,0 +1,14 @@
+
+
+.menu-container{
+    padding: 15px;
+    align-self: center;
+}
+
+.item{
+    margin:3px 0 3px 0;
+}
+
+.change-permissions{
+    margin-top: 10px;
+}

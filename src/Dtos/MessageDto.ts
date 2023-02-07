@@ -1,10 +1,17 @@
+import { MessageStatus } from '../app/enums/message-status';
+import { ChatMemberDto } from './ChatMemberDto';
 import { UserDto } from "./UserDto";
 
-export interface MessageDto{
-    id:number,
-    text:string,
-    sender: UserDto,
-    chatId: number,
-    sentAt: Date,
-    isDeletedOnlyForSender: boolean;
+export class MessageDto{
+    public status!:MessageStatus;
+    constructor(
+    public id:number,
+    public text:string,
+    public sender: ChatMemberDto,
+    public chatId: number,
+    public  sentAt: Date,
+    public isDeletedOnlyForSender: boolean | null,
+    public replyMessage: MessageDto | null)
+    {   
+    }
 }

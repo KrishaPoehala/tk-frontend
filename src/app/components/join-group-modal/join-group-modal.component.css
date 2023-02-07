@@ -1,0 +1,53 @@
+.user-img{
+    clip-path: circle();
+    height: 40px;
+    margin:7px;
+}
+
+.group-photo{
+    cursor: pointer;
+    text-align: center;
+    padding: 5%;
+    clip-path: circle();
+    background-color: coral;
+    margin-right: 5%;
+}
+
+.group-image{
+    clip-path: circle();
+    height: 80px;
+    width: 80px;
+}
+.choseen-group-photo{
+    cursor: pointer;
+    clip-path: circle();
+    margin-right: 5%;
+}
+.center{
+    transform: translateY(25%);
+
+}
+.bottom-margin{
+    margin-bottom: 15px;
+}
+
+.group{
+    cursor:pointer;
+}
+
+.group:hover{
+    background-color:lightblue;
+}
+
+.scroll{
+    overflow-y: scroll;
+    height: 70vh;
+}
+
+.left{
+    align-self:center;
+}
+
+.members-text{
+    color: coral;
+}

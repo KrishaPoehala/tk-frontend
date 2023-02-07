@@ -3,19 +3,23 @@
 // The list of file replacements can be found in `angular.json`.
 
 const origin = "https://localhost:7139/";
-const api = origin + "api";
+const api = origin + "api"
 export const environment = {
   production: false,
+  api: origin + "api/",
   userChats: api + "/Chats/chats/",
   randomUser: api + "/Chats/randomUser",
   firstMessages: api + "/Chats/messages/",
   sendMessage:  api + "/Messages/send",
   editMessage :  api + "/Messages/edit",
   delete: api + "/Messages/delete/",
-  privateChat:  api + "/Chats/privateChat/",
-  createPrivateChat:  api + "/Chats/create",
+  createChat:  api + "/Chats/create",
   login: api +  "/Accounts/login",
+  register: api + "/Accounts/register",
+  refresh:api + "/Tokens/refresh",
+  addMembers:api+"/Members/addMembers",
   signalR: origin+ "chat",
+  gyazoAccessToken: "pFhYP7Ke_VKSLEfG3PFUsBcmCZffUYJdKaROd_1Ws1k",
 };
 
 /*

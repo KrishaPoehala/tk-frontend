@@ -1,0 +1,13 @@
+
+<div class="modal-body">
+  <h5 class="modal-title" id="modal-basic-title">Delete message</h5>
+  <form class="form-container">
+    <div>
+      <p class="message">Do you want delete this message only for you?</p>
+      <span>Delete only for me: </span>
+      <input type="checkbox" class="form-check-input" (change)="onChange()">
+    </div>
+  </form>
+  <button type="button" class="btn btn-outline-danger" (click)="passBack()">Delete</button>
+
+</div>

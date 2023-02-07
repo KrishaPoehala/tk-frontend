@@ -1,0 +1,10 @@
+
+<div class="menu-container">
+    <div *ngFor="let model of getPermissionsInfo()" class="d-flex justify-content-between item"
+    >
+    <span>{{model.decription}}</span>
+    <input type="checkbox" name="permission" [checked]="set[model.permission!.name]"
+    (click)="onChange(model.permission)" />
+    </div>
+    <button class="btn btn-success change-permissions" (click)="changePermissions()">Change</button>
+</div>

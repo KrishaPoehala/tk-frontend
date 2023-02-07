@@ -1,0 +1,23 @@
+<div class="message-list" >
+    <div class="messages-container" cdk-scrollable
+    #scrollframe (scroll)="onScroll($event)">
+        <div
+            *ngFor="let messageF of userService.selectedChat?.messages" #item>
+            <app-message-item [message]="messageF"
+            (overlayEventEmmiter)="openOverlayHandler($event)"
+            (closeOverlayEventEmmiter)="closeOverlayHandler()">
+            </app-message-item>
+        </div>
+    </div>
+    <div *ngIf="userService.selectedChat" class="message-input-container">
+        <form [formGroup]="messageForm" class="col-12" >
+            <div *ngIf="messageToReply !== null" class="replied-message">
+                <p class="replied-from">replied from {{messageToReply.sender.user.name}}</p>
+                <div class="replied-message-text">{{messageToReply.text}}</div>
+            </div>
+            <textarea (keyup.enter)="send()" type="text" class="message-input" placeholder="Message..."
+            formControlName="message" rows="1"
+            [value]="messageToEdit?.text"></textarea>
+        </form>
+    </div>
+</div>

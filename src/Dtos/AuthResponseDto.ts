@@ -1,6 +1,6 @@
-
 export interface AuthRepsonseDto{
     isAuthSuccessfull : boolean,
-    errorMessage: string | null,
-    token: string | null,
+    errorMessages: string | null[],
+    accessToken: string | null,
+    refreshToken:string|null,
 }

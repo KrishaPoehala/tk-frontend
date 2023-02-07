@@ -1,0 +1,17 @@
+
+<div >
+    <div class="menu-container">
+        <button *ngIf="permissionsService.hasPermissionForEditing(message)"
+        (click)="onEditClick()">
+        <mat-icon  class="icon">edit</mat-icon>Edit
+        </button>
+        <button (click)="onForwardClick()"><mat-icon  class="icon">arrow_forward</mat-icon>
+        Forward to sender</button>
+        <button (click)="onReplyClick()"><mat-icon class="icon">keyboard_backspace</mat-icon>
+            Reply</button>
+        <button *ngIf="permissionsService.hasPermissionForDeleting(currentUserAsMember,message)"
+        (click)="onDeleteClick()">
+            <mat-icon class="icon">restore_from_trash</mat-icon>Delete
+        </button>
+    </div>
+</div>

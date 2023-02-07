@@ -1,0 +1,69 @@
+
+  <div class="modal-body">
+    <div *ngIf="isCreateGroupFormShown === false">
+        <div class="bottom-margin">
+            <form >
+                <input type="text" placeholder="Who would you like to add?"
+                class="form-control" >
+            </form>
+        </div>
+        <div class="scroll">
+            <div *ngFor="let contact of contacts" class="d-flex group justify-content-between"
+            (click)="onClick(contact)" >
+                <div class="d-flex">
+                    <div>
+                        <img src="{{contact.profilePhotoUrl}}" alt="user photo" class="user-img">
+                    </div>
+                    <div>{{contact.name}}</div>
+    
+                </div>
+    
+                <div class="d-flex">
+                    <mat-icon *ngIf="selectedMembers[contact.id]" class="left">check_circle</mat-icon>
+                </div>
+            </div>
+        </div>
+        <button  [disabled]="members.length <= 0" class="btn btn-success" (click)="onContinueClick()">
+            Continue</button>
+    </div>
+    <div *ngIf="isCreateGroupFormShown">
+      <form [formGroup]="createGroupForm">
+        <div class="row bottom-margin">
+            <div class="d-flex justify-content-start">
+                <label class="group-photo" *ngIf="isImageChoosen === false">
+                    <mat-icon>camera_enhance</mat-icon>
+                    <input style="display:none" type="file" accept="image/*"
+                     (change)="onGroupPhotoChange($event)"/>
+                </label>
+
+                <label class="choseen-group-photo" *ngIf="isImageChoosen">
+                    <img [src]="imagePath" alt="" class="group-image">
+                    <input style="display:none" type="file" accept="image/*"
+                     (change)="onGroupPhotoChange($event)"/>
+                </label>
+                <div class="form-group center">
+                    <input class="form-control" type="text" placeholder="Group name..." formControlName="name">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="isGroupPublic">Should this group be public?</label>
+            <input type="checkbox" class="form-check-input" id="isGroupPublic" formControlName="isPublic">
+        </div>
+     </form>    
+     <br/>
+      <p class="members-text">{{members.length}} members</p> 
+      <div *ngFor="let member of getMembersExceptCurrentUser()" class="d-flex group justify-content-between">
+                <div class="d-flex">
+                    <div>
+                        <img src="{{member.profilePhotoUrl}}" alt="user photo" class="user-img">
+                    </div>
+                    <div>{{member.name}}</div>
+                </div>
+                <div class="d-flex">
+                    <mat-icon class="left">check_circle</mat-icon>
+                </div>
+            </div>
+      <button style="margin-top:5%" class="btn btn-success" (click)="onCreateGroup()">Create group></button>
+    </div>
+  </div>
