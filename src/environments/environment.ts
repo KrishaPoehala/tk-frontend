@@ -2,11 +2,10 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-const origin = "https://localhost:7139/";
-const api = origin + "api"
+const origin = "https://shabolda69.azurewebsites.net/";
 export const environment = {
   production: false,
-  origin:'https://localhost:7139/',
+  origin:origin,
   api: origin + "api",
   gyazoAccessToken: "pFhYP7Ke_VKSLEfG3PFUsBcmCZffUYJdKaROd_1Ws1k",
 };

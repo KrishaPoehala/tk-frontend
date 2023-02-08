@@ -1,7 +1,7 @@
-const origin = "https://chatikservice.azurewebsites.net/";
+const origin = "https://localhost:7139/";
 export const environment = {
   production: true,
-  origin: 'https://chatikservice.azurewebsites.net/',
+  origin: origin,
   api: origin + "api",
   gyazoAccessToken: "pFhYP7Ke_VKSLEfG3PFUsBcmCZffUYJdKaROd_1Ws1k",
 };
