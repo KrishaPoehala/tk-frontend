@@ -1,4 +1,4 @@
-const origin = "https://localhost:7139/";
+const origin = "https://shabolda69.azurewebsites.net/";
 export const environment = {
   production: true,
   origin: origin,
