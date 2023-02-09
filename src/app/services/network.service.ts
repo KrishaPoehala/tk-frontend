@@ -138,6 +138,8 @@ export class NetworkService {
         console.log(`gruop ${this.userService.chats[i]!.name} has order: ${currentMember!.chatOrder}`)
         currentMember!.chatOrder = currentOrder--;
       }
+
+      this.userService.chats = Array.prototype.concat(this.userService.chats);
       chat.messages =Array.prototype.concat(chat.messages);
     });
   }
