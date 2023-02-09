@@ -123,7 +123,7 @@ export class NetworkService {
       }
 
       chat.messages.push(message);
-      this.chatsOrderService.recalculateChatsOrder();
+      this.chatsOrderService.recalculateChatsOrder(message.sender);
       chat.messages =Array.prototype.concat(chat.messages);
     });
   }

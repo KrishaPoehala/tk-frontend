@@ -92,7 +92,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     this.userService.selectedChat?.id, new Date(),this.messageToReply);
     this.userService.selectedChat.messages = Array.prototype.concat(this.userService.selectedChat.messages);
     this.userService.selectedChat.messages.push(this.toMessage(newMessage));
-    this.chatsOrder.recalculateChatsOrder();
+    this.chatsOrder.recalculateChatsOrder(this.userService.currentUserAsMember);
     this.userService.chats = Array.prototype.concat(this.userService.chats);
     this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');

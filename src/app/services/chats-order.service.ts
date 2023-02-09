@@ -1,3 +1,4 @@
+import { ChatMemberDto } from './../dtos/ChatMemberDto';
 import { UserService } from 'src/app/services/user.service';
 import { Injectable } from '@angular/core';
 
@@ -10,13 +11,14 @@ export class ChatsOrderService {
 
   }
 
-  recalculateChatsOrder(){
-    const member = this.userService.selectedChat
-    .members.find(x => x.id === this.userService.currentUserAsMember.id);
+  recalculateChatsOrder(sender:ChatMemberDto){
+    const chat = this.userService.chats.find(x => x.id === sender.chatId)!;
+    const member = chat
+    .members.find(x => x.id === sender.id);
     member!.chatOrder = this.userService.chats.length - 1;
     let currentOrder = this.userService.chats.length - 2;
-    for(let i =0;i<this.userService.chats.length;++i){
-      if(this.userService.chats[i].id === this.userService.selectedChat.id){
+    for(let i = 0; i < this.userService.chats.length; ++i){
+      if(this.userService.chats[i].id === sender.chatId){
         continue;
       }
 
