@@ -18,6 +18,7 @@ export class OrderChatPipe implements PipeTransform {
       const rigthUserChatOrder = rigth.members
         .find(x => x.user.id ===id)?.chatOrder;
 
+        console.log(rigthUserChatOrder! - leftUserChatOrder! + ' PIPEEEEEE');
         return rigthUserChatOrder! - leftUserChatOrder!;
     })
   }

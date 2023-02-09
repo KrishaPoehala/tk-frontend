@@ -127,7 +127,7 @@ export class NetworkService {
       const member = group?.members.find(x => x.user.id === this.userService.currentUser.id)!;
       member.chatOrder = this.userService.chats.length - 1;
       let currentOrder = member.chatOrder - 1;
-      console.log('Max order has: ',group)
+      console.log(`gruop ${group!.name} has order: ${member.chatOrder}`)
       for(let i = 0; i < this.userService.chats.length; ++i){
         if(group?.id === this.userService.chats[i].id){
           continue;
@@ -135,7 +135,7 @@ export class NetworkService {
 
         const currentMember = this.userService.chats[i].members
         .find(x => x.user.id === this.userService.currentUser.id)
-        console.log('next order: ',currentMember);
+        console.log(`gruop ${this.userService.chats[i]!.name} has order: ${currentMember!.chatOrder}`)
         currentMember!.chatOrder = currentOrder--;
       }
       chat.messages =Array.prototype.concat(chat.messages);
