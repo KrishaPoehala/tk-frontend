@@ -33,7 +33,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
   shouldScrollToBottom:boolean = false;
   ngOnChanges(changes: SimpleChanges): void {
-    //const diff = changes.
+    console.log('changed triggered')
+    console.log(changes);
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
     if(!diff){
@@ -138,10 +139,12 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         }
         
         ++this.currentPage
+        this.shouldScrollToBottom = false;
           r.forEach(element => {
             element.status = MessageStatus.Delivered;
             this.userService.selectedChat?.messages.unshift(element);
           })
+
         });
 
         
@@ -152,6 +155,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
   @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {
+    this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
       console.log('scorlll');
       this.scrollToBottom();
@@ -164,7 +168,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     if(!this.shouldScrollToBottom){
       return;
     }
-    
+
+
     this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
   }
 
