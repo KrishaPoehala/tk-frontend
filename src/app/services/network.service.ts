@@ -123,7 +123,21 @@ export class NetworkService {
       }
 
       chat.messages.push(message);
-      this.chatsOrderService.recalculateChatsOrder(message.sender);
+      const group = this.userService.chats.find(x => x.id === message.chatId);
+      const member = group?.members.find(x => x.user.id === this.userService.currentUser.id)!;
+      member.chatOrder = this.userService.chats.length - 1;
+      let currentOrder = member.chatOrder - 1;
+      console.log('Max order has: ',group)
+      for(let i = 0; i < this.userService.chats.length; ++i){
+        if(group?.id === this.userService.chats[i].id){
+          continue;
+        }
+
+        const currentMember = this.userService.chats[i].members
+        .find(x => x.user.id === this.userService.currentUser.id)
+        console.log('next order: ',currentMember);
+        currentMember!.chatOrder = currentOrder--;
+      }
       chat.messages =Array.prototype.concat(chat.messages);
     });
   }
