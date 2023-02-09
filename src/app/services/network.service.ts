@@ -24,7 +24,7 @@ export class NetworkService {
   }
 
   configureHub(){
-    this.connection = new HubConnectionBuilder().withUrl(environment.origin +'chat',
+    this.connection = new HubConnectionBuilder().withUrl(environment.signalR,
       {skipNegotiation:true, transport: signalR.HttpTransportType.WebSockets,
       accessTokenFactory: () => this.jwt.getAccessToken() || ''}
       )
@@ -50,7 +50,6 @@ export class NetworkService {
 
   private userJoinedSetUp(){
     this.connection?.on("UserJoined", (dto:UserJoinedDto) =>{
-      console.log(dto);
       for(let i =0;i<this.userService.chats.length;++i){
         if(this.userService.chats[i].id === dto.groupId){
           this.userService.chats[i].members.push(dto.joinedMember);
@@ -108,15 +107,21 @@ export class NetworkService {
 
   private messageSentSetUp() {
     this.connection?.on("MessageSent", (message: MessageDto) => {
-      const chatIndex = this.userService.chats.findIndex(x => x.id === message.chatId);
+      const chat = this.userService.chats.find(x => x.id === message.chatId)!;
       if(message.sender.user.id === this.userService.currentUser.id){
-        const messageIndex = this.userService.chats[chatIndex].messages.findIndex(x => x.id === -1);
-        this.userService.chats[chatIndex].messages[messageIndex].id = message.id;
-        this.userService.chats[chatIndex].messages[messageIndex].status = MessageStatus.Delivered;
+        for(let i =chat.messages.length - 1;i >= 0; --i){
+          if(chat.messages[i].id === -1){
+            const message = chat.messages[i];
+            message.id = message.id;
+            message.status = MessageStatus.Delivered;
+          }
+        }
+        
         return;
       }
 
-      this.userService.chats[chatIndex].messages.push(message);
+      chat.messages.push(message);
+      chat.messages = [...chat.messages];
     });
   }
 

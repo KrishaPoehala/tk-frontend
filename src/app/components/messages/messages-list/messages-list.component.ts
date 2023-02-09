@@ -1,7 +1,5 @@
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
-import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RedirectionService } from 'src/app/services/redirection.service';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { MessageMenuComponent } from './../message-menu/message-menu.component';
@@ -10,10 +8,12 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { MessageService } from './../../../services/message-sender.service';
 import { UserService } from 'src/app/services/user.service';
 import { HttpService } from 'src/app/services/http.service';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, ElementRef, Input, IterableDiffers, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
+import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
+import { __values } from 'tslib';
 
 @Component({
   selector: 'app-messages-list',
@@ -21,13 +21,31 @@ import { MessageStatus } from 'src/app/enums/message-status';
   styleUrls: ['./messages-list.component.css'], 
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class MessagesListComponent implements OnInit, AfterViewInit {
+export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    readonly permissionsService:PermissionsService) { }
-  
+    readonly permissionsService:PermissionsService,private differs:IterableDiffers) {
+     }
+  ngDoCheck(): void {
+  }
+
+  shouldScrollToBottom:boolean = false;
+  ngOnChanges(changes: SimpleChanges): void {
+    //const diff = changes.
+    const currentValue:MessageDto[] = changes['messages'].currentValue;
+    const diff = currentValue[currentValue.length - 1];
+    if(!diff){
+      return;
+    }
+
+    if(diff.sender.user.id === this.userService.currentUser.id){
+      this.shouldScrollToBottom = true;
+    }
+  }
+
+  @Input() messages!:MessageDto[];
   ngOnInit(): void {
     if(this.permissionsService.hasPermissionsForSending(this.userService.currentUserAsMember)){
       this.messageForm.get('message')?.enable()
@@ -56,9 +74,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     if(this.messageToEdit){
-      const messageIndex = this.userService.selectedChat.messages
+      const messageIndex = this.messages
                         .findIndex(x => x.id === this.messageToEdit?.id);
-      this.userService.selectedChat.messages[messageIndex].text = text;
+      this.messages[messageIndex].text = text;
       this.http.editMessage(this.messageToEdit.id, text)
       .subscribe();
       this.messageToEdit = null;
@@ -70,10 +88,20 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       this.userService.setCurrentUserAsMember();
     }
 
-    this.messageService.sendMessage(text, this.userService.currentUserAsMember,this.messageToReply)
-      .subscribe(_ => this.scrollToBottom());
+    let newMessage = new NewMessageDto(text,this.userService.currentUserAsMember,
+    this.userService.selectedChat?.id, new Date(),this.messageToReply);
+    this.userService.selectedChat.messages = Array.prototype.concat(this.userService.selectedChat.messages);
+    this.userService.selectedChat.messages.push(this.toMessage(newMessage));
+    this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');
     this.messageToReply = null;
+  }
+
+  private toMessage(newMessage:NewMessageDto){
+    const message = new MessageDto(-1,newMessage.text,newMessage.sender,newMessage.chatId,newMessage.sentAt,null,
+      newMessage.replyMessage);
+    message.status = MessageStatus.InProgress;
+    return message;
   }
 
   messagesToLoad=20;
@@ -81,7 +109,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   isWorking = false;
   currentPage = 1;
   sendMessage = Permissions[Permissions.SendMessages];
-  onScroll(){
+  onScroll(event:any){
     if(this.userService.selectedChat.id === -1){
       return;
     }
@@ -91,10 +119,15 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
+      this.shouldScrollToBottom = true;
+    }
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
     }
+
+    
     this.isWorking = true;
     this.scrollFrame.nativeElement.scrollTop = 100;
     this.http.getChatMessages(this.userService.selectedChat.id, this.userService.currentUser.id, 
@@ -110,34 +143,29 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
             this.userService.selectedChat?.messages.unshift(element);
           })
         });
+
+        
     setTimeout(() => this.isWorking = false, 600);//forbid to call this method too many times
   }
 
-  private scrollContainer: any;
   count = 0;
+  @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
+  @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {
-    this.scrollContainer = this.scrollFrame.nativeElement;  
     this.itemElements.changes.subscribe(_ => {
-      if(this.count > 0){
-        return;
-      }
-
-      ++this.count;
-      this.onItemElementsChanged();
-
+      console.log('scorlll');
+      this.scrollToBottom();
     }); 
   }
 
-  private onItemElementsChanged(): void {
-    this.scrollToBottom();
-  }
+
 
   private scrollToBottom(): void {
-    this.scrollContainer.scroll({
-      top: this.scrollContainer.scrollHeight,
-      left: 0,
-      behavior: 'auto'
-    });
+    if(!this.shouldScrollToBottom){
+      return;
+    }
+    
+    this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
   }
 
   closeOverlayHandler(){
@@ -172,7 +200,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     componentRef.instance.forwardMessageEmmiter.subscribe(messageToForward => {
       this.redirectionService.redirectMessage(messageToForward);
       this.overlayRef?.dispose();
-    });
+    }); 
 
     componentRef.instance.deleteMessageEmmiter.subscribe(messageToDelete => {
       this.messageService.deleteMessage(messageToDelete);
@@ -180,6 +208,5 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     });
   } 
 
-  @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
-  @ViewChildren('item') itemElements!: QueryList<any>;
+
 }

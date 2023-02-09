@@ -27,7 +27,6 @@ export class ChatItemComponent implements OnInit {
         this.chat.messages.push(element);
       });
     });
-
   }
  
 

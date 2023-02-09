@@ -37,7 +37,6 @@ export class RegisterComponent implements OnInit {
   private atLeastOneUpperCaseLetter():ValidatorFn{
     return (control:AbstractControl<string>):ValidationErrors| null => {
       const chars = [...control.value]
-      console.log(chars,chars.some(x => x === x.toUpperCase()));
       if(chars.some(x => x === x.toUpperCase())){
         return null;
       }
@@ -50,7 +49,6 @@ export class RegisterComponent implements OnInit {
     return (control:AbstractControl<string>):ValidationErrors| null => {
       const password = control.value;
       const confirmation = this.registerForm?.get('password')?.value;
-      console.log('sfsfsdf');
       if(!confirmation){
         return {'missMatch':'The password and confirmation password does not match'};
       }

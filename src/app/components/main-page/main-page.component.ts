@@ -22,7 +22,6 @@ export class MainPageComponent implements OnInit {
     this.http.getUserChats(this.userService.currentUser.id)
     .subscribe(result => {
       this.userService.chats = result;
-      console.log(this.userService.chats);
       if(this.userService.chats && this.userService.chats.length > 0){
         this.userService.setfirstChatAsSelected(0);
       }

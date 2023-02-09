@@ -1,6 +1,6 @@
 <div class="message-list" >
     <div class="messages-container" cdk-scrollable
-    #scrollframe (scroll)="onScroll()">
+    #scrollframe (scroll)="onScroll($event)">
         <div
             *ngFor="let messageF of userService.selectedChat?.messages" #item>
             <app-message-item [message]="messageF"

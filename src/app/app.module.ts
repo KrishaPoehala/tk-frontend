@@ -43,6 +43,7 @@ const routes:Routes=[
         JoinGroupModalComponent,
         PermissionsMenuComponent,
         UpdatePermissionsComponent,
+        
     ],
     providers: [HttpService, UserService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

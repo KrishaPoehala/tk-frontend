@@ -65,7 +65,6 @@ export class UserService{
 
     setfirstChatAsSelected(chatNumber:number){
         this.selectedChat = this.chats[chatNumber];
-        console.log(this.selectedChat);
         this.setSelectedChatValues();
         this.setCurrentUserAsMember();
     }
@@ -73,10 +72,6 @@ export class UserService{
     currentUserAsMember!:ChatMemberDto;
     setCurrentUserAsMember(){
         this.currentUserAsMember = this.selectedChat.members.find(x => x.user.id === this.currentUser.id)!;
-        console.log(this.currentUserAsMember);
-        console.log(this.selectedChat.members);
-        console.log(this.selectedChat.members.some(x => x.user.id === this.currentUser.id));
-        console.log(this.currentUser.id);
     }
 
     setSelectedChatValues() {

@@ -16,7 +16,6 @@ export class AuthService {
     private router:Router, private network: NetworkService, private http:HttpService) { }
 
   public logIn(authDto : AuthRepsonseDto){
-    console.log(authDto);
     if(authDto.isAuthSuccessfull === false){
       return;
     }
