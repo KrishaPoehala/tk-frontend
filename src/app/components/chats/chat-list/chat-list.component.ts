@@ -1,5 +1,5 @@
 import { FormBuilder, Validators } from '@angular/forms';
-import { Component, Input, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, HostListener, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import { UserService } from 'src/app/services/user.service';
 
@@ -8,13 +8,14 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css']
 })
-export class ChatListComponent implements OnInit {
+export class ChatListComponent implements OnInit,OnChanges {
 
   constructor(public userService : UserService, private fb:FormBuilder) {
    }
+  ngOnChanges(changes: SimpleChanges): void {
+  }
 
   ngOnInit(): void {
-    
   }
 
   @Input() chats!: ChatDto[];

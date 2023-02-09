@@ -4,5 +4,5 @@ export const environment = {
   origin: origin,
   api: origin + "api",
   gyazoAccessToken: "pFhYP7Ke_VKSLEfG3PFUsBcmCZffUYJdKaROd_1Ws1k",
-  signalR:origin+"chat/"
+  signalR:origin+"chat"
 };

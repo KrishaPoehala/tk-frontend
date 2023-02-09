@@ -1,18 +1,22 @@
-<div  class="chat-container" (click)="onClick()" id="{{chat.id}}" 
-[ngClass]="{'active': userService.selectedChat.id === chat.id}">
-    <div class="d-flex p-1 m-1">
-        <div class="chat-photo">
-            <img src="{{displayedImageUrl}}" alt="chatPhoto" 
-           />
-        </div>
-        <div>
-            <p>{{displayedGroupName}}</p>
-            <span class="text" *ngIf="chat.messages.length !== 0">
-                {{chat.messages[chat.messages.length - 1].sender.user.name}} :</span>
-            <span class="text" *ngIf="chat.messages.length !== 0">
-                {{chat.messages[chat.messages.length - 1].text}}</span>
+
+<div *ngIf="chat">
+    <div  class="chat-container" (click)="onClick()" id="{{chat.id}}" 
+    [ngClass]="{'active': userService.selectedChat.id === chat.id}">
+        <div class="d-flex p-1 m-1">
+            <div class="chat-photo">
+                <img src="{{displayedImageUrl}}" alt="chatPhoto" 
+               />
+            </div>
+            <div>
+                <p>{{displayedGroupName}}</p>
+                <span class="text" *ngIf="chat.messages?.length !== 0">
+                    {{chat.messages[chat.messages.length - 1].sender.user.name}} :</span>
+                <span class="text" *ngIf="chat.messages?.length !== 0">
+                    {{chat.messages[chat.messages.length - 1].text}}</span>
+            </div>
         </div>
     </div>
+
 </div>
 
 

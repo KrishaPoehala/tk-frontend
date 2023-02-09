@@ -44,6 +44,7 @@ const routes:Routes=[
         PermissionsMenuComponent,
         UpdatePermissionsComponent,
         
+        
     ],
     providers: [HttpService, UserService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

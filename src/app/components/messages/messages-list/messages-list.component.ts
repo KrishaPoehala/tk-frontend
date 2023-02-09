@@ -1,3 +1,4 @@
+import { ChatsOrderService } from './../../../services/chats-order.service';
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
 import { RedirectionService } from 'src/app/services/redirection.service';
@@ -26,15 +27,13 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    readonly permissionsService:PermissionsService,private differs:IterableDiffers) {
+    readonly permissionsService:PermissionsService,private chatsOrder:ChatsOrderService) {
      }
   ngDoCheck(): void {
   }
 
-  shouldScrollToBottom:boolean = false;
+  shouldScrollToBottom:boolean = true;
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changed triggered')
-    console.log(changes);
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
     if(!diff){
@@ -53,7 +52,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     }
     else{
       this.messageForm.get('message')?.disable();
-    }
+    } 
   }
    
   messageForm = this.fb.group({
@@ -93,6 +92,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     this.userService.selectedChat?.id, new Date(),this.messageToReply);
     this.userService.selectedChat.messages = Array.prototype.concat(this.userService.selectedChat.messages);
     this.userService.selectedChat.messages.push(this.toMessage(newMessage));
+    this.chatsOrder.recalculateChatsOrder();
+    this.userService.chats = Array.prototype.concat(this.userService.chats);
     this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');
     this.messageToReply = null;
@@ -157,7 +158,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngAfterViewInit(): void {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
-      console.log('scorlll');
       this.scrollToBottom();
     }); 
   }
@@ -168,7 +168,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     if(!this.shouldScrollToBottom){
       return;
     }
-
 
     this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
   }

@@ -1,3 +1,4 @@
+import { ChatsOrderService } from './chats-order.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
 import { Observable } from 'rxjs';
@@ -19,7 +20,8 @@ export class NetworkService {
     groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
   }
   private connection!: HubConnection | null;
-  constructor(public userService:UserService, private jwt:JwtFacadeService) {
+  constructor(public userService:UserService, private jwt:JwtFacadeService,
+    private chatsOrderService:ChatsOrderService) {
      
   }
 
@@ -121,7 +123,8 @@ export class NetworkService {
       }
 
       chat.messages.push(message);
-      chat.messages = [...chat.messages];
+      this.chatsOrderService.recalculateChatsOrder();
+      chat.messages =Array.prototype.concat(chat.messages);
     });
   }
 

@@ -10,6 +10,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { MenuComponent } from './menu/menu.component';
 import { MessagesModule } from '../messages/messages.module';
 import { EmptyChatListComponent } from './empty-chat-list/empty-chat-list.component';
+import { OrderChatPipe } from './pipes/order-chat.pipe';
 @NgModule({
     declarations: [
         ChatListComponent,
@@ -18,6 +19,7 @@ import { EmptyChatListComponent } from './empty-chat-list/empty-chat-list.compon
         ChatDetailsComponent,
         MenuComponent,
         EmptyChatListComponent,
+        OrderChatPipe,
     ],
     exports: [
         ChatListComponent,
@@ -33,6 +35,7 @@ import { EmptyChatListComponent } from './empty-chat-list/empty-chat-list.compon
         CommonModule,
         MessagesModule,
         ReactiveFormsModule,
+        
     ]
 })
 export class ChatsModule { }

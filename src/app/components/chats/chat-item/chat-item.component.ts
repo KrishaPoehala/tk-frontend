@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import { UserDto } from 'src/app/dtos/UserDto';
 import { HttpService } from 'src/app/services/http.service';
@@ -15,12 +15,13 @@ export class ChatItemComponent implements OnInit {
   constructor(private chatService: HttpService,
     public readonly userService : UserService) { }
 
+
   ngOnInit(): void {
-    this.setDisplayedValues();
-    if(this.chat.id === -1){
+    if(!this.chat || this.chat.id === -1){
       return;
     }
-
+    
+    this.setDisplayedValues();
     this.chatService.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
       r.forEach(element => {
         element.status = MessageStatus.Delivered;

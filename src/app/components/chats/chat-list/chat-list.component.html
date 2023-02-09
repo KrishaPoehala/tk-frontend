@@ -1,7 +1,7 @@
     
 
     
-    <div class="chat-list-container">
+    <div class="chat-list-container" >
          <div class="p-2 d-flex justify-content-start">
             <div  ngbDropdown role="group">
                 <button class="btn btn-link" type="button" ngbDropdownToggle> <mat-icon>menu</mat-icon></button>
@@ -17,12 +17,13 @@
                 </form>
             </div>
         </div>
-        <div *ngFor="let chatF of filteredChats.length === 0 ? chats : filteredChats">
-            <app-chat-item
-             [chat]="chatF"
-             >
-            </app-chat-item>
-       </div>
+        <div>
+            <div  *ngFor="let chatF of chats |orderChat">
+                <app-chat-item [chat]="chatF">
+                 
+                </app-chat-item>
+           </div>
+        </div>
     </div>
        
     
