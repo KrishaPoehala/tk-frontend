@@ -42,14 +42,14 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
-    //console.log(diff);
+    console.log('FROM ON CHANGES NEW MESSAGE')
+    console.log(diff);
     if(!diff){
       return;
     }
 
      this.isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
     this.newMessage = this.isCurrentUsersMessage ? null : diff;
-    console.log('is senders message: ' + this.isAtTheBottom);
   }
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
@@ -129,8 +129,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     const epsilon = -90;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
-    console.log(this.isAtTheBottom);
-    console.log(event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight);
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
@@ -170,11 +168,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         
       const id = new Date(this.newMessage.sentAt).getTime().toString();
       const el = this.$(id);
-      if(this.isCurrentUsersMessage){
-        return;
-       }
-
-      if(this.isAtTheBottom && this.userService.selectedChat.value.id === this.newMessage.chatId){
+      if(this.userService.selectedChat.value.id !== this.newMessage.chatId || !this.isAtTheBottom){
         return;
       }
 
