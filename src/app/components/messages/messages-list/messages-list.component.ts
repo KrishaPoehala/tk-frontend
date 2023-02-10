@@ -160,13 +160,15 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
       this.scrollToBottom();
+      console.log(this.newMessage);
       if(!this.newMessage){
         return;
       }
         
       const id = new Date(this.newMessage.sentAt).getTime().toString();
       const el = this.$(id);
-      if(this.userService.selectedChat.value.id !== this.newMessage.chatId || this.isAtTheBottom){
+      console.log('el: ',el);
+      if(this.userService.selectedChat.value.id === this.newMessage.chatId || this.isAtTheBottom){
         return;
       }
 
