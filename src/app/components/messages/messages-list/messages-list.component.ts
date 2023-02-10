@@ -66,18 +66,22 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       if(!this.messages){
         return;
       }
-
-      console.log(this.messages);
-      console.log(this.messages);
+      
       if(chat.id !== this.messages[0].chatId){
         return;
       }
-
+      
+      console.log(chat);
+      console.log('messages: ')
+      console.log(this.messages);
       const unreadMessagesLength = chat.members
         .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
-        console.log(unreadMessagesLength + ' unreadMessagecount')
+      console.log('members: ');
+      console.log(chat.members);
+      console.log(unreadMessagesLength + ' unreadMessagecount');
       if(isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
         this.scrollToBottom();
+        return;
       }
 
       console.log('scrolled into: ')
