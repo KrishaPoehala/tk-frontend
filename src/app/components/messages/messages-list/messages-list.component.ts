@@ -120,10 +120,15 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     });
   }
   onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
+    
     console.log(entries);
     const member = chat.members
     .find(x => x.user.id === this.userService.currentUser.id)!;
     entries.forEach(x => {
+      if(x.intersectionRatio <= 0.05){
+        return;
+      }
+
       member.unreadMessagesLength--;
       obs.unobserve(x.target);
     })
