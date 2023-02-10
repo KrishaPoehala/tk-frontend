@@ -127,14 +127,14 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight;
-    console.log("should scorll to bottom?" + this.isAtTheBottom);
+    const epsilon = -0.4;
+    this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
+    console.log(this.isAtTheBottom);
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
     }
 
-    
     this.isWorking = true;
     this.scrollFrame.nativeElement.scrollTop = 100;
     this.http.getChatMessages(this.userService.selectedChat.id, this.userService.currentUser.id, 
@@ -150,7 +150,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
             element.status = MessageStatus.Delivered;
             this.userService.selectedChat?.messages.unshift(element);
           })
-
         });
 
         
@@ -163,9 +162,14 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngAfterViewInit(): void {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
+      this.scrollToBottom();
       if(this.newMessage){
         const id = new Date(this.newMessage.sentAt).getTime().toString();
         const el = this.$(id);
+        if(this.isCurrentUsersMessage || this.isAtTheBottom){
+          return;
+        }
+
         if(this.observers[this.newMessage.chatId]){
           console.log('added obs: to' + this.newMessage.chatId);
           this.observers[this.newMessage.chatId].observe(el!);
@@ -182,7 +186,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
           console.log('created new obs');
         }
       }
-      this.scrollToBottom();
     }); 
   }
 
@@ -192,6 +195,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   } 
 
   private scrollToBottom(): void {
+    console.log(this.isAtTheBottom, this.isCurrentUsersMessage);
     if(this.isAtTheBottom || this.isCurrentUsersMessage){
       this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
       return;
