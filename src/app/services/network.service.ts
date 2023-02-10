@@ -117,6 +117,8 @@ export class NetworkService {
             const message = chat.messages[i];
             message.id = message.id;
             message.status = MessageStatus.Delivered;
+           
+              return;
           }
         }
         
@@ -126,9 +128,17 @@ export class NetworkService {
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
-      if(chat.id !== this.userService.selectedChat.value.id){
+      if(chat.id === this.userService.selectedChat.value.id){
+        return;
+      }
+
+      if(isNaN(chat.unreadMessagesLength)){
+        chat.unreadMessagesLength = 1;
+      }
+      else{
         chat.unreadMessagesLength += 1;
       }
+      
     });
   }
 
