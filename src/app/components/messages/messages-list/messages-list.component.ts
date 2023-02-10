@@ -37,7 +37,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   }
 
   observers!:{[id:number]:IntersectionObserver}
-  shouldScrollToBottom:boolean = true;
+  isAtTheBottom:boolean = true;
   newMessage:MessageDto | null = null;
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
@@ -47,12 +47,11 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    const isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
-    this.newMessage = isCurrentUsersMessage ? null : diff;
-    this.shouldScrollToBottom = isCurrentUsersMessage;
-    console.log('is senders message: ' + this.shouldScrollToBottom);
+     this.isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
+    this.newMessage = this.isCurrentUsersMessage ? null : diff;
+    console.log('is senders message: ' + this.isAtTheBottom);
   }
-
+  isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
   ngOnInit(): void {
     if(this.permissionsService.hasPermissionsForSending(this.userService.currentUserAsMember)){
@@ -128,8 +127,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    this.shouldScrollToBottom = event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight;
-    console.log("should scorll to bottom?" + this.shouldScrollToBottom);
+    this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight;
+    console.log("should scorll to bottom?" + this.isAtTheBottom);
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
@@ -146,7 +145,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         }
         
         ++this.currentPage
-        this.shouldScrollToBottom = false;
+        this.isAtTheBottom = false;
           r.forEach(element => {
             element.status = MessageStatus.Delivered;
             this.userService.selectedChat?.messages.unshift(element);
@@ -168,6 +167,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         const id = new Date(this.newMessage.sentAt).getTime().toString();
         const el = this.$(id);
         if(this.observers[this.newMessage.chatId]){
+          console.log('added obs: to' + this.newMessage.chatId);
           this.observers[this.newMessage.chatId].observe(el!);
         }
         else{
@@ -192,11 +192,10 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   } 
 
   private scrollToBottom(): void {
-    if(!this.shouldScrollToBottom){
+    if(this.isAtTheBottom || this.isCurrentUsersMessage){
+      this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
       return;
     }
-
-    this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
   }
 
   closeOverlayHandler(){
