@@ -16,6 +16,8 @@ import { MessageStatus } from 'src/app/enums/message-status';
 import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 import { __values } from 'tslib';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
+import { Observer } from 'rxjs';
+import { ChatDto } from 'src/app/dtos/ChatDto';
 
 @Component({
   selector: 'app-messages-list',
@@ -64,6 +66,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     }
 
     console.log('On initi called!');
+    
     SelectedChatChangedService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
@@ -82,6 +85,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       console.log(this.messages);
       const unreadMessagesLength = chat.members
         .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
+      console.log('MEMBER: ');
+      console.log(chat.members
+        .find(x => x.user.id === this.userService.currentUser.id));
       console.log('members: ');
       console.log(chat.members);
       console.log(unreadMessagesLength + ' unreadMessagecount');
@@ -96,12 +102,34 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       const id = new Date(messageToScrollTo.sentAt).getTime().toString();
       this.$(id)?.scrollIntoView({
         behavior:'auto',
-        block: 'center',
-        inline: 'center',
+        block: 'end',
+        inline: 'end',
       })
+
+      const intersection = new IntersectionObserver((entries,obs) => {
+        this.onIntersection(chat,entries,obs);
+      },{
+        root:document.querySelector('#scrollframe '),
+      }
+      );
+
+      for(let i = this.messages.length - unreadMessagesLength; i < this.messages.length; ++i){
+        const id = new Date(this.messages[i].sentAt).getTime().toString();
+        intersection.observe(this.$(id)!);
+      }
     });
   }
-   
+  onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
+    console.log(entries);
+    const member = chat.members
+    .find(x => x.user.id === this.userService.currentUser.id)!;
+    entries.forEach(x => {
+      member.unreadMessagesLength--;
+      obs.unobserve(x.target);
+    })
+
+    chat.members = Array.prototype.concat(chat.members);
+  }
   messageForm = this.fb.group({
     message: ['',Validators.required],
   });
