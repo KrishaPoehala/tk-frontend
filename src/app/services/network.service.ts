@@ -1,4 +1,3 @@
-import { ChatsOrderService } from './chats-order.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
 import { Observable } from 'rxjs';
@@ -20,8 +19,7 @@ export class NetworkService {
     groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
   }
   private connection!: HubConnection | null;
-  constructor(public userService:UserService, private jwt:JwtFacadeService,
-    private chatsOrderService:ChatsOrderService) {
+  constructor(public userService:UserService, private jwt:JwtFacadeService) {
      
   }
 
@@ -123,23 +121,8 @@ export class NetworkService {
       }
 
       chat.messages.push(message);
-      const group = this.userService.chats.find(x => x.id === message.chatId);
-      const member = group?.members.find(x => x.user.id === this.userService.currentUser.id)!;
-      member.chatOrder = this.userService.chats.length - 1;
-      let currentOrder = member.chatOrder - 1;
-      console.log(`gruop ${group!.name} has order: ${member.chatOrder}`)
-      for(let i = 0; i < this.userService.chats.length; ++i){
-        if(group?.id === this.userService.chats[i].id){
-          continue;
-        }
-
-        const currentMember = this.userService.chats[i].members
-        .find(x => x.user.id === this.userService.currentUser.id)
-        console.log(`gruop ${this.userService.chats[i]!.name} has order: ${currentMember!.chatOrder}`)
-        currentMember!.chatOrder = currentOrder--;
-      }
-
       this.userService.chats = Array.prototype.concat(this.userService.chats);
+      //IntersectionObserver
       chat.messages =Array.prototype.concat(chat.messages);
     });
   }

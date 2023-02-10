@@ -4,7 +4,6 @@ import { RoleDto } from './RoleDto';
 import { UserDto } from './UserDto';
 
 export class ChatMemberDto{
-    public chatOrder:number = 0;
     constructor(
         public id:number, 
         public user:UserDto,

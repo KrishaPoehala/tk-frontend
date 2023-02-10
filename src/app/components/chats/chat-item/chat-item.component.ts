@@ -12,7 +12,7 @@ import { MessageStatus } from 'src/app/enums/message-status';
 })
 export class ChatItemComponent implements OnInit {
 
-  constructor(private chatService: HttpService,
+  constructor(private http: HttpService,
     public readonly userService : UserService) { }
 
 
@@ -22,11 +22,13 @@ export class ChatItemComponent implements OnInit {
     }
     
     this.setDisplayedValues();
-    this.chatService.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
+    this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
       r.forEach(element => {
         element.status = MessageStatus.Delivered;
         this.chat.messages.push(element);
       });
+
+      this.userService.chats = Array.prototype.concat(this.userService.chats);
     });
   }
  

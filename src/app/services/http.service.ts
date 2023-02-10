@@ -1,3 +1,4 @@
+import { ChatDetailsComponent } from './../components/chats/chat-details/chat-details.component';
 import { PermissionDto } from '../dtos/PermissionDto';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { AddMembersDto } from '../dtos/AddMembersDto';
@@ -120,4 +121,5 @@ export class HttpService{
     public getUserById(userId:number){
         return this.http.get<UserDto>(environment.api + `/Users/user/${userId}`);
     }
+
 }

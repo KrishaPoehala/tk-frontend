@@ -82,9 +82,13 @@ export class MessageItemComponent implements OnInit {
     this.overlayEventEmmiter.emit(emitObject);
     setTimeout(() => this.callDispose = true, 100);
   }
+  getId(){
+    return new Date(this.message.sentAt).getTime().toString()
+  }
 
   onRepliedMessageClick(){
-    const itemToScrollTo = document.getElementById(`item-${this.message.replyMessage!.id}`);
+    const id = new Date(this.message.replyMessage!.sentAt).getTime().toString()
+    const itemToScrollTo = document.getElementById(id);
     if(!itemToScrollTo){
       return;
     }

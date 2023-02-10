@@ -1,4 +1,3 @@
-import { ChatsOrderService } from './../../../services/chats-order.service';
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
 import { RedirectionService } from 'src/app/services/redirection.service';
@@ -27,22 +26,31 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    readonly permissionsService:PermissionsService,private chatsOrder:ChatsOrderService) {
+    readonly permissionsService:PermissionsService) {
      }
   ngDoCheck(): void {
+    this.observers = {};
   }
 
+  $(id:string){
+    return document.getElementById(id);
+  }
+
+  observers!:{[id:number]:IntersectionObserver}
   shouldScrollToBottom:boolean = true;
+  newMessage:MessageDto | null = null;
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
+    console.log(diff);
     if(!diff){
       return;
     }
 
-    if(diff.sender.user.id === this.userService.currentUser.id){
-      this.shouldScrollToBottom = true;
-    }
+    const isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
+    this.newMessage = isCurrentUsersMessage ? null : diff;
+    this.shouldScrollToBottom = isCurrentUsersMessage;
+    console.log('is senders message: ' + this.shouldScrollToBottom);
   }
 
   @Input() messages!:MessageDto[];
@@ -92,7 +100,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     this.userService.selectedChat?.id, new Date(),this.messageToReply);
     this.userService.selectedChat.messages = Array.prototype.concat(this.userService.selectedChat.messages);
     this.userService.selectedChat.messages.push(this.toMessage(newMessage));
-    this.chatsOrder.recalculateChatsOrder(this.userService.currentUserAsMember);
     this.userService.chats = Array.prototype.concat(this.userService.chats);
     this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');
@@ -121,9 +128,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
-      this.shouldScrollToBottom = true;
-    }
+    this.shouldScrollToBottom = event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight;
+    console.log("should scorll to bottom?" + this.shouldScrollToBottom);
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
@@ -158,11 +164,28 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngAfterViewInit(): void {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
+      if(this.newMessage){
+        const id = new Date(this.newMessage.sentAt).getTime().toString();
+        const el = this.$(id);
+        if(this.observers[this.newMessage.chatId]){
+          this.observers[this.newMessage.chatId].observe(el!);
+        }
+        else{
+          this.observers[this.newMessage.chatId] = new IntersectionObserver((entries) => {
+            this.onInstersection(entries);
+          },
+          {
+            root: this.scrollFrame.nativeElement,
+          })
+        }
+      }
       this.scrollToBottom();
     }); 
   }
 
-
+  onInstersection(entires :IntersectionObserverEntry[]){
+    console.log(entires);
+  }
 
   private scrollToBottom(): void {
     if(!this.shouldScrollToBottom){

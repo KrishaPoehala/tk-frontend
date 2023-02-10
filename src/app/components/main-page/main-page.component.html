@@ -1,10 +1,8 @@
 
-<div class="d-flex" *ngIf="userService.currentUser">
-    <app-chat-list
-    *ngIf="userService.chats && userService.chats.length > 0" 
-     [chats]="userService.chats"></app-chat-list>
+<div class="d-flex" *ngIf="userService.currentUser" >
+    <app-chat-list [chats]="userService.chats"></app-chat-list>
     
-    <div style="flex-grow:1">
+    <div style="flex-grow:1" >
         <app-chat-info *ngIf="userService.chats && userService.chats.length > 0" 
             (clickedEventEmmiter)="openChatDetailsHandler()" ></app-chat-info>
         <app-messages-list *ngIf="userService.chats && userService.chats.length > 0"

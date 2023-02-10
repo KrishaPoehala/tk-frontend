@@ -12,15 +12,14 @@ export class OrderChatPipe implements PipeTransform {
   {}
   transform(array: ChatDto[] | undefined, ...args: unknown[]): ChatDto[] | undefined {
     return array?.sort((left,rigth)=> {
-      const id = this.userService.currentUser.id;
-      const leftUserChatOrder = left.members
-        .find(x => x.user.id === id)?.chatOrder;
-      const rigthUserChatOrder = rigth.members
-        .find(x => x.user.id ===id)?.chatOrder;
+      if(left.messages.length === 0 || rigth.messages.length === 0){
+        return 0;
+      }
 
-        console.log(rigthUserChatOrder! - leftUserChatOrder! + ' PIPEEEEEE');
-        return rigthUserChatOrder! - leftUserChatOrder!;
+      const lMessage =  left.messages[left.messages.length - 1].sentAt;
+      const rMessage = rigth.messages[rigth.messages.length - 1].sentAt;
+      console.log('CASDFSFDASDF');
+      return new Date(rMessage).getTime() - new Date(lMessage).getTime();
     })
   }
-
 }
