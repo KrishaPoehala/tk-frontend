@@ -4,6 +4,7 @@ import { UserDto } from 'src/app/dtos/UserDto';
 import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
 import { MessageStatus } from 'src/app/enums/message-status';
+import { Wrapper } from 'src/app/services/wraper.service';
 
 @Component({
   selector: 'app-chat-item',
@@ -28,7 +29,7 @@ export class ChatItemComponent implements OnInit {
         this.chat.messages.push(element);
       });
 
-      this.userService.chats = Array.prototype.concat(this.userService.chats);
+      this.userService.chats = Wrapper.wrap(this.userService.chats.value);
     });
   }
  

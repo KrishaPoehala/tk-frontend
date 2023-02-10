@@ -19,8 +19,8 @@ export class MessageService {
   public sendMessage(text:string, sender:ChatMemberDto,messageToReply:MessageDto | null){
     let newMessage = new NewMessageDto(text,sender,
     this.userService.selectedChat?.value.id, new Date(),messageToReply);
-    const chatIndex = this.userService.chats.findIndex(x => x.id === newMessage.chatId);
-    this.userService.chats[chatIndex].messages.push(this.toMessage(newMessage));
+    const chatIndex = this.userService.chats.value.findIndex(x => x.id === newMessage.chatId);
+    this.userService.chats.value[chatIndex].messages.push(this.toMessage(newMessage));
     return this.http.sendMessage(newMessage);
   }
 

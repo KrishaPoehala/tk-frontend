@@ -3,6 +3,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { NetworkService } from '../../services/network.service';
 import { UserService } from '../../services/user.service';
 import { ChangeDetectorRef, Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Wrapper } from 'src/app/services/wraper.service';
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
@@ -25,8 +26,8 @@ export class MainPageComponent implements OnInit,OnDestroy {
 
     this.http.getUserChats(this.userService.currentUser.id)
     .subscribe(result => {
-      this.userService.chats = Array.prototype.concat(result);
-      if(this.userService.chats && this.userService.chats.length > 0){
+      this.userService.chats = Wrapper.wrap(result);
+      if(this.userService.chats && this.userService.chats.value.length > 0){
         this.userService.setfirstChatAsSelected(0);
       }
       

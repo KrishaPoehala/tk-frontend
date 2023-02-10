@@ -8,11 +8,11 @@ import { UserDto } from 'src/app/dtos/UserDto';
 export class UserService{
     public selectedChat! : Wrapper<ChatDto>;
     public currentUser!:UserDto;
-    public chats!: ChatDto[];
+    public chats!: Wrapper<ChatDto[]>;
     setSelectedPrivateChat(sender: UserDto) {
-        for(let i = 0; i < this.chats.length; ++i){
-            if(this.isPrivateChat(this.chats[i], sender)){
-                this.selectedChat.value = this.chats[i];
+        for(let i = 0; i < this.chats.value.length; ++i){
+            if(this.isPrivateChat(this.chats.value[i], sender)){
+                this.selectedChat.value = this.chats.value[i];
                 return true;
             }
         }
@@ -21,8 +21,8 @@ export class UserService{
     }
 
     doesPrivateChatExist(rigthUser:UserDto){
-        for(let i = 0; i < this.chats.length; ++i){
-            if(this.isPrivateChat(this.chats[i], rigthUser)){
+        for(let i = 0; i < this.chats.value.length; ++i){
+            if(this.isPrivateChat(this.chats.value[i], rigthUser)){
                 return true;
             }
         }
@@ -31,9 +31,9 @@ export class UserService{
     }
 
     getPrivateChatId(user:UserDto){
-        for(let i =0;i< this.chats.length;++i){
-            if(this.isPrivateChat(this.chats[i],user)){
-                return this.chats[i].id;
+        for(let i =0;i< this.chats.value.length;++i){
+            if(this.isPrivateChat(this.chats.value[i],user)){
+                return this.chats.value[i].id;
             }
         }
 
@@ -53,10 +53,10 @@ export class UserService{
     }
    
     setSelectedChat(chat : ChatDto){
-        for (let i = 0; i < this.chats.length; i++) {
-            const element = this.chats[i];
+        for (let i = 0; i < this.chats.value.length; i++) {
+            const element = this.chats.value[i];
             if(element.id === chat.id){
-                this.selectedChat = Wrapper.wrap(this.chats[i]);
+                this.selectedChat = Wrapper.wrap(this.chats.value[i]);
                 this.setSelectedChatValues();
                 this.setCurrentUserAsMember();
                 return;
@@ -65,7 +65,7 @@ export class UserService{
     }
 
     setfirstChatAsSelected(chatNumber:number){
-        this.selectedChat =Wrapper.wrap(this.chats[chatNumber]);
+        this.selectedChat =Wrapper.wrap(this.chats.value[chatNumber]);
         this.setSelectedChatValues();
         this.setCurrentUserAsMember();
     }
@@ -89,7 +89,7 @@ export class UserService{
     }
     
     getContacts(){
-        const privateChats = this.chats.filter(x => x.isGroup === false);
+        const privateChats = this.chats.value.filter(x => x.isGroup === false);
         const contacts = [];
         for(let i = 0; i <privateChats.length; ++i){
             const contact =   privateChats[i].members

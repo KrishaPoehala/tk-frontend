@@ -42,7 +42,7 @@ export class RedirectionService {
     this.http.createPrivateChat(new NewPrivateChatDto(this.userService.currentUser,
       messageToForward.sender.user))
       .subscribe(result =>{
-        this.userService.chats.push(result);
+        this.userService.chats.value.push(result);
         this.sender.forwardMessage(messageToForward, result.id).subscribe();
       });
   }

@@ -14,6 +14,7 @@ import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
 import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 import { __values } from 'tslib';
+import { Wrapper } from 'src/app/services/wraper.service';
 
 @Component({
   selector: 'app-messages-list',
@@ -98,8 +99,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     let newMessage = new NewMessageDto(text,this.userService.currentUserAsMember,
     this.userService.selectedChat?.value.id, new Date(),this.messageToReply);
     this.userService.selectedChat.value.messages = Array.prototype.concat(this.userService.selectedChat.value.messages);
+    
     this.userService.selectedChat.value.messages.push(this.toMessage(newMessage));
-    this.userService.chats = Array.prototype.concat(this.userService.chats);
+    this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
     this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');
     this.messageToReply = null;
@@ -159,53 +161,18 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
   @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {
+    console.log('CAALLED')
+    
     this.scrollToBottom();
-    this.itemElements.changes.subscribe(_ => {
-      console.log('FROM NGAFTEERVIEWINIT NEW MESSAGE');
-      console.log(this.newMessage);
-      if(!this.newMessage){
-        return;
-      }
-        
-      const id = new Date(this.newMessage.sentAt).getTime().toString();
-      const el = this.$(id);
-      console.log('el: ',el);
-      if(this.userService.selectedChat.value.id === this.newMessage.chatId || this.isAtTheBottom){
-        return;
-      }
-
-      console.log('selected caht id:',this.userService.selectedChat.value.id);
-      console.log('newMessage chat id: ' + this.newMessage.chatId)
-      console.log('NEW MESSAGE BEFORE OBS');
-      console.log(this.newMessage);
-      console.log(this.observers);
-      if(this.observers[this.newMessage.chatId]){
-        console.log('added obs: to' + this.newMessage.chatId);
-        this.observers[this.newMessage.chatId].observe(el!);
-      }
-      else{
-        this.observers[this.newMessage.chatId] = new IntersectionObserver((entries, obs) => {
-          this.onInstersection(entries,obs,this.newMessage!.chatId);
-        },
-        {
-          root: this.scrollFrame.nativeElement,
-        })
-
-        this.observers[this.newMessage.chatId].observe(el!);
-        console.log('created new obs');
-      }
-
+    this.itemElements.changes.subscribe(x => {
+      console.log('FROM NGAFTERVIEWINIT')
+      console.log(this.newMessage)
       this.scrollToBottom();
     });
   }
 
   onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver,chatId:number){
-    console.log(entires);
-    const chat = this.userService.chats.find(x => x.id === chatId)!;
-    console.log("chat: ", chat);
-    chat.unreadMessagesLength += entires.length;
-    this.userService.chats = Array.prototype.concat(this.userService.chats);
-    entires.forEach(e => obs.unobserve(e.target));
+ 
   } 
 
   private scrollToBottom(): void {
@@ -254,7 +221,5 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       this.messageService.deleteMessage(messageToDelete);
       this.overlayRef?.dispose();
     });
-  } 
-
-
+  }
 }

@@ -6,6 +6,7 @@ import { JwtFacadeService } from './jwt-facade.service';
 import { AuthRepsonseDto } from '../dtos/AuthResponseDto';
 import { Injectable } from '@angular/core';
 import { UserDto } from 'src/app/dtos/UserDto';
+import { Wrapper } from './wraper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class AuthService {
     this.router.navigate(['']);
     this.http.getUserChats(userId)
       .subscribe(result => {
-        this.userService.chats = result;
+        this.userService.chats = Wrapper.wrap(result);
         if(this.userService.chats){
           this.userService.setfirstChatAsSelected(0);
         }
