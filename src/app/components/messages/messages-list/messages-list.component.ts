@@ -61,6 +61,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       this.messageForm.get('message')?.disable();
     }
 
+    console.log('On initi called!');
+    console.log('Chat was inited: ')
+    console.log(this.messages[0].chatId);
     SelectedChatChangedService.selectedChatChangedEmmiter.subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
       console.log(this.messages);
@@ -68,8 +71,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         return;
       }
       
-      console.log(chat.id, this.messages[0].chatId);
-        if(chat.id !== this.messages[0].chatId){
+      console.log(chat, this.userService.selectedChat);
+        if(chat.id !== this.userService.selectedChat.value.id){
         return;
       }
       
