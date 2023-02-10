@@ -46,7 +46,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
-    console.log(changes);
     this.ngOnInit();
     if(!diff){
       return;
@@ -58,6 +57,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
   ngOnInit(): void {
+    let callsCount = 0;
     if(this.permissionsService.hasPermissionsForSending(this.userService.currentUserAsMember)){
       this.messageForm.get('message')?.enable()
     }
@@ -69,6 +69,10 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     
     SelectedChatChangedService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
+      ++callsCount;
+      if(callsCount > 1){
+        return;
+      }
       console.log('EMMITER SUBSCRIBER CALLED')
       if(!this.messages){
         return;
