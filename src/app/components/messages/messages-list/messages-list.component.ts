@@ -48,6 +48,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
      this.isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
     this.newMessage = this.isCurrentUsersMessage ? null : diff;
+    console.log('FROM NG ON CHANGES')
+    console.log(this.newMessage);
   }
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
@@ -159,7 +161,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngAfterViewInit(): void {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
-      this.scrollToBottom();
+      console.log('FROM NGAFTEERVIEWINIT NEW MESSAGE');
       console.log(this.newMessage);
       if(!this.newMessage){
         return;
@@ -192,6 +194,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         this.observers[this.newMessage.chatId].observe(el!);
         console.log('created new obs');
       }
+
+      this.scrollToBottom();
     });
   }
 
