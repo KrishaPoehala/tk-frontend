@@ -6,7 +6,7 @@
         <app-chat-info *ngIf="userService.chats && userService.chats.length > 0" 
             (clickedEventEmmiter)="openChatDetailsHandler()" ></app-chat-info>
         <app-messages-list *ngIf="userService.chats && userService.chats.length > 0"
-            [messages]="userService.selectedChat.messages"
+            [messages]="userService.selectedChat.value.messages"
             ></app-messages-list>
         <app-empty-chat-list *ngIf="!userService.chats || userService.chats.length === 0"></app-empty-chat-list>
     </div>

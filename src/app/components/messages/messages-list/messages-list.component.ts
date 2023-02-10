@@ -71,7 +71,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     if(!this.userService.selectedChat){
       return;
     }
-    if(this.messageForm.invalid || this.userService.selectedChat?.id === -1){
+    if(this.messageForm.invalid || this.userService.selectedChat?.value.id === -1){
       return;
     }
 
@@ -96,9 +96,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     }
 
     let newMessage = new NewMessageDto(text,this.userService.currentUserAsMember,
-    this.userService.selectedChat?.id, new Date(),this.messageToReply);
-    this.userService.selectedChat.messages = Array.prototype.concat(this.userService.selectedChat.messages);
-    this.userService.selectedChat.messages.push(this.toMessage(newMessage));
+    this.userService.selectedChat?.value.id, new Date(),this.messageToReply);
+    this.userService.selectedChat.value.messages = Array.prototype.concat(this.userService.selectedChat.value.messages);
+    this.userService.selectedChat.value.messages.push(this.toMessage(newMessage));
     this.userService.chats = Array.prototype.concat(this.userService.chats);
     this.http.sendMessage(newMessage).subscribe() ;
     this.messageForm.controls.message.setValue('');
@@ -118,7 +118,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   currentPage = 1;
   sendMessage = Permissions[Permissions.SendMessages];
   onScroll(event:any){
-    if(this.userService.selectedChat.id === -1){
+    if(this.userService.selectedChat.value.id === -1){
       return;
     }
     
@@ -127,9 +127,10 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    const epsilon = -0.4;
+    const epsilon = -90;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
     console.log(this.isAtTheBottom);
+    console.log(event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight);
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;
@@ -137,7 +138,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     this.isWorking = true;
     this.scrollFrame.nativeElement.scrollTop = 100;
-    this.http.getChatMessages(this.userService.selectedChat.id, this.userService.currentUser.id, 
+    this.http.getChatMessages(this.userService.selectedChat.value.id, this.userService.currentUser.id, 
       this.currentPage, this.messagesToLoad)
     .subscribe(r =>{
         if(r.length === 0){
@@ -148,7 +149,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         this.isAtTheBottom = false;
           r.forEach(element => {
             element.status = MessageStatus.Delivered;
-            this.userService.selectedChat?.messages.unshift(element);
+            this.userService.selectedChat?.value.messages.unshift(element);
           })
         });
 
@@ -166,7 +167,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       if(this.newMessage){
         const id = new Date(this.newMessage.sentAt).getTime().toString();
         const el = this.$(id);
-        if(this.isCurrentUsersMessage || this.isAtTheBottom){
+        if(this.isCurrentUsersMessage){
           return;
         }
 
@@ -191,7 +192,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
   onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver){
     console.log(entires);
-    console.log('FROM OBS');
+
+
+    entires.forEach(e => obs.unobserve(e.target));
   } 
 
   private scrollToBottom(): void {

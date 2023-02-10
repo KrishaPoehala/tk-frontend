@@ -37,10 +37,10 @@ export class MessageItemComponent implements OnInit {
   }
 
   deleteForSenderHandler( ){
-    const length = this.userService.selectedChat?.messages?.length || 0;
+    const length = this.userService.selectedChat?.value.messages?.length || 0;
     for(let i =0; i< length; ++i){
-      if(this.userService.selectedChat?.messages[i].id === this.message.id){
-        this.userService.selectedChat.messages.splice(i , 1);
+      if(this.userService.selectedChat?.value.messages[i].id === this.message.id){
+        this.userService.selectedChat.value.messages.splice(i , 1);
         return;
       }
     }
@@ -111,7 +111,7 @@ export class MessageItemComponent implements OnInit {
     if(this.isCurrentUsersMessage()){
       return false;
     }
-    const messages = this.userService.selectedChat.messages;
+    const messages = this.userService.selectedChat.value.messages;
     const index = messages.findIndex(x => x.id === this.message.id);
     if(index === 0){
       return true;

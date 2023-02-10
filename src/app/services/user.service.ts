@@ -1,3 +1,4 @@
+import { Wrapper } from './wraper.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { Injectable } from "@angular/core";
 import { ChatDto } from "src/app/dtos/ChatDto";
@@ -5,13 +6,13 @@ import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable()
 export class UserService{
-    public selectedChat! : ChatDto;
+    public selectedChat! : Wrapper<ChatDto>;
     public currentUser!:UserDto;
     public chats!: ChatDto[];
     setSelectedPrivateChat(sender: UserDto) {
         for(let i = 0; i < this.chats.length; ++i){
             if(this.isPrivateChat(this.chats[i], sender)){
-                this.selectedChat = this.chats[i];
+                this.selectedChat.value = this.chats[i];
                 return true;
             }
         }
@@ -55,7 +56,7 @@ export class UserService{
         for (let i = 0; i < this.chats.length; i++) {
             const element = this.chats[i];
             if(element.id === chat.id){
-                this.selectedChat = this.chats[i];
+                this.selectedChat = Wrapper.wrap(this.chats[i]);
                 this.setSelectedChatValues();
                 this.setCurrentUserAsMember();
                 return;
@@ -64,14 +65,14 @@ export class UserService{
     }
 
     setfirstChatAsSelected(chatNumber:number){
-        this.selectedChat = this.chats[chatNumber];
+        this.selectedChat =Wrapper.wrap(this.chats[chatNumber]);
         this.setSelectedChatValues();
         this.setCurrentUserAsMember();
     }
 
     currentUserAsMember!:ChatMemberDto;
     setCurrentUserAsMember(){
-        this.currentUserAsMember = this.selectedChat.members.find(x => x.user.id === this.currentUser.id)!;
+        this.currentUserAsMember = this.selectedChat.value.members.find(x => x.user.id === this.currentUser.id)!;
     }
 
     setSelectedChatValues() {
@@ -102,12 +103,12 @@ export class UserService{
     selectedChatName!:string;
     selectedChatPhotoUrl!:string;
     private _getSelectedChatInfo(){
-        const isGroup = this.selectedChat?.isGroup;
+        const isGroup = this.selectedChat?.value.isGroup;
         if(isGroup || isGroup === null){
-            return [this.selectedChat.name, this.selectedChat.imageUrl];
+            return [this.selectedChat.value.name, this.selectedChat.value.imageUrl];
         }
 
-        const theOtherUser =  this.selectedChat.members
+        const theOtherUser =  this.selectedChat.value.members
         .filter(x => x.user.id !== this.currentUser.id)[0];
        return [theOtherUser.user.name, theOtherUser.user.profilePhotoUrl];
     }

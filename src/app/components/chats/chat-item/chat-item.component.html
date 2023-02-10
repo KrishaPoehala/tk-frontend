@@ -1,8 +1,9 @@
 
 <div *ngIf="chat">
     <div  class="chat-container" (click)="onClick()" id="{{chat.id}}" 
-    [ngClass]="{'active': userService.selectedChat.id === chat.id}">
+    [ngClass]="{'active': userService.selectedChat.value.id === chat.id}">
         <div class="d-flex p-1 m-1">
+            
             <div class="chat-photo">
                 <img src="{{displayedImageUrl}}" alt="chatPhoto" 
                />
@@ -14,6 +15,10 @@
                 <span class="text" *ngIf="chat.messages?.length !== 0">
                     {{chat.messages[chat.messages.length - 1].text}}</span>
             </div>
+
+        </div>
+        <div  *ngIf="chat.unreadMessages && chat.unreadMessages.length > 0" class="unread-messages">
+            {{chat.unreadMessages.length}}
         </div>
     </div>
 

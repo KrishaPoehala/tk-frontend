@@ -8,6 +8,8 @@ img{
     white-space: nowrap;
     width:50vh;
     overflow-x: hidden;
+    display: flex;
+    justify-content: space-between;
     border-radius: 10px;
     margin:2px;
 }
@@ -28,6 +30,12 @@ img{
 
 .text{
     text-overflow:ellipsis;
+}
+
+.unread-messages{
+    align-self: flex-end;
+    text-align: center;
+    vertical-align:middle;
 }
 
 

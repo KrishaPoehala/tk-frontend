@@ -20,7 +20,7 @@ export class MessageMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserAsMember = 
-    this.userService.selectedChat.members.find(x => x.user.id === this.userService.currentUser.id);
+    this.userService.selectedChat.value.members.find(x => x.user.id === this.userService.currentUser.id);
   }
 
   

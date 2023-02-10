@@ -1,11 +1,11 @@
 
 
-export class Wrapper{
-    constructor(public wrapped:any){
+export class Wrapper<T>{
+    constructor(public value:T){
 
     }
 
-    public static wrap(value:any){
+    public static wrap<T>(value:T){
         return new Wrapper(value);
     }
 }

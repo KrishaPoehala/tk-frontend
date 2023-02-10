@@ -18,7 +18,7 @@ export class MessageService {
 
   public sendMessage(text:string, sender:ChatMemberDto,messageToReply:MessageDto | null){
     let newMessage = new NewMessageDto(text,sender,
-    this.userService.selectedChat?.id, new Date(),messageToReply);
+    this.userService.selectedChat?.value.id, new Date(),messageToReply);
     const chatIndex = this.userService.chats.findIndex(x => x.id === newMessage.chatId);
     this.userService.chats[chatIndex].messages.push(this.toMessage(newMessage));
     return this.http.sendMessage(newMessage);
@@ -47,10 +47,10 @@ export class MessageService {
     const modalRef = this.modalService.open(DeleteMessageModalComponent,options);
       modalRef.result.then(r => {
       const deleteOnlyForCurrentUser = r;
-      const length = this.userService.selectedChat?.messages?.length || 0;
+      const length = this.userService.selectedChat?.value.messages?.length || 0;
       for(let i =0; i< length; ++i){
-        if(this.userService.selectedChat?.messages[i].id === messageToDelete.id){
-          this.userService.selectedChat.messages.splice(i , 1);
+        if(this.userService.selectedChat?.value.messages[i].id === messageToDelete.id){
+          this.userService.selectedChat.value.messages.splice(i , 1);
           return;
         }
       }

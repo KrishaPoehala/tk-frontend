@@ -24,7 +24,7 @@ export class AddMembersComponent implements OnInit {
   ngOnInit(): void {
     this.selectedMembers = {};
     this.contacts = this.userService.getContacts();
-    this.groupMembers = this.userService.selectedChat.members.map(x => x.user);
+    this.groupMembers = this.userService.selectedChat.value.members.map(x => x.user);
     for(let member of this.groupMembers){
       this.selectedMembers[member.id] = true;
     }    
@@ -53,7 +53,7 @@ export class AddMembersComponent implements OnInit {
       return;
     }
 
-    const dto = new AddMembersDto(this.userService.selectedChat.id, this.membersToAdd.map(x => x.id));
+    const dto = new AddMembersDto(this.userService.selectedChat.value.id, this.membersToAdd.map(x => x.id));
     this.http.addMembers(dto).subscribe(_ =>{
       this.modal.close();
       //this.userService.selectedChat.members.push(...this.membersToAdd);

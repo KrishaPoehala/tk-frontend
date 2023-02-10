@@ -33,7 +33,7 @@ export class ChatDetailsComponent implements OnInit {
   }
 
   isGroup(){
-    const isGroup = this.userService.selectedChat?.isGroup;
+    const isGroup = this.userService.selectedChat?.value.isGroup;
     if(isGroup === null || isGroup === true){
       return true;
     }
@@ -44,7 +44,7 @@ export class ChatDetailsComponent implements OnInit {
   onRigthClick(eventInfo:any){
     const event = eventInfo.event;
     const selectedMember = eventInfo.selectedMember as ChatMemberDto;
-    const currentUserAsMember = this.userService.selectedChat.members.find(x =>
+    const currentUserAsMember = this.userService.selectedChat.value.members.find(x =>
       x.user.id === this.userService.currentUser.id);
     if(!currentUserAsMember){
       return;
