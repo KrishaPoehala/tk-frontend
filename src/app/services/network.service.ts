@@ -1,9 +1,10 @@
+import { MessageReceivedService } from './message-received.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
 import { Observable } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { UserService } from './user.service';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, EventEmitter } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import * as signalR from '@microsoft/signalr';
@@ -20,7 +21,8 @@ export class NetworkService {
     groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
   }
   private connection!: HubConnection | null;
-  constructor(public userService:UserService, private jwt:JwtFacadeService) {
+  constructor(public userService:UserService, private jwt:JwtFacadeService,
+    private messageReceivedService:MessageReceivedService) {
      
   }
 
@@ -124,7 +126,8 @@ export class NetworkService {
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
-
+      console.log('emiting');
+      this.messageReceivedService.set[message.id].emit(message);
     });
   }
 

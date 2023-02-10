@@ -1,3 +1,4 @@
+import { MessageReceivedService } from './../../../services/message-received.service';
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
 import { RedirectionService } from 'src/app/services/redirection.service';
@@ -8,7 +9,7 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { MessageService } from './../../../services/message-sender.service';
 import { UserService } from 'src/app/services/user.service';
 import { HttpService } from 'src/app/services/http.service';
-import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, ElementRef, Input, IterableDiffers, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, ElementRef, Input, IterableDiffers, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
@@ -27,7 +28,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    readonly permissionsService:PermissionsService) {
+    readonly permissionsService:PermissionsService, private messageReceivedService:MessageReceivedService) {
      }
   ngDoCheck(): void {
     this.observers = {};
@@ -49,8 +50,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
      this.isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
     this.newMessage = this.isCurrentUsersMessage ? null : diff;
-    console.log('FROM NG ON CHANGES')
-    console.log(this.newMessage);
   }
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
@@ -60,7 +59,12 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     }
     else{
       this.messageForm.get('message')?.disable();
-    } 
+    }
+
+    this.messageReceivedService.set[this.userService.selectedChat.value.id].subscribe(message => {
+      console.log('from event emmiters!');
+      console.log(message);
+    });
   }
    
   messageForm = this.fb.group({
@@ -162,21 +166,13 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {
     console.log('CAALLED')
-    
     this.scrollToBottom();
     this.itemElements.changes.subscribe(x => {
-      console.log('FROM NGAFTERVIEWINIT')
-      console.log(this.newMessage)
       this.scrollToBottom();
     });
   }
 
-  onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver,chatId:number){
- 
-  } 
-
   private scrollToBottom(): void {
-    console.log(this.isAtTheBottom, this.isCurrentUsersMessage);
     if(this.isAtTheBottom || this.isCurrentUsersMessage){
       this.scrollFrame.nativeElement.scrollTop = this.scrollFrame.nativeElement.scrollHeight;
       return;
