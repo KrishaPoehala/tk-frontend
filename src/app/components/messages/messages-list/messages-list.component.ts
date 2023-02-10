@@ -15,7 +15,7 @@ import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
 import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 import { __values } from 'tslib';
-import { Wrapper } from 'src/app/services/wraper.service';
+import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 
 @Component({
   selector: 'app-messages-list',
@@ -60,6 +60,36 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     else{
       this.messageForm.get('message')?.disable();
     }
+
+    SelectedChatChangedService.selectedChatChangedEmmiter.subscribe(chat => {
+      console.log('EMMITER SUBSCRIBER CALLED')
+      if(!this.messages){
+        return;
+      }
+
+      console.log(this.messages);
+      console.log(this.messages);
+      if(chat.id !== this.messages[0].chatId){
+        return;
+      }
+
+      const unreadMessagesLength = chat.members
+        .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
+        console.log(unreadMessagesLength + ' unreadMessagecount')
+      if(isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
+        this.scrollToBottom();
+      }
+
+      console.log('scrolled into: ')
+      const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
+      console.log(messageToScrollTo);
+      const id = new Date(messageToScrollTo.sentAt).getTime().toString();
+      this.$(id)?.scrollIntoView({
+        behavior:'auto',
+        block: 'center',
+        inline: 'center',
+      })
+    });
   }
    
   messageForm = this.fb.group({
@@ -128,7 +158,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       return;
     }
 
-    const epsilon = -90;
+    const epsilon = -100;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
     this.cursorPositions.set[this.userService.selectedChat.value.id] = this.isAtTheBottom;
     const top = this.scrollFrame.nativeElement.scrollTop;
@@ -162,8 +192,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
   @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {
-    console.log('CAALLED')
-    this.scrollToBottom();
     this.itemElements.changes.subscribe(x => {
       this.scrollToBottom();
     });

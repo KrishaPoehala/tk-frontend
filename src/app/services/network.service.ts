@@ -131,14 +131,17 @@ export class NetworkService {
       
       const atBottom = this.cursorPositions.isAtTheBottom(chat.id);
       const isCurrent = chat.id === this.userService.selectedChat.value.id;
+      const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
       console.log(atBottom, isCurrent);
       if(isCurrent === false || !atBottom){
-        if(isNaN(chat.unreadMessagesLength)){
-          chat.unreadMessagesLength = 1;
+        if(isNaN(member.unreadMessagesLength)){
+          member.unreadMessagesLength = 1;
         }
         else{
-          chat.unreadMessagesLength += 1;
-        }      
+          member.unreadMessagesLength += 1;
+        }  
+
+        chat.members = Array.prototype.concat(chat.members);
       }
     });
   }

@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class OrderChatPipe implements PipeTransform {
 
-  constructor(private userService:UserService)
+  constructor()
   {}
   transform(array: ChatDto[] | undefined, ...args: unknown[]): ChatDto[] | undefined {
     return array?.sort((left,rigth)=> {

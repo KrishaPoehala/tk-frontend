@@ -1,3 +1,4 @@
+import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import { UserDto } from 'src/app/dtos/UserDto';
@@ -5,6 +6,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
 import { MessageStatus } from 'src/app/enums/message-status';
 import { Wrapper } from 'src/app/services/wraper.service';
+import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 
 @Component({
   selector: 'app-chat-item',
@@ -29,14 +31,18 @@ export class ChatItemComponent implements OnInit {
         this.chat.messages.push(element);
       });
 
-      this.userService.chats = Wrapper.wrap(this.userService.chats.value);
+      this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
     });
   }
  
+  getUnreadMessage(members:ChatMemberDto[]){
+    return members.find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
+  }
 
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
+    SelectedChatChangedService.selectedChatChangedEmmiter.emit(this.chat);
     this.userService.setSelectedChat(this.chat);
   }
 
