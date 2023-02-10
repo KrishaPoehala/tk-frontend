@@ -63,10 +63,12 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     SelectedChatChangedService.selectedChatChangedEmmiter.subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
+      console.log(this.messages);
       if(!this.messages){
         return;
       }
       
+      console.log(chat.id, this.messages[0].chatId);
       if(chat.id !== this.messages[0].chatId){
         return;
       }
