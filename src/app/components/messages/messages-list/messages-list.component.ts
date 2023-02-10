@@ -67,7 +67,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     console.log('On initi called!');
     
-    SelectedChatChangedService.set[this.userService.selectedChat.value.id].unsubscribe();
     SelectedChatChangedService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
