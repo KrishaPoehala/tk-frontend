@@ -18,7 +18,6 @@ export class OrderChatPipe implements PipeTransform {
 
       const lMessage =  left.messages[left.messages.length - 1].sentAt;
       const rMessage = rigth.messages[rigth.messages.length - 1].sentAt;
-      console.log('CASDFSFDASDF');
       return new Date(rMessage).getTime() - new Date(lMessage).getTime();
     })
   }

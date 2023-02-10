@@ -42,8 +42,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
-    console.log('FROM ON CHANGES NEW MESSAGE')
-    console.log(diff);
     if(!diff){
       return;
     }
@@ -168,10 +166,15 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
         
       const id = new Date(this.newMessage.sentAt).getTime().toString();
       const el = this.$(id);
-      if(this.userService.selectedChat.value.id !== this.newMessage.chatId || !this.isAtTheBottom){
+      if(this.userService.selectedChat.value.id !== this.newMessage.chatId || this.isAtTheBottom){
         return;
       }
 
+      console.log('selected caht id:',this.userService.selectedChat.value.id);
+      console.log('newMessage chat id: ' + this.newMessage.chatId)
+      console.log('NEW MESSAGE BEFORE OBS');
+      console.log(this.newMessage);
+      console.log(this.observers);
       if(this.observers[this.newMessage.chatId]){
         console.log('added obs: to' + this.newMessage.chatId);
         this.observers[this.newMessage.chatId].observe(el!);
@@ -194,7 +197,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     console.log(entires);
     const chat = this.userService.chats.find(x => x.id === chatId)!;
     console.log("chat: ", chat);
-    chat.unreadMessagesLength = entires.length;
+    chat.unreadMessagesLength += entires.length;
     this.userService.chats = Array.prototype.concat(this.userService.chats);
     entires.forEach(e => obs.unobserve(e.target));
   } 
