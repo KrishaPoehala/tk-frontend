@@ -3,7 +3,7 @@ import { ChatMemberDto } from './ChatMemberDto';
 import { MessageDto } from "./MessageDto";
 
 export class ChatDto{
-    public unreadMessages:MessageDto[] | null = null;
+    public unreadMessagesLength:number | null = null;
     constructor(
     public id:number,
     public name:string,

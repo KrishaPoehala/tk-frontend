@@ -17,8 +17,8 @@
             </div>
 
         </div>
-        <div  *ngIf="chat.unreadMessages && chat.unreadMessages.length > 0" class="unread-messages">
-            {{chat.unreadMessages.length}}
+        <div  *ngIf="chat.unreadMessagesLength" class="unread-messages">
+            {{chat.unreadMessagesLength}}
         </div>
     </div>
 

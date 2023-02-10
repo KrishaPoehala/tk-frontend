@@ -164,36 +164,44 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     this.scrollToBottom();
     this.itemElements.changes.subscribe(_ => {
       this.scrollToBottom();
-      if(this.newMessage){
-        const id = new Date(this.newMessage.sentAt).getTime().toString();
-        const el = this.$(id);
-        if(this.isCurrentUsersMessage){
-          return;
-        }
-
-        if(this.observers[this.newMessage.chatId]){
-          console.log('added obs: to' + this.newMessage.chatId);
-          this.observers[this.newMessage.chatId].observe(el!);
-        }
-        else{
-          this.observers[this.newMessage.chatId] = new IntersectionObserver((entries, obs) => {
-            this.onInstersection(entries,obs);
-          },
-          {
-            root: this.scrollFrame.nativeElement,
-          })
-
-          this.observers[this.newMessage.chatId].observe(el!);
-          console.log('created new obs');
-        }
+      if(!this.newMessage){
+        return;
       }
-    }); 
+        
+      const id = new Date(this.newMessage.sentAt).getTime().toString();
+      const el = this.$(id);
+      if(this.isCurrentUsersMessage){
+        return;
+       }
+
+      if(this.isAtTheBottom && this.userService.selectedChat.value.id === this.newMessage.chatId){
+        return;
+      }
+
+      if(this.observers[this.newMessage.chatId]){
+        console.log('added obs: to' + this.newMessage.chatId);
+        this.observers[this.newMessage.chatId].observe(el!);
+      }
+      else{
+        this.observers[this.newMessage.chatId] = new IntersectionObserver((entries, obs) => {
+          this.onInstersection(entries,obs,this.newMessage!.chatId);
+        },
+        {
+          root: this.scrollFrame.nativeElement,
+        })
+
+        this.observers[this.newMessage.chatId].observe(el!);
+        console.log('created new obs');
+      }
+    });
   }
 
-  onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver){
+  onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver,chatId:number){
     console.log(entires);
-
-
+    const chat = this.userService.chats.find(x => x.id === chatId)!;
+    console.log("chat: ", chat);
+    chat.unreadMessagesLength = entires.length;
+    this.userService.chats = Array.prototype.concat(this.userService.chats);
     entires.forEach(e => obs.unobserve(e.target));
   } 
 
