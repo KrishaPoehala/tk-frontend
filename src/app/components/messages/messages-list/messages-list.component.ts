@@ -42,7 +42,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
-    console.log(diff);
+    //console.log(diff);
     if(!diff){
       return;
     }
@@ -171,21 +171,25 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
           this.observers[this.newMessage.chatId].observe(el!);
         }
         else{
-          this.observers[this.newMessage.chatId] = new IntersectionObserver((entries) => {
-            this.onInstersection(entries);
+          this.observers[this.newMessage.chatId] = new IntersectionObserver((entries, obs) => {
+            this.onInstersection(entries,obs);
           },
           {
             root: this.scrollFrame.nativeElement,
           })
+
+          this.observers[this.newMessage.chatId].observe(el!);
+          console.log('created new obs');
         }
       }
       this.scrollToBottom();
     }); 
   }
 
-  onInstersection(entires :IntersectionObserverEntry[]){
+  onInstersection(entires :IntersectionObserverEntry[],obs:IntersectionObserver){
     console.log(entires);
-  }
+    console.log('FROM OBS');
+  } 
 
   private scrollToBottom(): void {
     if(!this.shouldScrollToBottom){
