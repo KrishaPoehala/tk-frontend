@@ -67,43 +67,31 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     console.log('On initi called!');
     
+    SelectedChatChangedService.set[this.userService.selectedChat.value.id].unsubscribe();
     SelectedChatChangedService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
-      console.log(this.messages);
       if(!this.messages){
         return;
       }
       
-      console.log(chat, this.userService.selectedChat);
         if(chat.id !== this.userService.selectedChat.value.id){
         return;
       }
       
-      console.log(chat);
-      console.log('messages: ')
-      console.log(this.messages);
       const unreadMessagesLength = chat.members
         .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
-      console.log('MEMBER: ');
-      console.log(chat.members
-        .find(x => x.user.id === this.userService.currentUser.id));
-      console.log('members: ');
-      console.log(chat.members);
-      console.log(unreadMessagesLength + ' unreadMessagecount');
       if(isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
         this.scrollToBottom();
         return;
       }
 
-      console.log('scrolled into: ')
       const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
-      console.log(messageToScrollTo);
       const id = new Date(messageToScrollTo.sentAt).getTime().toString();
       this.$(id)?.scrollIntoView({
         behavior:'auto',
-        block: 'end',
-        inline: 'end',
+        block: 'center',
+        inline: 'center',
       })
 
       const intersection = new IntersectionObserver((entries,obs) => {
@@ -125,7 +113,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     const member = chat.members
     .find(x => x.user.id === this.userService.currentUser.id)!;
     entries.forEach(x => {
-      if(x.intersectionRatio <= 0.05){
+      if(x.intersectionRatio <= 0.0005){
         return;
       }
 
