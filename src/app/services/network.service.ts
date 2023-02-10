@@ -1,4 +1,4 @@
-import { MessageReceivedService } from './message-received.service';
+import { CursorPositionsService } from './cursor-positions.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
 import { Observable } from 'rxjs';
@@ -22,7 +22,7 @@ export class NetworkService {
   }
   private connection!: HubConnection | null;
   constructor(public userService:UserService, private jwt:JwtFacadeService,
-    private messageReceivedService:MessageReceivedService) {
+    private cursorPositions:CursorPositionsService) {
      
   }
 
@@ -128,17 +128,18 @@ export class NetworkService {
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
-      if(chat.id === this.userService.selectedChat.value.id){
-        return;
-      }
-
-      if(isNaN(chat.unreadMessagesLength)){
-        chat.unreadMessagesLength = 1;
-      }
-      else{
-        chat.unreadMessagesLength += 1;
-      }
       
+      const atBottom = this.cursorPositions.isAtTheBottom(chat.id);
+      const isCurrent = chat.id === this.userService.selectedChat.value.id;
+      console.log(atBottom, isCurrent);
+      if(isCurrent === false || !atBottom){
+        if(isNaN(chat.unreadMessagesLength)){
+          chat.unreadMessagesLength = 1;
+        }
+        else{
+          chat.unreadMessagesLength += 1;
+        }      
+      }
     });
   }
 

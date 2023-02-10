@@ -1,4 +1,4 @@
-import { MessageReceivedService } from './../../../services/message-received.service';
+import { CursorPositionsService } from './../../../services/cursor-positions.service';
 import { Permissions } from './../../../enums/permissions';
 import { PermissionsService } from './../../../services/permissions.service';
 import { RedirectionService } from 'src/app/services/redirection.service';
@@ -28,7 +28,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   constructor(private fb:FormBuilder, private http: HttpService,
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
-    readonly permissionsService:PermissionsService, private messageReceivedService:MessageReceivedService) {
+    readonly permissionsService:PermissionsService,private cursorPositions:CursorPositionsService) {
      }
   ngDoCheck(): void {
     this.observers = {};
@@ -130,6 +130,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
 
     const epsilon = -90;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
+    this.cursorPositions.set[this.userService.selectedChat.value.id] = this.isAtTheBottom;
     const top = this.scrollFrame.nativeElement.scrollTop;
     if(top !== 0 || this.isWorking){
       return;

@@ -1,4 +1,3 @@
-import { MessageReceivedService } from './../../services/message-received.service';
 import { ChatsModule } from './../chats/chats.module';
 import { HttpService } from 'src/app/services/http.service';
 import { NetworkService } from '../../services/network.service';
@@ -13,7 +12,7 @@ import { Wrapper } from 'src/app/services/wraper.service';
 export class MainPageComponent implements OnInit,OnDestroy {
 
   constructor(public readonly userService:UserService, private network: NetworkService,
-    private http:HttpService,private received:MessageReceivedService) 
+    private http:HttpService) 
   { }
 
   ngOnDestroy(): void {
@@ -28,7 +27,7 @@ export class MainPageComponent implements OnInit,OnDestroy {
     this.http.getUserChats(this.userService.currentUser.id)
     .subscribe(result => {
       this.userService.chats = Wrapper.wrap(result);
-      this.received.init();
+      console.log(this.userService.chats.value);
       if(this.userService.chats && this.userService.chats.value.length > 0){
         this.userService.setfirstChatAsSelected(0);
       }
