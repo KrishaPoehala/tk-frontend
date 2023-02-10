@@ -60,11 +60,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     else{
       this.messageForm.get('message')?.disable();
     }
-
-    this.messageReceivedService.set[this.userService.selectedChat.value.id].subscribe(message => {
-      console.log('from event emmiters!');
-      console.log(message);
-    });
   }
    
   messageForm = this.fb.group({
@@ -162,6 +157,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   }
 
   count = 0;
+  
   @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
   @ViewChildren('item') itemElements!: QueryList<any>;
   ngAfterViewInit(): void {

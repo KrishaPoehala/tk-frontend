@@ -126,8 +126,9 @@ export class NetworkService {
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
-      console.log('emiting');
-      this.messageReceivedService.set[message.id].emit(message);
+      if(chat.id !== this.userService.selectedChat.value.id){
+        chat.unreadMessagesLength += 1;
+      }
     });
   }
 
