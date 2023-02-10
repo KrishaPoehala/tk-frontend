@@ -1,12 +1,19 @@
+import { ChatDto } from 'src/app/dtos/ChatDto';
 import { Injectable, EventEmitter } from '@angular/core';
-import { ChatDto } from '../dtos/ChatDto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SelectedChatChangedService {
 
-  constructor() { }
+  constructor() {
+  
+   }
+  public static set: {[id:number]: EventEmitter<ChatDto>} = {};
 
-  public static selectedChatChangedEmmiter:EventEmitter<ChatDto> = new EventEmitter();
+  public static init(chats:ChatDto[]){
+    chats.forEach(e => {
+      this.set[e.id] = new EventEmitter();
+    });
+  }
 }

@@ -44,6 +44,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
+    console.log(changes);
+    this.ngOnInit();
     if(!diff){
       return;
     }
@@ -62,9 +64,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
     }
 
     console.log('On initi called!');
-    console.log('Chat was inited: ')
-    console.log(this.messages[0].chatId);
-    SelectedChatChangedService.selectedChatChangedEmmiter.subscribe(chat => {
+    SelectedChatChangedService.set[this.userService.selectedChat.value.id]
+    .subscribe(chat => {
       console.log('EMMITER SUBSCRIBER CALLED')
       console.log(this.messages);
       if(!this.messages){
