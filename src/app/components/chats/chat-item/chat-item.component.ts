@@ -44,8 +44,8 @@ export class ChatItemComponent implements OnInit {
   onClick(){
     console.log('chat from chat item!')
     console.log(this.chat);
-    SelectedChatChangedService.selectedChatChangedEmmiter.emit(this.chat);
     this.userService.setSelectedChat(this.chat);
+    SelectedChatChangedService.selectedChatChangedEmmiter.emit(this.chat);
   }
 
   displayedImageUrl!:string;
