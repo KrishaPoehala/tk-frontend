@@ -69,7 +69,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit,DoCheck {
       }
       
       console.log(chat.id, this.messages[0].chatId);
-      if(chat.id !== this.messages[0].chatId){
+        if(chat.id !== this.messages[0].chatId){
         return;
       }
       

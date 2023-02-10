@@ -42,6 +42,8 @@ export class ChatItemComponent implements OnInit {
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
+    console.log('chat from chat item!')
+    console.log(this.chat);
     SelectedChatChangedService.selectedChatChangedEmmiter.emit(this.chat);
     this.userService.setSelectedChat(this.chat);
   }
