@@ -43,8 +43,6 @@ export class LoginComponent implements OnInit {
     },
     (errorResult) => {
       const error = errorResult.error.errors![0].split(':') as string[];
-      console.log(errorResult.error.errors![0]);
-      console.log(error);
       this.loginForm.get(error[0].toLowerCase())?.setErrors({'error':error[1]});
     });
   }

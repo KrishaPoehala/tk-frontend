@@ -21,7 +21,6 @@ export class ChatItemComponent implements OnInit {
     private presenceService:PresenceService) { }
 
   ngOnInit(): void {
-    console.log(this.chat.usersOnline);
     if(!this.chat || this.chat.id === -1){
       return;
     }
@@ -49,9 +48,16 @@ export class ChatItemComponent implements OnInit {
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
+    if(this.userService.selectedChat.value.id === this.chat.id){
+      return;
+    }
+
     this.userService.setSelectedChat(this.chat);
     this.presenceService.setOnlineUsersForCurrentChat();
-    setTimeout(() => this.selectedChatService.set[this.chat.id].emit(this.chat), 20);
+    setTimeout(() => {
+      this.selectedChatService.set[this.chat.id].emit(this.chat);
+      console.log('EMMMMMIIIIITT');
+    }, 20);
   }
 
   displayedImageUrl!:string;

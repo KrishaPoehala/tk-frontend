@@ -13,11 +13,17 @@ export class PresenceServiceService {
 
   previousIntervalId:NodeJS.Timer | null = null;
   setOnlineUsersForCurrentChat(){
+    this._onInterval();
     if(this.previousIntervalId){
       clearInterval(this.previousIntervalId);
     }
 
     this.previousIntervalId =  setInterval(() => {
+      this._onInterval();
+    }, 1000)
+  }
+
+  private _onInterval(){
     const onlineUsers:ChatMemberDto[] = [];
     this.userService.selectedChat.value.members.forEach(async m =>{
       if(await this.network.isOnline(m.user.id)){
@@ -25,7 +31,6 @@ export class PresenceServiceService {
       }
     });
 
-      this.userService.selectedChat.value.usersOnline = onlineUsers;
-    }, 1000)
+    this.userService.selectedChat.value.usersOnline = onlineUsers;
   }
 }

@@ -10,6 +10,8 @@ export class ChatInfoComponent implements OnInit {
 
   constructor(public readonly userService:UserService) { }
 
+  @Output() clickedEventEmmiter:EventEmitter<boolean> = new EventEmitter(); 
+
   ngOnInit(): void {
   }
 
@@ -19,5 +21,15 @@ export class ChatInfoComponent implements OnInit {
     this.clickedEventEmmiter.emit(this.openGroupInfo);
   }
 
-  @Output() clickedEventEmmiter:EventEmitter<boolean> = new EventEmitter(); 
+  isPrivateUserOnline(){
+    const isOtherUserOnline = this.userService.selectedChat.value.usersOnline
+      .some(x => x.user.id != this.userService.currentUser.id);
+    if(isOtherUserOnline){
+      return 'online';
+    }
+
+    return 'last seen recently';
+  }
+
+  previousLength:number | null = null;
 }

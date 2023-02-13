@@ -30,7 +30,6 @@ export class NetworkService {
 
   async isOnline(chatMemberId:number){
     const isOnline = await this.connection?.invoke('IsUserOnline', chatMemberId.toString()) as boolean;
-    console.log(`user ${chatMemberId} is ${isOnline}`);
     return isOnline;
   }
 
@@ -137,7 +136,6 @@ export class NetworkService {
       const atBottom = this.cursorPositions.isAtTheBottom(chat.id);
       const isCurrent = chat.id === this.userService.selectedChat.value.id;
       const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
-      console.log(atBottom, isCurrent);
       if(isCurrent === false || !atBottom){
         if(isNaN(member.unreadMessagesLength)){
           member.unreadMessagesLength = 1;

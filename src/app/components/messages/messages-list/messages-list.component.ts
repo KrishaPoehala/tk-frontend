@@ -44,6 +44,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
+    console.log('SUBSCRIBING');
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
@@ -64,6 +65,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    console.log(this.selectedChatService.set[this.userService.selectedChat.value.id]);
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
@@ -72,10 +74,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
   onSelectedChatChangeHandler(chat:ChatDto){
     ++this.callsCount;
-    if(this.callsCount > 1){
-      return;
-    }
-    console.log('EMMITER SUBSCRIBER CALLED')
+    console.log('EMMITER SUBSCRIBER CALLED', this.callsCount)
+  
     if(!this.messages){
       return;
     }
@@ -110,6 +110,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       const id = new Date(this.messages[i].sentAt).getTime().toString();
       intersection.observe(this.$(id)!);
     }
+
+    chat.members = Array.prototype.concat(chat.members);
   }
 
   onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
