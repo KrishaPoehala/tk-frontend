@@ -1,12 +1,9 @@
-import { ChatDto } from '../../dtos/ChatDto';
-import { NewGroupDto } from '../../dtos/NewGroupDto';
-import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { AddMembersDto } from '../../dtos/AddMembersDto';
 import { UserDto } from 'src/app/dtos/UserDto';
 import { UserService } from 'src/app/services/user.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-add-members',
@@ -43,8 +40,8 @@ export class AddMembersComponent implements OnInit {
       this.selectedMembers[newMember.id] = false;
       return;
     }
+    
     this.membersToAdd.push(newMember);
-
     this.selectedMembers[newMember.id] = true;
   }
 

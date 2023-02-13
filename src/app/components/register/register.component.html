@@ -12,6 +12,11 @@
           <div class="danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors">
             Wrong email format!
           </div>
+          <div class="danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors">
+            <div>
+              {{registerForm.get('email')!.errors}}
+            </div>
+          </div>
         <br/>
         <label class="sr-only">Password</label>
         <input type="password" id="password"
@@ -24,10 +29,13 @@
             {{registerForm.get('password')?.errors!['upperCaseLetter']}}
             </div>
             <div class="danger" *ngIf="registerForm.get('password')?.errors!['required']">
-            {{registerForm.get('password')?.errors!['required']}}
+            Password is required
            </div>
            <div class="danger" *ngIf="registerForm.get('password')?.errors!['oneDigit']">
             {{registerForm.get('password')?.errors!['oneDigit']}}
+           </div>
+           <div class="danger" *ngIf="registerForm.get('password')?.errors!['specialSymbol']">
+            {{registerForm.get('password')?.errors!['specialSymbol']}}
            </div>
           </div>
         <br/>
@@ -45,7 +53,8 @@
         <br/>
         <label class="sr-only">Upload an avatar</label>
         <input class="form-control" type="file" accept="image/*" (change)="onFileSelected($event)">
-        <button class="btn btn-lg btn-primary m-2" type="submit" 
+        <button class="btn btn-lg btn-primary m-2" type="submit"
+        [disabled]="registerForm.invalid" 
         >Register</button>
         <a routerLink="../login">Back to login</a>
     </form>

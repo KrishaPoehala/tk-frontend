@@ -10,5 +10,5 @@
     Promote to admin</button>
     <button class="btn option m-2" (click)="onChangePermissionsClick()">Change permissions</button>
     <button class="btn danger option " (click)="onRemoveUserClick()"
-    *ngIf="permissions.hasPermisisonsForRemovingUsers(userService.currentUserAsMember)">Remove from group</button>
+    *ngIf="permissions.hasPermisisonsForRemovingUsers(selectedMember)">Remove from group</button>
 </div>

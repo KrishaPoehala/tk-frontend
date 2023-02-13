@@ -9,11 +9,15 @@ export class SelectedChatChangedService {
   constructor() {
   
    }
-  public static set: {[id:number]: EventEmitter<ChatDto>} = {};
+  public set: {[id:number]: EventEmitter<ChatDto>} = {};
 
-  public static init(chats:ChatDto[]){
+  public init(chats:ChatDto[]){
     chats.forEach(e => {
       this.set[e.id] = new EventEmitter();
     });
+  }
+
+  public add(chatId:number){
+    this.set[chatId] = new EventEmitter(); 
   }
 }

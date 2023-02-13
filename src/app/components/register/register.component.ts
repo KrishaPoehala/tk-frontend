@@ -17,10 +17,11 @@ export class RegisterComponent implements OnInit {
      private gyazoService: GyazoService, private authService: AuthService) { }
 
   registerForm = this.fb.group({
-    firstName:['',Validators.required],
+    firstName:['',Validators.required,Validators.minLength(8)],
     email:['',Validators.email],
-    password:['',[Validators.required,this.atLeastOneUpperCaseLetter(),
-    this.asLeastOneDigit()]], 
+    password:['',[Validators.required, Validators.minLength(8),
+      this.atLeastOneUpperCaseLetter(),
+    this.asLeastOneDigit(),this.atLeastOneSpecialSymbol()]], 
     confirmPassword:['',this.equalsToPassword()],
   })
 
@@ -31,13 +32,13 @@ export class RegisterComponent implements OnInit {
         return null;
       }
 
-      return {'oneDigit':'Password has to have al least one digit'}
+      return {'oneDigit':'The password has to have al least one digit'}
     }
   }
   private atLeastOneUpperCaseLetter():ValidatorFn{
     return (control:AbstractControl<string>):ValidationErrors| null => {
       const chars = [...control.value]
-      if(chars.some(x => x === x.toUpperCase())){
+      if(chars.some(x =>  x.toLowerCase() !== x.toUpperCase() && x === x.toUpperCase())){
         return null;
       }
 
@@ -45,6 +46,16 @@ export class RegisterComponent implements OnInit {
     };
   }
 
+  private atLeastOneSpecialSymbol():ValidatorFn{
+    return (control:AbstractControl<string>):ValidationErrors | null => {
+      const regex = /[!@#$%^&*(),.?":{}|<>№]/;
+      if(regex.test(control.value)){
+        return null;
+      }
+
+      return {'specialSymbol':'The password has to contain al least 1 special symbol(like !@#$ etc)'}
+    };
+  }
   private equalsToPassword():ValidatorFn{
     return (control:AbstractControl<string>):ValidationErrors| null => {
       const password = control.value;
@@ -61,7 +72,6 @@ export class RegisterComponent implements OnInit {
     };
   }
 
-  
   ngOnInit(): void {
   }
 
@@ -74,7 +84,14 @@ export class RegisterComponent implements OnInit {
     
     const registerDto = this.getRegisterDto(profilePhotoUrl);
     this.http.register(registerDto).subscribe(r => {
-      this.authService.logIn(r);
+      if(r.isAuthSuccessfull){
+        this.authService.logIn(r);
+        return;
+      }
+
+      r.errorMessages!.forEach(x => {
+        this.registerForm.controls['email'].setErrors({'sdfsdf':x});
+      })
     });
   }
 

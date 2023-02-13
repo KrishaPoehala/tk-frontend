@@ -3,6 +3,7 @@ import { ChatMemberDto } from './ChatMemberDto';
 import { MessageDto } from "./MessageDto";
 
 export class ChatDto{
+    public usersOnline:ChatMemberDto[] = [];
     constructor(
     public id:number,
     public name:string,
@@ -10,5 +11,7 @@ export class ChatDto{
     public members: ChatMemberDto[],
     public imageUrl: string,
     public isGroup : boolean | null)
-    {}
+    {
+        this.usersOnline = [];
+    }
 }

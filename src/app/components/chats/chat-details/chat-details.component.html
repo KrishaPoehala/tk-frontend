@@ -37,7 +37,8 @@
             <div class="role" *ngIf="member.role?.order && member.role!.order > 0">{{member.role?.name }}</div>
         </div>
     </div>
-    <button class="add-members" (click)="onAddMembersClicked()" *ngIf="isGroup()">
+    <button class="add-members" (click)="onAddMembersClicked()" 
+    *ngIf="isGroup() && permissionsService.hasPermissionsForAddingUsers(userService.currentUserAsMember)">
         <mat-icon>person_add</mat-icon>
     </button>
 </div>

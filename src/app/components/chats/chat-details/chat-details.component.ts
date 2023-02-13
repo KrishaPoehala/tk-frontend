@@ -19,7 +19,7 @@ export class ChatDetailsComponent implements OnInit {
 
   constructor(public readonly userService: UserService, 
     private redirectionService:RedirectionService, private modal:NgbModal,
-   private permissionsService:PermissionsService) { }
+   readonly permissionsService:PermissionsService) { }
 
   ngOnInit(): void {
   }

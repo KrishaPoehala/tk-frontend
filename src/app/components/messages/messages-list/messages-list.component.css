@@ -52,6 +52,7 @@ body{
     width: 100%;
     border-radius: 15px;
     padding:12px;
+    resize: none;
 }
 
 .replied-message-text{

@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate {
       if(accessToken && isNotExpired){
         const userId = Number(this.jwtFacade.decodeToken(accessToken)['id']);
         this.userService.currentUser = new UserDto(userId, "","","");
+        console.log(this.userService.currentUser.id);
         this.http.getUserById(userId).subscribe(user => {
           this.userService.currentUser = user;
         });

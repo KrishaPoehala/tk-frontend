@@ -1,3 +1,4 @@
+import { PresenceServiceService as PresenceService } from './presence-service.service';
 import { MessageService } from './message-sender.service';
 import { MessageDto } from '../dtos/MessageDto';
 import { Observable, of } from 'rxjs';
@@ -14,7 +15,7 @@ import { UserDto } from 'src/app/dtos/UserDto';
 export class RedirectionService {
 
   constructor(private userService:UserService, private http:HttpService,
-    private sender:MessageService) { }
+    private sender:MessageService, private presenceService:PresenceService) { }
 
   redirectToUser(sender:UserDto){
     if(this.userService.currentUser.id === sender.id){
@@ -26,10 +27,11 @@ export class RedirectionService {
         this.http.createPrivateChat(dto).subscribe(result => {
           this.userService.setSelectedChat(result);
         });
-
+        
       }
-
+      
       this.userService.setSelectedChatValues();
+      this.presenceService.setOnlineUsersForCurrentChat();
   }
 
   redirectMessage(messageToForward:MessageDto){

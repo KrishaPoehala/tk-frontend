@@ -1,12 +1,10 @@
+import { SelectedChatChangedService } from './../../services/selected-chat-changed.service';
 import { ChatMemberDto } from '../../dtos/ChatMemberDto';
 import { ChatDto } from '../../dtos/ChatDto';
 import { NewGroupDto } from '../../dtos/NewGroupDto';
-import { GyazoResponseDto } from '../../dtos/GyazoResponseDto';
 import { GyazoService } from '../../services/gyazo.service';
-import { NewPrivateChatDto } from '../../dtos/NewPrivateChatDto';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from '../../services/http.service';
-import { read } from '@popperjs/core';
 import { UserService } from 'src/app/services/user.service';
 import { FormBuilder } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
@@ -21,7 +19,7 @@ export class CreateGroupComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private userService:UserService,
     private http:HttpService,private modal :NgbActiveModal,
-    private gyazoService:GyazoService) { }
+    private gyazoService:GyazoService,private selectedChatService:SelectedChatChangedService) { }
   contacts!:UserDto[];
   ngOnInit(): void {
     this.contacts = this.userService.getContacts();
@@ -55,9 +53,9 @@ export class CreateGroupComponent implements OnInit {
     this.imageFile = event.target.files[0];
     this.isImageChoosen = true;
     const reader = new FileReader();
-    reader.onload = _ => this.imagePath = reader.result as string;
-    reader.readAsDataURL(this.imageFile);
-  }
+    reader.onload = e => this.imagePath = e.target?.result as string;
+    reader.readAsDataURL(this.imageFile); 
+  } 
 
   createGroupForm = this.fb.group({
     name:[''],
@@ -66,9 +64,6 @@ export class CreateGroupComponent implements OnInit {
 
   gyazoImageUrl!:string;
   onCreateGroup(){
-    const newGroupDto =this._getNewGroupDto(this.imagePath);
-    const groupDto = this._toGroupDto(newGroupDto);
-    this.userService.chats.value.unshift(groupDto);
     this.userService.setfirstChatAsSelected(0);
     this.modal.close();
     this.gyazoService.uploadImage(this.imageFile)
@@ -88,13 +83,7 @@ export class CreateGroupComponent implements OnInit {
     true,isPublic,imageUrl);
   }
 
-  private _toGroupDto(newGroup: NewGroupDto){
-    const chatMembers = this.members.map(x => new ChatMemberDto(-1,x,null,[],-1));
-    return new ChatDto(-1,newGroup.name, [],chatMembers,newGroup.imageUrl,newGroup.isGroup);
-  }
-
   getMembersExceptCurrentUser(){
     return this.members.filter(x => x.id !== this.userService.currentUser.id);
   }
-
 }

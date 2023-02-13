@@ -5,15 +5,13 @@ img{
 }
 
 .chat-container{
-    white-space: nowrap;
     width:50vh;
+    white-space: nowrap;
+    position: relative;
     overflow-x: hidden;
-    display: flex;
-    justify-content: space-between;
     border-radius: 10px;
     margin:2px;
 }
-
 .chat-photo{
     align-self: center;
     margin-right: 10px;
@@ -25,16 +23,56 @@ img{
 }
 
 .active{
-    background-color: lightgray;
+    background-color: #61a9f1;
+}
+
+.active:hover{
+    background-color: #61a9f1;
 }
 
 .text{
     text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.subtitle-info{
+    display: flex;
+    width: 250px;
+    height: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
 }
 
-.unread-messages{
-    align-self: flex-end;
-    text-align: center;
-    vertical-align:middle;
-    margin:0 auto;
+.row-subtitle{
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+}
+
+.row-container{
+    width: 90%;
+}
+
+.subtitle-unread-messages, .subtitle-unread-messages-active{
+    border-radius: 40%;
+    font-size: 14px;
+    padding: 3px;
+    font-weight:500;
+}
+
+.subtitle-unread-messages{
+    color:white;
+    background-color: gray;
+}
+
+.subtitle-unread-messages-active{
+    color:#61a9f1;
+    background-color: white;
+}
+
+.sender-text{
+    font-weight: 400;
 }

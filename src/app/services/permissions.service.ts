@@ -48,16 +48,17 @@ export class PermissionsService {
     return chatMember.permissions.some(x => x.name === Permissions[Permissions.SendMessages]);
   }
 
-  hasPermisisonsForRemovingUsers(chatMember:ChatMemberDto){
-    if(!chatMember){
+  hasPermisisonsForRemovingUsers(memberToRemove:ChatMemberDto){
+    if(!memberToRemove.role){
       return true;
     }
 
-    if(chatMember.permissions.length === 0){
+    if(memberToRemove.permissions.length === 0){
       return true;
     }
 
-    return chatMember.permissions.some(x => x.name === Permissions[Permissions.RemoveUsers]);
+    return this.userService.currentUserAsMember.permissions.some(x => x.name === Permissions[Permissions.RemoveUsers])
+    && this.userService.currentUserAsMember.role!.order > memberToRemove.role!.order;
   }
 
   isAdminOrGreater(chatMember:ChatMemberDto){
@@ -91,5 +92,13 @@ export class PermissionsService {
     }
 
     return false;
+  }
+
+  hasPermissionsForAddingUsers(member:ChatMemberDto){
+    if(!member.role){
+      return;
+    }
+
+    return member.permissions.some(x => x.name === Permissions[Permissions.AddUsers]);
   }
 }

@@ -8,12 +8,11 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css']
 })
-export class ChatListComponent implements OnInit,OnChanges {
+export class ChatListComponent implements OnInit {
 
   constructor(public userService : UserService, private fb:FormBuilder) {
    }
-  ngOnChanges(changes: SimpleChanges): void {
-  }
+
 
   ngOnInit(): void {
   }
@@ -35,7 +34,7 @@ export class ChatListComponent implements OnInit,OnChanges {
   }
 
   selectSearchesValue(x : ChatDto) : string{
-    if(x.name){
+    if(x.isGroup){
       return x.name;
     }
 

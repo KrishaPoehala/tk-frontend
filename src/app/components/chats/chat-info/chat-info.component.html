@@ -1,4 +1,13 @@
 <div class="d-flex chat-info border-bottom" (click)="onClick()">
-    <img src="{{userService.selectedChatPhotoUrl}}" alt="chat-photo"/>
-    <p >{{userService.selectedChatName}}</p>
+    <div class="m-2">
+        <img src="{{userService.selectedChatPhotoUrl}}" alt="chat-photo"/>
+
+    </div>
+    <div class="d-flex flex-column justify-content-between">
+        <p style="margin:0">{{userService.selectedChatName}}</p>
+        <div *ngIf="userService.selectedChat.value.usersOnline">
+            {{userService.selectedChat.value.members.length}} members,
+            {{userService.selectedChat.value.usersOnline.length}} online
+        </div>
+    </div>
 </div>

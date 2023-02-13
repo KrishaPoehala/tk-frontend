@@ -35,8 +35,17 @@ export class LoginComponent implements OnInit {
     const email = this.loginForm.controls.email.value;
     const password = this.loginForm.controls.password.value;
     const loginModel = new LoginModel(email!,password!);
-    this.http.login(loginModel).subscribe(r => {
-      this.authService.logIn(r);
+    this.http.login(loginModel).subscribe((r) => {
+      if(r.isAuthSuccessfull){
+        this.authService.logIn(r);
+        return;
+      }
+    },
+    (errorResult) => {
+      const error = errorResult.error.errors![0].split(':') as string[];
+      console.log(errorResult.error.errors![0]);
+      console.log(error);
+      this.loginForm.get(error[0].toLowerCase())?.setErrors({'error':error[1]});
     });
   }
 }

@@ -1,3 +1,4 @@
+import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { CursorPositionsService } from './cursor-positions.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
@@ -12,6 +13,7 @@ import { MessageDto } from 'src/app/dtos/MessageDto';
 import { UserJoinedDto } from 'src/app/dtos/UserJoinedDto';
 import { MessageStatus } from '../enums/message-status';
 import { Wrapper } from './wraper.service';
+import { Roles } from '../enums/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +24,14 @@ export class NetworkService {
   }
   private connection!: HubConnection | null;
   constructor(public userService:UserService, private jwt:JwtFacadeService,
-    private cursorPositions:CursorPositionsService) {
+    private cursorPositions:CursorPositionsService, private selectedChatService:SelectedChatChangedService) {
      
+  }
+
+  async isOnline(chatMemberId:number){
+    const isOnline = await this.connection?.invoke('IsUserOnline', chatMemberId.toString()) as boolean;
+    console.log(`user ${chatMemberId} is ${isOnline}`);
+    return isOnline;
   }
 
   configureHub(){
@@ -60,19 +68,19 @@ export class NetworkService {
       }
     });
   }
+
   private chatCreatedSetUp() {
     this.connection?.on("ChatCreated", (createdChat: ChatDto) => {
       this.connection?.invoke("JoinGroup", createdChat.id.toString());
-      const owner = createdChat.members.filter(x => x.role?.name == 'Owner')[0];
+      const owner = createdChat.members.filter(x => x.role?.name == Roles[Roles.Owner])[0];
       if(owner.user.id === this.userService.currentUser.id){
         const chatIndex = this.userService.chats.value.findIndex(x => x.id === -1);
-        this.userService.chats.value[chatIndex].id = createdChat.id;
-        this.userService.chats.value[chatIndex].imageUrl = createdChat.imageUrl;
-        this.userService.chats.value[chatIndex].members = createdChat.members;
-        return;
+        this.userService.chats.value.splice(chatIndex, 1);
       }
 
       this.userService.chats.value.unshift(createdChat);
+      this.selectedChatService.add(createdChat.id);
+      this.userService.setfirstChatAsSelected(0);
     });
   }
 
@@ -117,18 +125,15 @@ export class NetworkService {
             const message = chat.messages[i];
             message.id = message.id;
             message.status = MessageStatus.Delivered;
-           
-              return;
+            return;
           }
         }
-        
         return;
       }
 
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
-      
       const atBottom = this.cursorPositions.isAtTheBottom(chat.id);
       const isCurrent = chat.id === this.userService.selectedChat.value.id;
       const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;

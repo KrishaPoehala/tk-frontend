@@ -1,3 +1,4 @@
+import { PresenceServiceService as PresenceService } from './../../../services/presence-service.service';
 import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
@@ -16,10 +17,11 @@ import { SelectedChatChangedService } from 'src/app/services/selected-chat-chang
 export class ChatItemComponent implements OnInit {
 
   constructor(private http: HttpService,
-    public readonly userService : UserService) { }
-
+    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService,
+    private presenceService:PresenceService) { }
 
   ngOnInit(): void {
+    console.log(this.chat.usersOnline);
     if(!this.chat || this.chat.id === -1){
       return;
     }
@@ -36,27 +38,33 @@ export class ChatItemComponent implements OnInit {
   }
  
   getUnreadMessage(members:ChatMemberDto[]){
-    return members.find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
+    const u = members.find(x => x.user.id === this.userService.currentUser.id);
+    if(!u){
+      return 0;
+    }
+
+    return u!.unreadMessagesLength;
   }
 
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
     this.userService.setSelectedChat(this.chat);
-    setTimeout(() => SelectedChatChangedService.set[this.chat.id].emit(this.chat), 20);
+    this.presenceService.setOnlineUsersForCurrentChat();
+    setTimeout(() => this.selectedChatService.set[this.chat.id].emit(this.chat), 20);
   }
 
   displayedImageUrl!:string;
   displayedGroupName!:string;
   getUserOnTheOtherSide(){
     let userOnTheOtherSide :UserDto | null = null;
-      for(let i = 0; i< this.chat.members.length;++i){
-        if(this.chat.members[i].user.id != this.userService.currentUser.id){
-          userOnTheOtherSide = this.chat.members[i].user;
-        }
+    for(let i = 0; i< this.chat.members.length;++i){
+      if(this.chat.members[i].user.id != this.userService.currentUser.id){
+        userOnTheOtherSide = this.chat.members[i].user;
       }
+    }
 
-      return userOnTheOtherSide;
+    return userOnTheOtherSide;
   }
   setDisplayedValues(){
     if(this.chat?.isGroup === false){

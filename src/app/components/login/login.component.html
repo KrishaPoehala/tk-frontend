@@ -1,16 +1,22 @@
 <div class="container">
-    <form [formGroup]="loginForm" (submit)="login()">
+  <form [formGroup]="loginForm" (submit)="login()">
       <h2 class="form-signin-heading">Login</h2>
-        <br/>
+      <br/>
         <label for="username" class="sr-only">Email address</label>
         <input type="email" id="email" name="username" formControlName="email"
           class="form-control" placeholder="Email Name" required>
+        <div class="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors">
+          Such an email alread exists
+        </div>
         <br/>
         <label for="password" class="sr-only">Password</label>
         <input type="password" id="password" name="password" 
           class="form-control" placeholder="Password" required formControlName="password">
+          <div class="danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors">
+            Wrong password
+          </div>
         <br/>
         <button class="btn btn-lg btn-primary m-2" [disabled]="!loginForm.valid">Log in</button>
         <a routerLink="../register">Sign up</a>
-    </form>
-  </div>
+  </form>
+</div>

@@ -20,6 +20,7 @@
              'Message' : 'You have been forbidden to send messages.'"
             formControlName="message" rows="1"
             [value]="messageToEdit?.text"
+            [disabled]="!this.permissionsService.hasPermissionsForSending(this.userService.currentUserAsMember)"
             ></textarea>
         </form> 
     </div>
