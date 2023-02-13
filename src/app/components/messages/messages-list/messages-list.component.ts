@@ -66,7 +66,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     console.log(this.selectedChatService.set[this.userService.selectedChat.value.id]);
-    this.selectedChatService.set[this.userService.selectedChat.value.id].unsubscribe();
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
