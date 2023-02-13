@@ -58,7 +58,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
-  callsCount = 0;
+  callsCount: {[id:number]:number} = {};
   ngOnInit(): void {
     console.log('On initi called!');
     if(this.userService.selectedChat.value.id === -1){
@@ -66,6 +66,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     console.log(this.selectedChatService.set[this.userService.selectedChat.value.id]);
+    this.selectedChatService.set[this.userService.selectedChat.value.id].unsubscribe();
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
@@ -73,9 +74,12 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   onSelectedChatChangeHandler(chat:ChatDto){
-    ++this.callsCount;
+    this.callsCount[chat.id]++;
     console.log('EMMITER SUBSCRIBER CALLED', this.callsCount)
-  
+    if(this.callsCount[chat.id] > 1){
+      return;
+    }
+
     if(!this.messages){
       return;
     }
@@ -92,6 +96,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
+    console.log(messageToScrollTo)
     const id = new Date(messageToScrollTo.sentAt).getTime().toString();
     this.$(id)?.scrollIntoView({
       behavior:'auto',
@@ -102,7 +107,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     const intersection = new IntersectionObserver((entries,obs) => {
       this.onIntersection(chat,entries,obs);
     },{
-      root:document.querySelector('#scrollframe '),
+      root:document.querySelector('#scrollframe'),
       }
     );
 

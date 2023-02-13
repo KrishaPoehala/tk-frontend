@@ -1,6 +1,5 @@
 
 .chat-list-container{
-    overflow-y: scroll;
     height: 100vh;
     border-right:2px solid black;
     width:auto;
@@ -12,6 +11,7 @@
 
 .search{
     width:100%;
+    border-radius: 17px;
 }
 
 .scroll-hidden{
@@ -30,4 +30,19 @@
     z-index: 9;
     top:0;
     right:0;
+}
+
+.chat-list_header{
+    position: sticky;
+    padding: 10px;
+     top:0; 
+    z-index:10;
+    display:flex;
+    margin:0;
+    border-bottom:2px solid lightgray;
+}
+
+.chats{
+    overflow-y: scroll;
+    height: 89vh;
 }
