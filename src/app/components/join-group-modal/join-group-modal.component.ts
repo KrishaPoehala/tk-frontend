@@ -1,3 +1,4 @@
+import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { NetworkService } from './../../services/network.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
@@ -14,7 +15,8 @@ import { Component, OnInit } from '@angular/core';
 export class JoinGroupModalComponent implements OnInit {
 
   constructor(public userService:UserService, private http:HttpService,
-    private modal:NgbActiveModal,private network:NetworkService) { }
+    private modal:NgbActiveModal,private network:NetworkService,
+    private selectedChatService: SelectedChatChangedService) { }
   publicGroups!: ChatDto[];
   ngOnInit(): void {
     this.http.getPublicGroups(this.userService.currentUser.id).subscribe(result => this.publicGroups = result);
@@ -44,7 +46,10 @@ export class JoinGroupModalComponent implements OnInit {
     else{
       this.userService.chats.value.push(...this.groups);
     }
-    
+
+    this.groups.forEach(x => {
+      this.selectedChatService.add(x.id);
+    })
     this.network.connectUserTo(this.groups);
     this.modal.close();
     this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(() => {

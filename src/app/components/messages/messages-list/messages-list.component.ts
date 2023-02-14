@@ -65,7 +65,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    console.log(this.selectedChatService.set[this.userService.selectedChat.value.id]);
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
@@ -82,6 +81,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
     console.log('EMMITER SUBSCRIBER CALLED', this.callsCount)
     if(this.callsCount[chat.id] > 1){
+      console.log(this.callsCount[chat.id], ' RETURNIN FROM THE FUNCTION')
       return;
     }
 
@@ -96,17 +96,20 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     const unreadMessagesLength = chat.members
       .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
     if(isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
+      console.log('SCROLL TO BOTTOM CALLLEED');
       this.scrollToBottom(true);
       return;
     }
 
-    if(this.scrollFrame.nativeElement.scrollHeight > this.scrollFrame.nativeElement.clientHeight){
+    if(this.scrollFrame.nativeElement.scrollHeight < this.scrollFrame.nativeElement.clientHeight){
        const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
        member.unreadMessagesLength = 0;
+       console.log('NOT SCROLL');
        return;
     }
 
     const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
+    console.log('MESSAGE TO SCROLL TO ')
     console.log(messageToScrollTo)
     const id = new Date(messageToScrollTo.sentAt).getTime().toString();
     this.$(id)?.scrollIntoView({
@@ -124,6 +127,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
     for(let i = this.messages.length - unreadMessagesLength; i < this.messages.length; ++i){
       const id = new Date(this.messages[i].sentAt).getTime().toString();
+      console.log('Starting to observe')
+      console.log(this.$(id));
       intersection.observe(this.$(id)!);
     }
 
@@ -156,6 +161,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   });
 
   messageToReply:MessageDto | null = null;
+  diff = 0;
   send(){
     if(!this.userService.selectedChat){
       return;
@@ -185,8 +191,10 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     this.sendingMessage = true;
+    const date = new Date();
+    date.setMilliseconds(this.diff++);
     let newMessage = new NewMessageDto(text,this.userService.currentUserAsMember,
-    this.userService.selectedChat?.value.id, new Date(),this.messageToReply);
+    this.userService.selectedChat?.value.id,date,this.messageToReply);
     this.userService.selectedChat.value.messages = Array.prototype.concat(this.userService.selectedChat.value.messages);
     this.userService.selectedChat.value.messages.push(this.toMessage(newMessage));
     this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);

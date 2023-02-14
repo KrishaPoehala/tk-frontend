@@ -26,12 +26,15 @@ export class ChatItemComponent implements OnInit {
     }
 
     const t:Observable<Object>[] = [];
+    var diff = 1;
     if(!this.chat.name.includes('Pac')){
       const member = this.chat.members[0];
-      for (let i = 0; i < 15; i += 2) {
+      for (let i = 0; i < 15; i += 1) {
         console.log(i);
-        
-        const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id,new Date(),null);
+        const date = new Date();
+        date.setSeconds(diff++);
+        const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id, date
+        ,null);
         t.push(this.http.sendMessage(newMessage));
       }
 
