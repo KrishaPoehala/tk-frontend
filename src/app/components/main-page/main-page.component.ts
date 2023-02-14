@@ -33,14 +33,6 @@ export class MainPageComponent implements OnInit,OnDestroy {
         this.userService.setfirstChatAsSelected(0);
       }
       
-      this.userService.chats.value.forEach(x => {
-        if(!x.usersOnlineIds){
-          x.usersOnlineIds = [this.userService.currentUser.id];
-          return;
-        }
-
-        x.usersOnlineIds.push(this.userService.currentUser.id);
-      });
       this.network.configureHub();
     });
   }

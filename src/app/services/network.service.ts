@@ -70,12 +70,15 @@ export class NetworkService {
   userConnectedSetUp() {
     this.connection?.on('UserConnected', ({userId,groupId}) => {
       const group = this.userService.chats.value.filter(x => x.id === groupId)[0];
+      console.log('CONNECTED USER',userId);
       if(group.usersOnlineIds){
         group.usersOnlineIds.push(userId);
       }
       else{
         group.usersOnlineIds = [userId];
       }
+
+      group.usersOnlineIds = Array.prototype.concat(group.usersOnlineIds);
       })
     }
 
