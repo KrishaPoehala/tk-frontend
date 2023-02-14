@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
@@ -25,13 +25,17 @@ export class ChatItemComponent implements OnInit {
       return;
     }
 
+    // const t:Observable<Object>[] = [];
     // if(!this.chat.name.includes('Pac')){
     //   const member = this.chat.members[0];
     //   for (let i = 0; i < 30; i++) {
     //     console.log(i);
+        
     //     const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id,new Date(),null);
-    //     this.http.sendMessage(newMessage).subscribe();
+    //     t.push(this.http.sendMessage(newMessage));
     //   }
+
+    //   forkJoin(t).subscribe();
     // }
     
     this.setDisplayedValues();

@@ -73,7 +73,13 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   onSelectedChatChangeHandler(chat:ChatDto){
-    this.callsCount[chat.id]++;
+    if(isNaN(this.callsCount[chat.id])){
+      this.callsCount[chat.id] = 0;
+    }
+    else{
+      this.callsCount[chat.id]++;
+
+    }
     console.log('EMMITER SUBSCRIBER CALLED', this.callsCount)
     if(this.callsCount[chat.id] > 1){
       return;
@@ -99,8 +105,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     const id = new Date(messageToScrollTo.sentAt).getTime().toString();
     this.$(id)?.scrollIntoView({
       behavior:'auto',
-      block: 'center',
-      inline: 'center',
+      block: 'end',
+      inline: 'end',
     })
 
     const intersection = new IntersectionObserver((entries,obs) => {
@@ -119,17 +125,23 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
-    console.log(entries);
     const member = chat.members
     .find(x => x.user.id === this.userService.currentUser.id)!;
+    console.log(entries);
     entries.forEach(x => {
-      if(x.intersectionRatio <= 0.0005){
+      if(x.intersectionRatio <= 0.00005){
         return;
       }
 
+      console.log('UNOBSERVEDDD');
+      console.log(x.target)
       member.unreadMessagesLength--;
       obs.unobserve(x.target);
     })
+
+    if(this.cursorPositions.isAtTheBottom(chat.id)){
+      member.unreadMessagesLength = 0;
+    }
 
     chat.members = Array.prototype.concat(chat.members);
   }
@@ -209,30 +221,26 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
     this.isWorking = true;
     this.scrollFrame.nativeElement.scrollTop = 100;
-    console.log('SENDING REQUEST!');
-    var scrollTop = this.scrollFrame.nativeElement.scrollTop;
-    var oldHeigth = this.scrollFrame.nativeElement.scrollHeight;
+    console.log('SENDING REQUEST!', this.userService.selectedChat.value.id, this.currentPage);
     this.http.getChatMessages(this.userService.selectedChat.value.id, this.userService.currentUser.id, 
       this.currentPage, this.messagesToLoad)
     .subscribe(r =>{
+      console.log(r);
       if(r.length === 0){
         return;
       }
       
       ++this.currentPage;
       this.isAtTheBottom = false;
-      console.log(r);
       r.forEach(element => {
         element.status = MessageStatus.Delivered;
         this.userService.selectedChat?.value.messages.unshift(element);
         })
       });
 
-      let diff = this.scrollFrame.nativeElement.scrollHeight - oldHeigth;
-      this.scrollFrame.nativeElement.scrollTop = diff + scrollTop;
-
     setTimeout(() => this.isWorking = false, 600);//forbid to call this method too many times
   }
+  
 
   sendingMessage = false;
   count = 0;
