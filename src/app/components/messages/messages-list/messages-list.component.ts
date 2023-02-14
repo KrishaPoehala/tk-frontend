@@ -199,7 +199,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const epsilon = -100;
+    const epsilon = -200;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
     this.cursorPositions.set[this.userService.selectedChat.value.id] = this.isAtTheBottom;
     const top = this.scrollFrame.nativeElement.scrollTop;

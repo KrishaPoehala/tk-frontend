@@ -22,8 +22,8 @@ export class ChatInfoComponent implements OnInit {
   }
 
   isPrivateUserOnline(){
-    const isOtherUserOnline = this.userService.selectedChat.value.usersOnline
-      .some(x => x.user.id != this.userService.currentUser.id);
+    const isOtherUserOnline = this.userService.selectedChat.value.usersOnlineIds
+      .some(x => x != this.userService.currentUser.id);
     if(isOtherUserOnline){
       return 'online';
     }

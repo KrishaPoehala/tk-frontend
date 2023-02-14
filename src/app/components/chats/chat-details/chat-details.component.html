@@ -31,7 +31,7 @@
                 <div>
                     <p *ngIf="userService.currentUser.id !== member.user.id">{{member.user.name}}</p>
                     <p *ngIf="userService.currentUser.id === member.user.id">You</p>
-                    <div>{{getPresenceInfoFor(member, userService.selectedChat.value.usersOnline)}}</div>
+                    <div>{{getPresenceInfoFor(member, userService.selectedChat.value.usersOnlineIds)}}</div>
                 </div>
             </div>
             <div class="role" *ngIf="member.role?.order && member.role!.order > 0">{{member.role?.name }}</div>

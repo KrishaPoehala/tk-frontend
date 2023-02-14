@@ -6,7 +6,7 @@
         <input type="email" id="email" name="username" formControlName="email"
           class="form-control" placeholder="Email Name" required>
         <div class="danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors">
-          Such an email alread exists
+          Such an email does not exist. Sign up first.
         </div>
         <br/>
         <label for="password" class="sr-only">Password</label>

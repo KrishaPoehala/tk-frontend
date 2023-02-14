@@ -14,7 +14,8 @@
                     </span>
                     {{chat.messages[chat.messages.length - 1].text}}
                 </div>
-                <div *ngIf="getUnreadMessage(chat.members) !== undefined" 
+                <div *ngIf="getUnreadMessage(chat.members) !== undefined &&
+                getUnreadMessage(chat.members) !== 0" 
                 [ngClass]="{'subtitle-unread-messages': getUnreadMessage(chat.members) !== undefined &&
                 userService.selectedChat.value.id !== chat.id}"
                 [ngClass]="{'subtitle-unread-messages-active':getUnreadMessage(chat.members) !== undefined &&

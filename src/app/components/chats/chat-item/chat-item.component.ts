@@ -1,4 +1,5 @@
-import { PresenceServiceService as PresenceService } from './../../../services/presence-service.service';
+import { Observable } from 'rxjs';
+import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges, DoCheck } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
@@ -17,13 +18,21 @@ import { SelectedChatChangedService } from 'src/app/services/selected-chat-chang
 export class ChatItemComponent implements OnInit {
 
   constructor(private http: HttpService,
-    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService,
-    private presenceService:PresenceService) { }
+    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService) { }
 
   ngOnInit(): void {
     if(!this.chat || this.chat.id === -1){
       return;
     }
+
+    // if(!this.chat.name.includes('Pac')){
+    //   const member = this.chat.members[0];
+    //   for (let i = 0; i < 30; i++) {
+    //     console.log(i);
+    //     const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id,new Date(),null);
+    //     this.http.sendMessage(newMessage).subscribe();
+    //   }
+    // }
     
     this.setDisplayedValues();
     this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
@@ -53,7 +62,6 @@ export class ChatItemComponent implements OnInit {
     }
 
     this.userService.setSelectedChat(this.chat);
-    this.presenceService.setOnlineUsersForCurrentChat();
     setTimeout(() => {
       this.selectedChatService.set[this.chat.id].emit(this.chat);
       console.log('EMMMMMIIIIITT');

@@ -52,6 +52,37 @@ export class NetworkService {
     this.memberPromotedSetUp();
     this.permissionsChangedSetUp();
     this.userRemovedSetUp();
+    this.userConnectedSetUp();
+    this.userDisconnectedSetUp();
+  }
+  userDisconnectedSetUp() {
+    this.connection?.on('UserDisconnected', (userId: number) => {
+      console.log(userId, ' diconnected');
+      const userChats = this.userService.chats.value
+        .filter(x => x.members.some(m => m.user.id === userId));
+
+      userChats.forEach(x => {
+        const userIndex = x.usersOnlineIds.findIndex(x => x === userId);
+        x.usersOnlineIds.splice(userIndex,1);
+      })
+    });
+  }
+  userConnectedSetUp() {
+    this.connection?.on('UserConnected', (userId: number) => {
+      console.log(userId, ' connected');
+      const userChats = this.userService.chats.value
+      .filter(x => x.members.some(m => m.user.id === userId));
+
+    userChats.forEach(x => {
+      const userChats = this.userService.chats.value
+        .filter(x => x.members.some(m => m.user.id === userId));
+
+        
+      userChats.forEach(x => {
+        x.usersOnlineIds.push(userId);
+      });
+      })
+    });
   }
 
   disconnect(){
@@ -130,6 +161,7 @@ export class NetworkService {
         return;
       }
 
+      console.log(message);
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);

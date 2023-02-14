@@ -1,8 +1,5 @@
-import { PresenceServiceService as PresenceService } from './presence-service.service';
 import { MessageService } from './message-sender.service';
 import { MessageDto } from '../dtos/MessageDto';
-import { Observable, of } from 'rxjs';
-import { ChatDto } from 'src/app/dtos/ChatDto';
 import { HttpService } from './http.service';
 import { UserService } from 'src/app/services/user.service';
 import { Injectable } from '@angular/core';
@@ -15,7 +12,7 @@ import { UserDto } from 'src/app/dtos/UserDto';
 export class RedirectionService {
 
   constructor(private userService:UserService, private http:HttpService,
-    private sender:MessageService, private presenceService:PresenceService) { }
+    private sender:MessageService) { }
 
   redirectToUser(sender:UserDto){
     if(this.userService.currentUser.id === sender.id){
@@ -31,7 +28,6 @@ export class RedirectionService {
       }
       
       this.userService.setSelectedChatValues();
-      this.presenceService.setOnlineUsersForCurrentChat();
   }
 
   redirectMessage(messageToForward:MessageDto){

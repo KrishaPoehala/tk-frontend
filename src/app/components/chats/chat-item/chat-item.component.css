@@ -57,9 +57,9 @@ img{
 }
 
 .subtitle-unread-messages, .subtitle-unread-messages-active{
-    border-radius: 40%;
+    clip-path: circle(40%);
     font-size: 14px;
-    padding: 3px;
+    padding: 5px;
     font-weight:500;
 }
 

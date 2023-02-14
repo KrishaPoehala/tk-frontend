@@ -63,9 +63,9 @@ export class ChatDetailsComponent implements OnInit {
     modalRef.componentInstance.selectedMember = selectedMember
   }
 
-  getPresenceInfoFor(member:ChatMemberDto, usersOnline:ChatMemberDto[]){
+  getPresenceInfoFor(member:ChatMemberDto, usersOnline:number[]){
     
-    if(usersOnline.some(x => x.user.id === member.user.id)){
+    if(usersOnline.some(x => x === member.user.id)){
       return 'online'
     }
 
