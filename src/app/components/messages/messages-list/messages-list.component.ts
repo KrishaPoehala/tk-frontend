@@ -100,6 +100,12 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if(this.scrollFrame.nativeElement.scrollHeight > this.scrollFrame.nativeElement.clientHeight){
+       const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
+       member.unreadMessagesLength = 0;
+       return;
+    }
+
     const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
     console.log(messageToScrollTo)
     const id = new Date(messageToScrollTo.sentAt).getTime().toString();
@@ -112,7 +118,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     const intersection = new IntersectionObserver((entries,obs) => {
       this.onIntersection(chat,entries,obs);
     },{
-      root:document.querySelector('#scrollframe'),
+      root:this.scrollFrame.nativeElement,
       }
     );
 

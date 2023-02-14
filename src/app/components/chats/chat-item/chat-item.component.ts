@@ -25,18 +25,18 @@ export class ChatItemComponent implements OnInit {
       return;
     }
 
-    // const t:Observable<Object>[] = [];
-    // if(!this.chat.name.includes('Pac')){
-    //   const member = this.chat.members[0];
-    //   for (let i = 0; i < 30; i++) {
-    //     console.log(i);
+    const t:Observable<Object>[] = [];
+    if(!this.chat.name.includes('Pac')){
+      const member = this.chat.members[0];
+      for (let i = 0; i < 15; i += 2) {
+        console.log(i);
         
-    //     const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id,new Date(),null);
-    //     t.push(this.http.sendMessage(newMessage));
-    //   }
+        const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id,new Date(),null);
+        t.push(this.http.sendMessage(newMessage));
+      }
 
-    //   forkJoin(t).subscribe();
-    // }
+      forkJoin(t).subscribe();
+    }
     
     this.setDisplayedValues();
     this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
