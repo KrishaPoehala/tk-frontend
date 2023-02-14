@@ -209,6 +209,9 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
     this.isWorking = true;
     this.scrollFrame.nativeElement.scrollTop = 100;
+    console.log('SENDING REQUEST!');
+    var scrollTop = this.scrollFrame.nativeElement.scrollTop;
+    var oldHeigth = this.scrollFrame.nativeElement.scrollHeight;
     this.http.getChatMessages(this.userService.selectedChat.value.id, this.userService.currentUser.id, 
       this.currentPage, this.messagesToLoad)
     .subscribe(r =>{
@@ -218,11 +221,15 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       
       ++this.currentPage;
       this.isAtTheBottom = false;
+      console.log(r);
       r.forEach(element => {
         element.status = MessageStatus.Delivered;
         this.userService.selectedChat?.value.messages.unshift(element);
         })
       });
+
+      let diff = this.scrollFrame.nativeElement.scrollHeight - oldHeigth;
+      this.scrollFrame.nativeElement.scrollTop = diff + scrollTop;
 
     setTimeout(() => this.isWorking = false, 600);//forbid to call this method too many times
   }
