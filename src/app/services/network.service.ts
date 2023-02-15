@@ -4,7 +4,6 @@ import { SelectedChatChangedService } from 'src/app/services/selected-chat-chang
 import { CursorPositionsService } from './cursor-positions.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
 import { JwtFacadeService } from './jwt-facade.service';
-import { Observable } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { UserService } from './user.service';
 import { Inject, Injectable, EventEmitter } from '@angular/core';
@@ -14,8 +13,6 @@ import * as signalR from '@microsoft/signalr';
 import { MessageDto } from 'src/app/dtos/MessageDto';
 import { UserJoinedDto } from 'src/app/dtos/UserJoinedDto';
 import { MessageStatus } from '../enums/message-status';
-import { Wrapper } from './wraper.service';
-import { Roles } from '../enums/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +23,22 @@ export class NetworkService {
   constructor(public userService:UserService, private jwt:JwtFacadeService,
     private cursorPositions:CursorPositionsService, private selectedChatService:SelectedChatChangedService,
     private chatCreated:ChatCreatedService) {
-      
     }
     
-    async connectUserTo(groups: ChatDto[]) {
-      groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
-      await this.connection?.invoke('NotifyUserConnected', groups.map(x => x.id.toString()));
-    }
+  async connectUserTo(groups: ChatDto[]) {  
+    const list:Promise<any>[] = [];
+    groups.forEach(async x => {
+      list.push(this.connection?.invoke('JoinGroup', x.id.toString())!);
+      await this.setOnlineUsersFor(x);
+    });
+    await Promise.all(list)
+    await this.connection?.invoke('NotifyUserConnected', groups.map(x => x.id.toString()));
+  }
+
+  async setOnlineUsersFor(chat: ChatDto) {
+    chat.usersOnlineIds = await this.connection?.invoke<number[]>('GetOnlineUsers', chat)!;
+    console.log(chat.usersOnlineIds);
+  }
   async isOnline(userId:number){
     const isOnline = await this.connection?.invoke<boolean>('IsOnline', userId.toString());
     return isOnline as boolean;
@@ -64,12 +70,17 @@ export class NetworkService {
   userDisconnectedSetUp() {
     this.connection?.on('UserDisconnected', (userId: number) => {
       console.log(userId, ' diconnected');
-      const userChats = this.userService.chats.value
-        .filter(x => x.members.some(m => m.user.id === userId));
-
-      userChats.forEach(x => {
-        const userIndex = x.usersOnlineIds.findIndex(x => x === userId);
-        x.usersOnlineIds.splice(userIndex,1);
+      
+        this.userService.chats.value.forEach(x => {
+          if(!x.members.some(m => m.user.id === userId)){
+            console.log('RETURN');
+            return;
+          }
+          
+          console.log('USER DISCONECTED');
+          const userIndex = x.usersOnlineIds.findIndex(x => x === userId);
+          x.usersOnlineIds.splice(userIndex,1);
+          x.usersOnlineIds = Array.prototype.concat(x.usersOnlineIds);
       })
     });
   }
@@ -80,6 +91,10 @@ export class NetworkService {
 
   userConnectedSetUp() {
     this.connection?.on('UserConnected', ({userId, groupId}) => {
+      if(userId === this.userService.currentUser.id){
+        return;
+      }
+
       const chat = this.userService.chats.value.find(x => x.id === groupId)!;
       if(!chat.usersOnlineIds){
         chat.usersOnlineIds = [userId];
