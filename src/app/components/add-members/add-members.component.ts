@@ -1,3 +1,5 @@
+import { NetworkService } from './../../services/network.service';
+import { PresenceService } from 'src/app/services/presence.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { AddMembersDto } from '../../dtos/AddMembersDto';
@@ -13,7 +15,7 @@ import { Component, OnInit } from '@angular/core';
 export class AddMembersComponent implements OnInit {
 
   constructor(private userService:UserService, private http:HttpService,
-    private modal:NgbActiveModal) { }
+    private modal:NgbActiveModal, private network:NetworkService) { }
   contacts!:UserDto[];
   public membersToAdd!:UserDto[];
   groupMembers!:UserDto[];
@@ -51,9 +53,13 @@ export class AddMembersComponent implements OnInit {
     }
 
     const dto = new AddMembersDto(this.userService.selectedChat.value.id, this.membersToAdd.map(x => x.id));
-    this.http.addMembers(dto).subscribe(_ =>{
+    this.http.addMembers(dto).subscribe(async _ =>{
       this.modal.close();
-      //this.userService.selectedChat.members.push(...this.membersToAdd);
+      dto.newMemberIds.forEach(async x => {
+        await this.network.connectNewUserTo(x, this.userService.selectedChat.value.id);
+      });
     });
+
+
   }
 }

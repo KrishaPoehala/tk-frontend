@@ -64,7 +64,9 @@ export class ChatDetailsComponent implements OnInit {
   }
 
   getPresenceInfoFor(member:ChatMemberDto, usersOnline:number[]){
-    
+    if(!usersOnline){
+      return 'last seen recently';
+    }
     if(usersOnline.some(x => x === member.user.id)){
       return 'online'
     }

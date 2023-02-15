@@ -40,21 +40,20 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   isAtTheBottom:boolean = true;
-  newMessage:MessageDto | null = null;
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue:MessageDto[] = changes['messages'].currentValue;
     const diff = currentValue[currentValue.length - 1];
-    console.log('SUBSCRIBING');
+    console.log(changes);
     this.selectedChatService.set[this.userService.selectedChat.value.id]
     .subscribe(chat => {
       this.onSelectedChatChangeHandler(chat);
     });
+
     if(!diff){
       return;
     }
 
     this.isCurrentUsersMessage = diff.sender.user.id === this.userService.currentUser.id;
-    this.newMessage = this.isCurrentUsersMessage ? null : diff;
   }
   isCurrentUsersMessage:boolean = true;
   @Input() messages!:MessageDto[];
@@ -80,12 +79,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
     }
     console.log('EMMITER SUBSCRIBER CALLED', this.callsCount)
-    if(this.callsCount[chat.id] > 1){
+    if(this.callsCount[chat.id] > 1 || !this.messages){
       console.log(this.callsCount[chat.id], ' RETURNIN FROM THE FUNCTION')
-      return;
-    }
-
-    if(!this.messages){
       return;
     }
       
@@ -96,7 +91,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     const unreadMessagesLength = chat.members
       .find(x => x.user.id === this.userService.currentUser.id)!.unreadMessagesLength;
     if(isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
-      console.log('SCROLL TO BOTTOM CALLLEED');
       this.scrollToBottom(true);
       return;
     }
@@ -109,8 +103,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
-    console.log('MESSAGE TO SCROLL TO ')
-    console.log(messageToScrollTo)
     const id = new Date(messageToScrollTo.sentAt).getTime().toString();
     this.$(id)?.scrollIntoView({
       behavior:'auto',
@@ -118,6 +110,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       inline: 'end',
     })
 
+    
     const intersection = new IntersectionObserver((entries,obs) => {
       this.onIntersection(chat,entries,obs);
     },{
@@ -127,25 +120,21 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
     for(let i = this.messages.length - unreadMessagesLength; i < this.messages.length; ++i){
       const id = new Date(this.messages[i].sentAt).getTime().toString();
-      console.log('Starting to observe')
-      console.log(this.$(id));
       intersection.observe(this.$(id)!);
-    }
+    } 
 
+    this.callsCount[chat.id] = 0;
     chat.members = Array.prototype.concat(chat.members);
   }
 
   onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
     const member = chat.members
     .find(x => x.user.id === this.userService.currentUser.id)!;
-    console.log(entries);
     entries.forEach(x => {
       if(x.intersectionRatio <= 0.00005){
         return;
       }
 
-      console.log('UNOBSERVEDDD');
-      console.log(x.target)
       member.unreadMessagesLength--;
       obs.unobserve(x.target);
     })
@@ -213,7 +202,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   messagesToLoad=20;
   scrollCallsCount = 0;
   isWorking = false;
-  currentPage = 1;
+  currentPagesSet :{[id:number]:number} = {};
   sendMessage = Permissions[Permissions.SendMessages];
   onScroll(event:any){
     if(this.userService.selectedChat.value.id === -1){
@@ -225,26 +214,38 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const epsilon = -200;
+    const epsilon = -250;
     this.isAtTheBottom = event.target.offsetHeight + event.target.scrollTop - event.target.scrollHeight >= epsilon;
     this.cursorPositions.set[this.userService.selectedChat.value.id] = this.isAtTheBottom;
     const top = this.scrollFrame.nativeElement.scrollTop;
-    if(top !== 0 || this.isWorking){
-      return;
+    const heigth = this.scrollFrame.nativeElement.scrollHeight;
+    const percentages = top / heigth * 100;
+    if(percentages > 20 || this.isWorking){
+      return; 
     }
 
     this.isWorking = true;
-    this.scrollFrame.nativeElement.scrollTop = 100;
-    console.log('SENDING REQUEST!', this.userService.selectedChat.value.id, this.currentPage);
+    this.scrollFrame.nativeElement.scrollTop = top;
+    const currentChatId = this.userService.selectedChat.value.id;
+    let currentPage = 0;
+    if(!this.currentPagesSet[currentChatId]){
+      this.currentPagesSet[currentChatId] = 1;
+      currentPage = 1;
+    }
+    else{
+      currentPage = this.currentPagesSet[currentChatId];
+    }
+    
+    console.log(currentPage);
     this.http.getChatMessages(this.userService.selectedChat.value.id, this.userService.currentUser.id, 
-      this.currentPage, this.messagesToLoad)
+     currentPage, this.messagesToLoad)
     .subscribe(r =>{
       console.log(r);
       if(r.length === 0){
         return;
       }
       
-      ++this.currentPage;
+      ++this.currentPagesSet[currentChatId];
       this.isAtTheBottom = false;
       r.forEach(element => {
         element.status = MessageStatus.Delivered;
@@ -268,6 +269,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
 
   private scrollToBottom(ignoreSendingMessage:boolean = true): void {
+    console.log('SCEROLL CALLLEEED');
     if( ignoreSendingMessage && !this.sendingMessage){
       return;
     }

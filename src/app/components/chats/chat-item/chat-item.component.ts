@@ -9,6 +9,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MessageStatus } from 'src/app/enums/message-status';
 import { Wrapper } from 'src/app/services/wraper.service';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
+import { PresenceService } from 'src/app/services/presence.service';
 
 @Component({
   selector: 'app-chat-item',
@@ -18,28 +19,28 @@ import { SelectedChatChangedService } from 'src/app/services/selected-chat-chang
 export class ChatItemComponent implements OnInit {
 
   constructor(private http: HttpService,
-    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService) { }
+    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService,
+    private presence:PresenceService) { }
 
   ngOnInit(): void {
     if(!this.chat || this.chat.id === -1){
       return;
     }
 
-    const t:Observable<Object>[] = [];
-    var diff = 1;
-    if(!this.chat.name.includes('Pac')){
-      const member = this.chat.members[0];
-      for (let i = 0; i < 15; i += 1) {
-        console.log(i);
-        const date = new Date();
-        date.setSeconds(diff++);
-        const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id, date
-        ,null);
-        t.push(this.http.sendMessage(newMessage));
-      }
+    // const t:Observable<Object>[] = [];
+    // var diff = 1;
+    // if(!this.chat.name.includes('Pac')){
+    //   const member = this.chat.members[0];
+    //   for (let i = 0; i < 15; i += 1) {
+    //     const date = new Date();
+    //     date.setSeconds(diff++);
+    //     const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id, date
+    //     ,null);
+    //     t.push(this.http.sendMessage(newMessage));
+    //   }
 
-      forkJoin(t).subscribe();
-    }
+    //   forkJoin(t).subscribe();
+    // }
     
     this.setDisplayedValues();
     this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
@@ -69,9 +70,9 @@ export class ChatItemComponent implements OnInit {
     }
 
     this.userService.setSelectedChat(this.chat);
+    //this.presence.setOnlineMembers(this.userService.selectedChat.value);
     setTimeout(() => {
       this.selectedChatService.set[this.chat.id].emit(this.chat);
-      console.log('EMMMMMIIIIITT');
     }, 20);
   }
 

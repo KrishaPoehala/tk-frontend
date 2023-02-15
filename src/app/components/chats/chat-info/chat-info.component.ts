@@ -13,6 +13,7 @@ export class ChatInfoComponent implements OnInit {
   @Output() clickedEventEmmiter:EventEmitter<boolean> = new EventEmitter(); 
 
   ngOnInit(): void {
+
   }
 
   openGroupInfo:boolean = false;
@@ -22,13 +23,18 @@ export class ChatInfoComponent implements OnInit {
   }
 
   isPrivateUserOnline(){
+    const absentMessage = 'last seen recently'
+    if(!this.userService.selectedChat.value.usersOnlineIds){
+      return absentMessage;
+    }
+
     const isOtherUserOnline = this.userService.selectedChat.value.usersOnlineIds
       .some(x => x != this.userService.currentUser.id);
     if(isOtherUserOnline){
       return 'online';
     }
 
-    return 'last seen recently';
+    return absentMessage;
   }
 
   previousLength:number | null = null;

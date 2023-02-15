@@ -1,3 +1,4 @@
+import { PresenceService } from './../../services/presence.service';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { ChatsModule } from './../chats/chats.module';
 import { HttpService } from 'src/app/services/http.service';
@@ -13,7 +14,8 @@ import { Wrapper } from 'src/app/services/wraper.service';
 export class MainPageComponent implements OnInit,OnDestroy {
 
   constructor(public readonly userService:UserService, private network: NetworkService,
-    private http:HttpService,private selectedChatService:SelectedChatChangedService) 
+    private http:HttpService,private selectedChatService:SelectedChatChangedService,
+    private presence:PresenceService) 
   { }
 
   ngOnDestroy(): void {
@@ -33,7 +35,9 @@ export class MainPageComponent implements OnInit,OnDestroy {
         this.userService.setfirstChatAsSelected(0);
       }
       
-      this.network.configureHub();
+      this.network.configureHub().then(_ => {
+
+      });
     });
   }
 

@@ -1,3 +1,5 @@
+import { ChatCreatedService } from './chat-created.service';
+import { MessagesListComponent } from './../components/messages/messages-list/messages-list.component';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { CursorPositionsService } from './cursor-positions.service';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
@@ -19,18 +21,21 @@ import { Roles } from '../enums/roles';
   providedIn: 'root'
 })
 export class NetworkService {
-  connectUserTo(groups: ChatDto[]) {
-    groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
-  }
+  
   private connection!: HubConnection | null;
   constructor(public userService:UserService, private jwt:JwtFacadeService,
-    private cursorPositions:CursorPositionsService, private selectedChatService:SelectedChatChangedService) {
-     
-  }
-
-  async isOnline(chatMemberId:number){
-    const isOnline = await this.connection?.invoke('IsUserOnline', chatMemberId.toString()) as boolean;
-    return isOnline;
+    private cursorPositions:CursorPositionsService, private selectedChatService:SelectedChatChangedService,
+    private chatCreated:ChatCreatedService) {
+      
+    }
+    
+    async connectUserTo(groups: ChatDto[]) {
+      groups.forEach(e => this.connection?.invoke('JoinGroup', e.id.toString()));
+      await this.connection?.invoke('NotifyUserConnected', groups.map(x => x.id.toString()));
+    }
+  async isOnline(userId:number){
+    const isOnline = await this.connection?.invoke<boolean>('IsOnline', userId.toString());
+    return isOnline as boolean;
   }
 
   configureHub(){
@@ -39,8 +44,8 @@ export class NetworkService {
       accessTokenFactory: () => this.jwt.getAccessToken() || ''}
       )
     .build();
-    this.connection?.start().then(() =>{
-      this.connectUserTo(this.userService.chats.value);
+    const startConnectionPromise = this.connection?.start().then(async () =>{
+      await this.connectUserTo(this.userService.chats.value);
     });
 
     this.messageSentSetUp();
@@ -54,6 +59,7 @@ export class NetworkService {
     this.userRemovedSetUp();
     this.userConnectedSetUp();
     this.userDisconnectedSetUp();
+    return startConnectionPromise;
   }
   userDisconnectedSetUp() {
     this.connection?.on('UserDisconnected', (userId: number) => {
@@ -67,20 +73,22 @@ export class NetworkService {
       })
     });
   }
+
+  async connectNewUserTo(userId:number, chatId:number){
+    return await this.connection?.invoke('NotifyNewUserConnected', chatId.toString(), userId);
+  }
+
   userConnectedSetUp() {
-    this.connection?.on('UserConnected', ({userId,groupId}) => {
-      const group = this.userService.chats.value.filter(x => x.id === groupId)[0];
-      console.log('CONNECTED USER',userId);
-      if(group.usersOnlineIds){
-        group.usersOnlineIds.push(userId);
-      }
-      else{
-        group.usersOnlineIds = [userId];
+    this.connection?.on('UserConnected', ({userId, groupId}) => {
+      const chat = this.userService.chats.value.find(x => x.id === groupId)!;
+      if(!chat.usersOnlineIds){
+        chat.usersOnlineIds = [userId];
+        return;
       }
 
-      group.usersOnlineIds = Array.prototype.concat(group.usersOnlineIds);
-      })
-    }
+      chat.usersOnlineIds.push(userId);
+    });
+  }
 
   disconnect(){
     this.connection?.stop().then(() => this.connection = null);
@@ -99,22 +107,19 @@ export class NetworkService {
   private chatCreatedSetUp() {
     this.connection?.on("ChatCreated", (createdChat: ChatDto) => {
       this.connection?.invoke("JoinGroup", createdChat.id.toString());
-      const owner = createdChat.members.filter(x => x.role?.name == Roles[Roles.Owner])[0];
-      if(owner.user.id === this.userService.currentUser.id){
-        const chatIndex = this.userService.chats.value.findIndex(x => x.id === -1);
-        this.userService.chats.value.splice(chatIndex, 1);
-      }
-
+      this.connection?.invoke('NotifyUserConnected', [createdChat.id.toString()]);
       this.userService.chats.value.unshift(createdChat);
       this.selectedChatService.add(createdChat.id);
       this.userService.setfirstChatAsSelected(0);
+      this.chatCreated.chatCreatedEmmiter.emit(createdChat);
     });
   }
 
   private privateChatCreatedSetUp(){
-    this.connection?.on("PrivateChatCreated", (createChat:ChatDto) =>{
-      this.connection?.invoke('JoinGroup', createChat.id.toString());
-      this.userService.chats.value.unshift(createChat);
+    this.connection?.on("PrivateChatCreated", (createdChat:ChatDto) =>{
+      this.connection?.invoke('JoinGroup', createdChat.id.toString());
+      this.connection?.invoke('NotifyUserConnected', [createdChat.id.toString()]);
+      this.userService.chats.value.unshift(createdChat);
     });
   }
 
@@ -157,6 +162,8 @@ export class NetworkService {
         }
         return;
       }
+
+      //console.log(message);
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages =Array.prototype.concat(chat.messages);
@@ -172,6 +179,11 @@ export class NetworkService {
         }  
 
         chat.members = Array.prototype.concat(chat.members);
+      }
+
+      if(isCurrent && !atBottom){
+        console.log(message)
+        console.log(' was read by ',this.userService.currentUser);
       }
     });
   }

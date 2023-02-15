@@ -38,7 +38,7 @@ export class JoinGroupModalComponent implements OnInit {
     this.selectedGroups[group.id] = true;
   }
 
-  onJoin(){
+  async onJoin(){
     if(!this.userService.chats || this.userService.chats.value.length === 0){
       this.userService.chats.value = [...this.groups];
       this.userService.setfirstChatAsSelected(0);
@@ -50,7 +50,7 @@ export class JoinGroupModalComponent implements OnInit {
     this.groups.forEach(x => {
       this.selectedChatService.add(x.id);
     })
-    this.network.connectUserTo(this.groups);
+    await this.network.connectUserTo(this.groups);
     this.modal.close();
     this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(() => {
     });

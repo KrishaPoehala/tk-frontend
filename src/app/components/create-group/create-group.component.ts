@@ -1,3 +1,5 @@
+import { PresenceService } from 'src/app/services/presence.service';
+import { ChatCreatedService } from './../../services/chat-created.service';
 import { SelectedChatChangedService } from './../../services/selected-chat-changed.service';
 import { ChatMemberDto } from '../../dtos/ChatMemberDto';
 import { ChatDto } from '../../dtos/ChatDto';
@@ -19,12 +21,16 @@ export class CreateGroupComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private userService:UserService,
     private http:HttpService,private modal :NgbActiveModal,
-    private gyazoService:GyazoService,private selectedChatService:SelectedChatChangedService) { }
+    private gyazoService:GyazoService,private selectedChatService:SelectedChatChangedService,
+    private chatCreated:ChatCreatedService,private presence:PresenceService) { }
   contacts!:UserDto[];
   ngOnInit(): void {
     this.contacts = this.userService.getContacts();
     this.members = [];
     this.selectedMembers = {};
+    this.chatCreated.chatCreatedEmmiter.subscribe(newChat => {
+      this.selectedChatService.add(newChat.id);
+    });
   }
 
   members!:UserDto[];
