@@ -28,9 +28,6 @@ export class CreateGroupComponent implements OnInit {
     this.contacts = this.userService.getContacts();
     this.members = [];
     this.selectedMembers = {};
-    this.chatCreated.chatCreatedEmmiter.subscribe(newChat => {
-      this.selectedChatService.add(newChat.id);
-    });
   }
 
   members!:UserDto[];

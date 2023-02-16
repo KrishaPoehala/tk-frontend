@@ -30,9 +30,8 @@ export class MainPageComponent implements OnInit,OnDestroy {
     this.http.getUserChats(this.userService.currentUser.id)
     .subscribe(result => {
       this.userService.chats = Wrapper.wrap(result);
-      this.selectedChatService.init(this.userService.chats.value);
       if(this.userService.chats && this.userService.chats.value.length > 0){
-        this.userService.setfirstChatAsSelected(0);
+        //this.userService.setfirstChatAsSelected(0);
       }
       
       this.network.configureHub().then(_ => {

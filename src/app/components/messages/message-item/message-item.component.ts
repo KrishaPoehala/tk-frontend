@@ -83,11 +83,11 @@ export class MessageItemComponent implements OnInit {
     setTimeout(() => this.callDispose = true, 100);
   }
   getId(){
-    return new Date(this.message.sentAt).getTime().toString()
+    return this.message.id.toString();
   }
 
   onRepliedMessageClick(){
-    const id = new Date(this.message.replyMessage!.sentAt).getTime().toString()
+    const id = this.message.replyMessage?.id.toString()!;
     const itemToScrollTo = document.getElementById(id);
     if(!itemToScrollTo){
       return;

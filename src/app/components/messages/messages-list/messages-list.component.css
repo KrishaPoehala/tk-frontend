@@ -1,8 +1,8 @@
 .messages-container{
     overflow-y:scroll;
-    height: 90vh;
-    
+    height: 85vh;
     width: 80%;
+    margin-top:8%;
     padding-bottom: 5%;
 }
 
@@ -12,6 +12,8 @@
     background-image: url("https://oir.mobi/uploads/posts/2022-08/1661337097_1-oir-mobi-p-fon-dlya-telegram-oboi-1.png");
     position:relative;
     display: flex;
+    height: 100vh;
+    width: 100%;
     justify-content: center;
 }
 .center-label{
@@ -45,6 +47,7 @@ body{
     display: flex;
     justify-content: center;
     bottom:-5%;
+    margin-bottom: 2%;
     background-color: transparent;
 }
 

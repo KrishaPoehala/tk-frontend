@@ -122,4 +122,12 @@ export class HttpService{
         return this.http.get<UserDto>(environment.api + `/Users/user/${userId}`);
     }
 
+    public saveReadMessages(memberId:number, messages:MessageDto[]){
+        const model= {
+            memberId:memberId,
+            messageIds:messages.map(x => x.id),
+        }
+
+        return this.http.put(environment.api + '/Users/saveReadMessages', model);
+    }
 }

@@ -1,5 +1,5 @@
 <div class="message-list" >
-    <div class="messages-container" cdk-scrollable
+    <div *ngIf="userService.selectedChat" class="messages-container" cdk-scrollable
     #scrollframe (scroll)="onScroll($event)">
         <div
             *ngFor="let messageF of userService.selectedChat?.value?.messages" #item>
@@ -16,11 +16,11 @@
                 <div class="replied-message-text">{{messageToReply.text}}</div>
             </div>
             <textarea (keyup.enter)="send()" type="text" class="message-input"
-             [placeholder]="permissionsService.hasPermissionsForSending(userService.currentUserAsMember) ? 
+             [placeholder]="permissionsService.hasPermissionsForSending(userService.currentUserAsMember?.permissions) ? 
              'Message' : 'You have been forbidden to send messages.'"
             formControlName="message" rows="1"
             [value]="messageToEdit?.text"
-            [attr.disabled]="this.permissionsService.hasPermissionsForSending(userService.currentUserAsMember) 
+            [attr.disabled]="this.permissionsService.hasPermissionsForSending(userService.currentUserAsMember?.permissions) 
             ? null:''"
             ></textarea>
         </form> 

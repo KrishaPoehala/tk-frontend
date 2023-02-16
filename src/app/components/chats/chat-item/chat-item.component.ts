@@ -10,6 +10,7 @@ import { MessageStatus } from 'src/app/enums/message-status';
 import { Wrapper } from 'src/app/services/wraper.service';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { PresenceService } from 'src/app/services/presence.service';
+import { MessageSentDto } from 'src/app/dtos/MessageSentDto';
 
 @Component({
   selector: 'app-chat-item',
@@ -19,36 +20,33 @@ import { PresenceService } from 'src/app/services/presence.service';
 export class ChatItemComponent implements OnInit {
 
   constructor(private http: HttpService,
-    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService,
-    private presence:PresenceService) { }
+    public readonly userService : UserService,private selectedChatService:SelectedChatChangedService) { }
 
   ngOnInit(): void {
     if(!this.chat || this.chat.id === -1){
       return;
     }
 
-    // const t:Observable<Object>[] = [];
-    // var diff = 1;
-    // if(!this.chat.name.includes('Pac')){
-    //   const member = this.chat.members[0];
-    //   for (let i = 0; i < 15; i += 1) {
-    //     const date = new Date();
-    //     date.setSeconds(diff++);
-    //     const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, this.chat.id, date
-    //     ,null);
-    //     t.push(this.http.sendMessage(newMessage));
-    //   }
-
-    //   forkJoin(t).subscribe();
-    // }
-    
     this.setDisplayedValues();
     this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
       r.forEach(element => {
-        element.status = MessageStatus.Delivered;
         this.chat.messages.push(element);
+        const isCurrentMessage = element.sender.user.id === this.userService.currentUser.id;
+        if(!isCurrentMessage && (!element.readBy || !element.readBy?.some(x => x.user.id === this.userService.currentUser.id))){
+          const member = this.chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
+          if(!member){
+            return;
+          }
+          if(!member.unreadMessagesLength || isNaN(member.unreadMessagesLength)){
+            member.unreadMessagesLength = 1;
+          }
+          else{
+            member.unreadMessagesLength++;
+          }
+        }
       });
-
+      
+      this.chat.members = Array.prototype.concat(this.chat.members);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
     });
   }
@@ -65,16 +63,15 @@ export class ChatItemComponent implements OnInit {
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
-    if(this.userService.selectedChat.value.id === this.chat.id){
+    if(this.userService.selectedChat?.value.id === this.chat.id){
       return;
     }
 
     this.userService.setSelectedChat(this.chat);
-    //this.presence.setOnlineMembers(this.userService.selectedChat.value);
     setTimeout(() => {
-      this.selectedChatService.set[this.chat.id].emit(this.chat);
+      this.selectedChatService.chatSelectionChangedEmitter.emit(new MessageSentDto(this.chat,true));
     }, 20);
-  }
+  } 
 
   displayedImageUrl!:string;
   displayedGroupName!:string;

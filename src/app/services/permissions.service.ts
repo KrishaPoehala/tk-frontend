@@ -1,3 +1,4 @@
+import { PermissionDto } from './../dtos/PermissionDto';
 import { Permissions } from './../enums/permissions';
 import { Roles } from './../enums/roles';
 import { UserService } from 'src/app/services/user.service';
@@ -36,16 +37,12 @@ export class PermissionsService {
     return chatMember.user.id === message.sender.user.id;
   }
 
-  hasPermissionsForSending(chatMember:ChatMemberDto){
-    if(!chatMember){
-      return true;
-    }
-    
-    if(chatMember.permissions.length === 0){
+  hasPermissionsForSending(permissions:PermissionDto[] | undefined){
+    if(!permissions || permissions?.length === 0){
       return true;
     }
 
-    return chatMember.permissions.some(x => x.name === Permissions[Permissions.SendMessages]);
+    return permissions.some(x => x.name === Permissions[Permissions.SendMessages]);
   }
 
   hasPermisisonsForRemovingUsers(memberToRemove:ChatMemberDto){

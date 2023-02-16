@@ -1,4 +1,4 @@
-const origin = "https://shabolda69.azurewebsites.net/";
+const origin = "https://reenbite-chat-service.azurewebsites.net/";
 export const environment = {
   production: true,
   origin: origin,

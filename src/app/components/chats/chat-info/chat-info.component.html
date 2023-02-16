@@ -1,4 +1,4 @@
-<div class="d-flex chat-info border-bottom" (click)="onClick()">
+<div *ngIf="userService.selectedChat" class="d-flex chat-info border-bottom" (click)="onClick()">
     <div class="m-2">
         <img src="{{userService.selectedChatPhotoUrl}}" alt="chat-photo"/>
 

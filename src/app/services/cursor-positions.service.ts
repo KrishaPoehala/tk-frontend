@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class CursorPositionsService {
   isAtTheBottom(id: number) {
-    if(!this.set[id]){
-      return false;
+    if(this.set[id]){
+      return true;
     }
 
     return this.set[id];

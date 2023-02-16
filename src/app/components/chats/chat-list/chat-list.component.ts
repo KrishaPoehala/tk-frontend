@@ -1,7 +1,9 @@
+import { HttpService } from 'src/app/services/http.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Component, Input, OnInit, HostListener, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import { UserService } from 'src/app/services/user.service';
+import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
 
 @Component({
   selector: 'app-chat-list',
@@ -10,11 +12,28 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ChatListComponent implements OnInit {
 
-  constructor(public userService : UserService, private fb:FormBuilder) {
+  constructor(public userService : UserService, private fb:FormBuilder,
+    private http:HttpService) {
    }
 
 
   ngOnInit(): void {
+  }
+
+  onClick(){
+    var diff = 1;
+
+    this.chats.forEach(x => {
+        const member = x.members[0];
+        for (let i = 0; i < 2; i += 1) {
+          const date = new Date();
+          date.setSeconds(diff++);
+          const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, x.id, date
+          ,null);
+          this.http.sendMessage(newMessage).subscribe();
+        }
+  
+      });
   }
 
   @Input() chats!: ChatDto[];

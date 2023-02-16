@@ -6,6 +6,10 @@
     background-color:ghostwhite;
     cursor: pointer;
     padding-top: 2px;
+    position: absolute;
+    top:0;
+    width: 100%;
+    z-index: 100;
 }
 
 img{

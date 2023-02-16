@@ -4,8 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/services/http.service';
 import { UserService } from 'src/app/services/user.service';
 import { ChatDto } from 'src/app/dtos/ChatDto';
-import { ChatDetailsComponent } from './../chats/chat-details/chat-details.component';
 import { Component, OnInit } from '@angular/core';
+import { MessageSentDto } from 'src/app/dtos/MessageSentDto';
 
 @Component({
   selector: 'app-join-group-modal',
@@ -41,18 +41,17 @@ export class JoinGroupModalComponent implements OnInit {
   async onJoin(){
     if(!this.userService.chats || this.userService.chats.value.length === 0){
       this.userService.chats.value = [...this.groups];
-      this.userService.setfirstChatAsSelected(0);
     }
     else{
       this.userService.chats.value.push(...this.groups);
     }
-
-    this.groups.forEach(x => {
-      this.selectedChatService.add(x.id);
-    })
+    
     await this.network.connectUserTo(this.groups);
     this.modal.close();
-    this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(() => {
+    this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(async _ => {
+      this.groups.forEach(x => {
+        this.network.setOnlineUsersFor(x);
+      });
     });
   }
 }

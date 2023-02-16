@@ -1,6 +1,5 @@
 
 .chat-list-container{
-    height: 100vh;
     border-right:2px solid black;
     width:auto;
 }
@@ -33,9 +32,7 @@
 }
 
 .chat-list_header{
-    position: sticky;
     padding: 10px;
-     top:0; 
     z-index:10;
     display:flex;
     margin:0;
@@ -43,6 +40,7 @@
 }
 
 .chats{
-    overflow-y: scroll;
-    height: 89vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 91vh;
 }

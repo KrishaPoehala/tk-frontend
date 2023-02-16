@@ -13,5 +13,8 @@
         (click)="onDeleteClick()">
             <mat-icon class="icon">restore_from_trash</mat-icon>Delete
         </button>
+        <div *ngFor="let readBy of message.readBy">
+            {{readBy.user.name}}
+        </div>
     </div>
 </div>

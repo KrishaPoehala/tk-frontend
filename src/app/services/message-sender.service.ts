@@ -31,11 +31,12 @@ export class MessageService {
 
   private toNewMessage(message:MessageDto,chatId:number){
     return new NewMessageDto(message.text,message.sender,chatId,
+      
       message.sentAt,null);
   }
   private toMessage(newMessage:NewMessageDto){
     const message = new MessageDto(-1,newMessage.text,newMessage.sender,newMessage.chatId,newMessage.sentAt,null,
-      newMessage.replyMessage);
+      newMessage.replyMessage,null,false);
     message.status = MessageStatus.InProgress;
     return message;
   }

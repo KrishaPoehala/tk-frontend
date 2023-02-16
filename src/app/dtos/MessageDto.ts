@@ -11,7 +11,9 @@ export class MessageDto{
     public chatId: number,
     public  sentAt: Date,
     public isDeletedOnlyForSender: boolean | null,
-    public replyMessage: MessageDto | null)
+    public replyMessage: MessageDto | null,
+    public readBy:ChatMemberDto[] | null,
+    public isSeen:boolean)
     {   
     }
 }

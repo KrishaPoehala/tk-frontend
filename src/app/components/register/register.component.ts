@@ -17,7 +17,7 @@ export class RegisterComponent implements OnInit {
      private gyazoService: GyazoService, private authService: AuthService) { }
 
   registerForm = this.fb.group({
-    firstName:['',Validators.required,Validators.minLength(8)],
+    firstName:['',[Validators.required,Validators.minLength(8)]],
     email:['',Validators.email],
     password:['',[Validators.required, Validators.minLength(8),
       this.atLeastOneUpperCaseLetter(),

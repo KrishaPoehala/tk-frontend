@@ -28,8 +28,9 @@
           <div class="status-container">
             <mat-icon class="status" *ngIf="message.status === MessageStatus.InProgress">watch_later</mat-icon>
             <mat-icon class="status" *ngIf="message.status === MessageStatus.Delivered">check</mat-icon>
+            <mat-icon class="status" *ngIf="message.isSeen">check_circle</mat-icon>
           </div>
-        </div>
+        </div>  
     </div>
 </div>
 
