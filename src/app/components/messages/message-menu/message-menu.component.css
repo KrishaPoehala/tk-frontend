@@ -29,3 +29,7 @@
     flex-direction: column;
     z-index: 1000;
 }
+
+.seen{
+    vertical-align:middle;
+}

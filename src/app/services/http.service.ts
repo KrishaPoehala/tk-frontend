@@ -30,9 +30,13 @@ export class HttpService{
     }
 
     public getChatMessages(chatId : number, userId : number,
-         pageNumber: number, messagesToLoad: number){
-        return this.http.get<MessageDto[]>(environment.api + '/Chats/messages/' + `${chatId}/${userId}
-        /${pageNumber}/${messagesToLoad}`);
+         pageNumber: number, messagesToLoad: number,isPagination = true){
+            const params = new HttpParams()
+            .set('isPagination',isPagination)
+            .set('pageNumber',pageNumber)
+            .set('messagesToLoad', messagesToLoad);
+        return this.http.get<MessageDto[]>(environment.api + '/Chats/messages/' + `${chatId}/${userId}`,
+         {params:params});
     }
 
     public sendMessage(dto : NewMessageDto){

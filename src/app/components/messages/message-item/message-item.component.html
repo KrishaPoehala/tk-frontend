@@ -25,10 +25,10 @@
           >
               {{message.sentAt | date: 'h:mm a'}}
         </div>
-          <div class="status-container">
+          <div class="status-container" *ngIf="isCurrentUsersMessage()">
             <mat-icon class="status" *ngIf="message.status === MessageStatus.InProgress">watch_later</mat-icon>
             <mat-icon class="status" *ngIf="message.status === MessageStatus.Delivered">check</mat-icon>
-            <mat-icon class="status" *ngIf="message.isSeen">check_circle</mat-icon>
+            <mat-icon class="status" *ngIf="message.status === MessageStatus.Seen">check_circle</mat-icon>
           </div>
         </div>  
     </div>

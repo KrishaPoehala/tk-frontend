@@ -59,7 +59,5 @@ export class AddMembersComponent implements OnInit {
         await this.network.connectNewUserTo(x, this.userService.selectedChat.value.id);
       });
     });
-
-
   }
 }

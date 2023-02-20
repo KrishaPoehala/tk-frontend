@@ -1,6 +1,6 @@
 import { MatIconModule } from '@angular/material/icon';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChatListComponent } from './chat-list/chat-list.component';
 import { ChatItemComponent } from './chat-item/chat-item.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +35,7 @@ import { OrderChatPipe } from './pipes/order-chat.pipe';
         CommonModule,
         MessagesModule,
         ReactiveFormsModule,
-        
+        DatePipe,
     ]
 })
 export class ChatsModule { }

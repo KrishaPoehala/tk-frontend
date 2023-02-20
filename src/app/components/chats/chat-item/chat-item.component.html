@@ -6,7 +6,12 @@
            />
         </div>
         <div class="row-container">   
-            <p class="sender-text">{{displayedGroupName}}</p>
+            <div class="d-flex justify-content-between">
+                <p class="sender-text">{{displayedGroupName}}</p>
+                <div class="last-sent" *ngIf="chat.messages && chat.messages.length !==0">
+                     {{chat.messages[chat.messages.length - 1].sentAt | date: 'h:mm a'}}
+                </div>
+            </div>
             <div class="row-subtitle" *ngIf="chat.messages && chat.messages.length !== 0">
                 <div class="subtitle-info">
                     <span class="sender-text">

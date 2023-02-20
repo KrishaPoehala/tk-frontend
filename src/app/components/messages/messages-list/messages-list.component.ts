@@ -1,3 +1,5 @@
+import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
+import { LastReadComponent } from './../last-read/last-read.component';
 import { MessageSentDto } from './../../../dtos/MessageSentDto';
 import { UnreadMessagesService } from './../../../services/unread-messages.service';
 import { CursorPositionsService } from './../../../services/cursor-positions.service';
@@ -50,6 +52,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     );
   }
 
+  lastReadMessage: MessageDto | null = null;
+  observedMessagesCount = 0;
   onSelectedChatChangeHandler(model:MessageSentDto){
     const chat = model.chat;
     this.forbidScrolling = true;
@@ -58,32 +62,30 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
       
     const member = this.userService.currentUserAsMember;
+    const unreadMessagesLength = member?.unreadMessagesLength;
+    if(!unreadMessagesLength || isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
+      this.lastReadMessage = null;
+      this.scrollToBottom(true);
+      this.forbidScrolling = false;
+      return;
+    }
+
     if(this.scrollFrame.nativeElement.scrollHeight <= this.scrollFrame.nativeElement.clientHeight){
+      this.http.saveReadMessages(member.id, this.messages).subscribe();
+      this.lastReadMessage = null;
       this.cursorPositions.set[chat.id] = true;
       member.unreadMessagesLength = 0;
       this.forbidScrolling = false;
       return;
     } 
 
-    const unreadMessagesLength = member?.unreadMessagesLength;
-    if(!unreadMessagesLength || isNaN(unreadMessagesLength) || unreadMessagesLength === 0){
-      this.scrollToBottom(true);
-      this.forbidScrolling = false;
-      return;
-    }
 
-
-    console.log(model.scroll);
+    const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
+    const id = messageToScrollTo.id.toString();
+    let firstUnreadMessage = this.$(id);
     if(model.scroll){
-    console.log('FORBID SCROLLL');
       this.forbidScrolling = true;
-      const messageToScrollTo = this.messages[this.messages.length - unreadMessagesLength];
-      const id = messageToScrollTo.id.toString();
-      this.$(id)?.scrollIntoView({
-        behavior:'auto',
-        block: 'end',
-        inline: 'end',
-      })
+      this.lastReadMessage = messageToScrollTo;
     }
     
     let intersection: IntersectionObserver;
@@ -101,16 +103,35 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
       this.unreadService.intersectionObjects[chat.id] = intersection;
     }
 
+    const records = intersection.takeRecords();
+    this.observedMessagesCount = Math.min(100, unreadMessagesLength);
+    console.log(this.observedMessagesCount);
     for(let i = this.messages.length - unreadMessagesLength; i < this.messages.length; ++i){
       const id =this.messages[i].id.toString();
-      intersection.observe(this.$(id)!);
+      if(records.some(x => x.target.getAttribute(id) === id)){
+        continue;
+      }
+      
+      const target = this.$(id);
+      if(target){
+        intersection.observe(target);
+      }
     } 
 
+    if(model.scroll){
+      firstUnreadMessage?.scrollIntoView({
+        behavior:'auto',
+        block: 'end',
+        inline: 'end',
+      });
+    }
     chat.members = Array.prototype.concat(chat.members);
-    console.log('ALLLOWING SCROLLL');
     this.forbidScrolling = false;
   }
 
+  observeWithPagination(obs:IntersectionObserver, member:ChatMemberDto){
+
+  }
   onIntersection(chat:ChatDto,entries:IntersectionObserverEntry[],obs:IntersectionObserver){
     const member = this.userService.currentUserAsMember!;
       entries.forEach(x => {
@@ -120,13 +141,19 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
       const messageId = Number(x.target.getAttribute('id')!);
       const message = this.messages?.find(x => x.id === messageId)!;
-      this.http.saveReadMessages(member.id,[message])
-      .subscribe(_ => {
-        this.unreadService.messagesReadSet[member.chatId] = [];
-      });
+      if(!message.readBy?.some(x => x.user.id === this.userService.currentUser.id)){
+        this.http.saveReadMessages(member.id,[message])
+        .subscribe(_ => {
+          this.unreadService.messagesReadSet[member.chatId] = [];
+        });
+      }
 
+      this.observedMessagesCount--;
       member.unreadMessagesLength--;
       obs.unobserve(x.target);
+      if(this.observedMessagesCount === 0 && member.unreadMessagesLength !== 0){
+        this.observedMessagesCount = Math.min(100, member.unreadMessagesLength);
+      }
     })
 
     if(this.cursorPositions.isAtTheBottom(chat.id)){
@@ -198,7 +225,6 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   currentPagesSet :{[id:number]:number} = {};
   sendMessage = Permissions[Permissions.SendMessages];
   onScroll(event:any){
-    console.log('ON SCROLLLLLL');
     if(this.userService.selectedChat.value.id === -1 || this.forbidScrolling){
       return;
     }

@@ -1,3 +1,4 @@
+import { HttpService } from './http.service';
 import { UnreadMessagesService } from './unread-messages.service';
 import { ChatCreatedService } from './chat-created.service';
 import { MessagesListComponent } from './../components/messages/messages-list/messages-list.component';
@@ -24,7 +25,8 @@ export class NetworkService {
   private connection!: HubConnection | null;
   constructor(public userService:UserService, private jwt:JwtFacadeService,
     private cursorPositions:CursorPositionsService,
-    private chatCreated:ChatCreatedService, private selectedChat: SelectedChatChangedService) {
+    private chatCreated:ChatCreatedService, private selectedChat: SelectedChatChangedService,
+    private http:HttpService) {
     }
     
   async connectUserTo(groups: ChatDto[]) {  
@@ -111,8 +113,11 @@ export class NetworkService {
     this.connection?.on("UserJoined", (dto:UserJoinedDto) =>{
       for(let i =0;i<this.userService.chats.value.length;++i){
         if(this.userService.chats.value[i].id === dto.groupId){
-          this.userService.chats.value[i].members.push(dto.joinedMember);
-
+          const chat = this.userService.chats.value[i];
+          const userToRemoveIndex = chat.members
+          .findIndex(x => x.id === 0);
+          chat.members.splice(userToRemoveIndex, 1);
+          chat.members.push(dto.joinedMember);
         }
       }
     });
@@ -198,8 +203,7 @@ export class NetworkService {
       chat.messages = Array.prototype.concat(chat.messages);
 
       if(isCurrent === true && atBottom){
-        console.log(message)
-        console.log('was read by FROM NETWORK');
+        this.http.saveReadMessages(member.id, [message]).subscribe();
       }
     });
   }
@@ -236,6 +240,7 @@ export class NetworkService {
       messageIds.forEach((id:number) => {
         const messageIndex = chat.messages.findIndex(x => x.id === id);
         chat.messages[messageIndex].status = MessageStatus.Seen;
+        chat.messages[messageIndex].isSeen = true;
         if(chat.messages[messageIndex].readBy){
           chat.messages[messageIndex].readBy?.push(member);
         }
@@ -243,8 +248,6 @@ export class NetworkService {
           chat.messages[messageIndex].readBy = [member];
         }
 
-        chat.messages[messageIndex].isSeen = true;
-        chat.messages[messageIndex].status = MessageStatus.Seen;
         chat.messages[messageIndex].readBy = Array.prototype.concat(chat.messages[messageIndex].readBy);
       });
     });

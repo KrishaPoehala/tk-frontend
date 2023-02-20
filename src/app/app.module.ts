@@ -24,6 +24,7 @@ import { JoinGroupModalComponent } from './components/join-group-modal/join-grou
 import { MessagesModule } from "./components/messages/messages.module";
 import { ChatsModule } from "./components/chats/chats.module";
 import { UpdatePermissionsComponent } from './components/update-permissions/update-permissions.component';
+import { MessageSeenListComponent } from './components/message-seen-list/message-seen-list.component';
 const routes:Routes=[
   {path:'', component: MainPageComponent, canActivate:[AuthGuard]},
   {path:'login', component: LoginComponent},
@@ -43,6 +44,7 @@ const routes:Routes=[
         JoinGroupModalComponent,
         PermissionsMenuComponent,
         UpdatePermissionsComponent,
+        MessageSeenListComponent,
         
         
     ],

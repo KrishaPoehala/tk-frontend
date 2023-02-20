@@ -1,3 +1,8 @@
 .chat-container{
     overflow-y: hidden;
 }
+
+.messages-page{
+    background-image: url("https://oir.mobi/uploads/posts/2022-08/1661337097_1-oir-mobi-p-fon-dlya-telegram-oboi-1.png");
+    background-size: 30%;
+}

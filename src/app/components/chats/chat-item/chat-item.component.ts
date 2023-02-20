@@ -28,11 +28,11 @@ export class ChatItemComponent implements OnInit {
     }
 
     this.setDisplayedValues();
-    this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20).subscribe(r => {
+    this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20,false).subscribe(r => {
       r.forEach(element => {
-        this.chat.messages.push(element);
         const isCurrentMessage = element.sender.user.id === this.userService.currentUser.id;
-        if(!isCurrentMessage && (!element.readBy || !element.readBy?.some(x => x.user.id === this.userService.currentUser.id))){
+        if((!isCurrentMessage && (!element.readBy || !element.readBy?.some(x => x.user.id === this.userService.currentUser.id)))){
+          console.log(this.chat.members);
           const member = this.chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
           if(!member){
             return;
@@ -43,7 +43,16 @@ export class ChatItemComponent implements OnInit {
           else{
             member.unreadMessagesLength++;
           }
+          
         }
+        else if(element.isSeen){
+          element.status = MessageStatus.Seen;
+        }
+        else if(isCurrentMessage){
+          element.status = MessageStatus.Delivered;
+        }
+
+        this.chat.messages.push(element);
       });
       
       this.chat.members = Array.prototype.concat(this.chat.members);

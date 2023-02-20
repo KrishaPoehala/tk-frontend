@@ -1,6 +1,7 @@
+import { MessageSeenListComponent } from './../../message-seen-list/message-seen-list.component';
 import { ChatMemberDto } from '../../../dtos/ChatMemberDto';
 import { PermissionDto } from '../../../dtos/PermissionDto';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageDto } from 'src/app/dtos/MessageDto';
 import { PermissionsService } from './../../../services/permissions.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
@@ -16,7 +17,7 @@ export class MessageMenuComponent implements OnInit {
   @Input() message!:MessageDto;
   currentUserAsMember!:ChatMemberDto|undefined;
   constructor(private userService:UserService,
-    readonly permissionsService: PermissionsService) { }
+    readonly permissionsService: PermissionsService, private modal:NgbModal) { }
 
   ngOnInit(): void {
     this.currentUserAsMember = 
@@ -42,5 +43,14 @@ export class MessageMenuComponent implements OnInit {
   @Output() deleteMessageEmmiter:EventEmitter<MessageDto> = new EventEmitter();
   onDeleteClick(){
     this.deleteMessageEmmiter.emit(this.message);
+  }
+
+  onSeenClick(){
+   const ref = this.modal.open(MessageSeenListComponent);
+   ref.componentInstance.usersSeen = this.message.readBy?.map(x => x.user);
+  }
+
+  currentUsersMessage(){
+    return this.message.sender.user.id === this.userService.currentUser.id;
   }
 }

@@ -2,7 +2,7 @@
 <div class="d-flex chat-containerng" *ngIf="userService.currentUser" >
     <app-chat-list [chats]="userService.chats.value"></app-chat-list>
     
-    <div style="flex-grow:1; position: relative;" >
+    <div style="flex-grow:1; position: relative;" class="messages-page" >
         <app-chat-info *ngIf="userService.chats && userService.chats.value.length > 0" 
             (clickedEventEmmiter)="openChatDetailsHandler()" ></app-chat-info>
         <app-messages-list *ngIf="userService.chats && userService.chats.value.length > 0"

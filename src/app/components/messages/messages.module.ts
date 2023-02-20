@@ -9,24 +9,26 @@ import { MatIcon, MatIconModule, MatMenuModule, MatTooltipModule } from '@angula
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageMenuComponent } from './message-menu/message-menu.component';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import { LastReadComponent } from './last-read/last-read.component';
 
 @NgModule({
-  declarations: [
-    MessagesListComponent,
-    MessageItemComponent,
-    MessageMenuComponent,
-  ],
-  imports: [
-    MatTooltipModule,
-    MatIconModule,
-    BrowserModule,
-    ScrollingModule,
-    BrowserAnimationsModule,
-    MatMenuModule,
-    CommonModule,
-    ReactiveFormsModule,
-  ],
-  exports:[MessagesListComponent,MessageItemComponent],
-  providers:[NgbActiveModal,NgbModal]
+    declarations: [
+        MessagesListComponent,
+        MessageItemComponent,
+        MessageMenuComponent,
+        LastReadComponent,
+    ],
+    exports: [MessagesListComponent, MessageItemComponent],
+    providers: [NgbActiveModal, NgbModal],
+    imports: [
+        MatTooltipModule,
+        MatIconModule,
+        BrowserModule,
+        ScrollingModule,
+        BrowserAnimationsModule,
+        MatMenuModule,
+        CommonModule,
+        ReactiveFormsModule,
+    ]
 })
 export class MessagesModule { }

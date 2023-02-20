@@ -1,8 +1,9 @@
-<div class="message-list" >
-    <div *ngIf="userService.selectedChat" class="messages-container" cdk-scrollable
-    #scrollframe (scroll)="onScroll($event)">
+<div class="message-list">
+    <div *ngIf="userService.selectedChat" class="messages-container" 
+    (scroll)="onScroll($event)" #scrollframe cdk-scrollable>
         <div
             *ngFor="let messageF of userService.selectedChat?.value?.messages" #item>
+            <div class="last-read" *ngIf="lastReadMessage?.id === messageF.id">Unread messages</div>
             <app-message-item [message]="messageF"
             (overlayEventEmmiter)="openOverlayHandler($event)"
             (closeOverlayEventEmmiter)="closeOverlayHandler()">

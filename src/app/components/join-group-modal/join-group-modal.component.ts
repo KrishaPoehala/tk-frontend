@@ -6,6 +6,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ChatDto } from 'src/app/dtos/ChatDto';
 import { Component, OnInit } from '@angular/core';
 import { MessageSentDto } from 'src/app/dtos/MessageSentDto';
+import { ChatMemberDto } from 'src/app/dtos/ChatMemberDto';
 
 @Component({
   selector: 'app-join-group-modal',
@@ -46,6 +47,7 @@ export class JoinGroupModalComponent implements OnInit {
       this.userService.chats.value.push(...this.groups);
     }
     
+    this.addMember();
     await this.network.connectUserTo(this.groups);
     this.modal.close();
     this.http.joinUser(this.userService.currentUser.id, this.groups).subscribe(async _ => {
@@ -53,5 +55,11 @@ export class JoinGroupModalComponent implements OnInit {
         this.network.setOnlineUsersFor(x);
       });
     });
+  }
+
+  addMember(){
+    this.groups.forEach(x => {
+      x.members.push(...[new ChatMemberDto(0, this.userService.currentUser, null,[],x.id)]);
+    })
   }
 }

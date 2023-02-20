@@ -26,6 +26,9 @@ img{
     background-color: #61a9f1;
 }
 
+.last-sent{
+    font-size: 12px;
+}
 .active:hover{
     background-color: #61a9f1;
 }

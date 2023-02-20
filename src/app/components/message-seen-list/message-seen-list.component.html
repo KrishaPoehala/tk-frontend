@@ -1,0 +1,6 @@
+<div class="d-flex user-seen" *ngFor="let user of usersSeen" (click)="onClick(user)">
+    <div>
+        <img src="{{user.profilePhotoUrl}}" alt="user photo" class="user-img">
+    </div>
+    <div>{{user.name}}</div>
+</div>

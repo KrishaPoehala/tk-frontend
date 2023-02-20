@@ -24,8 +24,9 @@ export class ChatListComponent implements OnInit {
     var diff = 1;
 
     this.chats.forEach(x => {
+        let count = x.name.includes('Boyer') ? 50: 2;
         const member = x.members[0];
-        for (let i = 0; i < 2; i += 1) {
+        for (let i = 0; i < count; i += 1) {
           const date = new Date();
           date.setSeconds(diff++);
           const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, x.id, date
