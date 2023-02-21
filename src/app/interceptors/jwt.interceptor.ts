@@ -1,4 +1,4 @@
-import { JwtFacadeService } from './services/jwt-facade.service';
+import { JwtFacadeService } from '../services/jwt-facade.service';
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,

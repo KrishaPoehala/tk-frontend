@@ -11,6 +11,7 @@ import { Wrapper } from 'src/app/services/wraper.service';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
 import { PresenceService } from 'src/app/services/presence.service';
 import { MessageSentDto } from 'src/app/dtos/MessageSentDto';
+import { MessageDto } from 'src/app/dtos/MessageDto';
 
 @Component({
   selector: 'app-chat-item',
@@ -23,16 +24,15 @@ export class ChatItemComponent implements OnInit {
     public readonly userService : UserService,private selectedChatService:SelectedChatChangedService) { }
 
   ngOnInit(): void {
-    if(!this.chat || this.chat.id === -1){
+    if(!this.chat || this.chat.id === ''){
       return;
     }
 
     this.setDisplayedValues();
-    this.http.getChatMessages(this.chat.id,this.userService.currentUser.id,0,20,false).subscribe(r => {
+    this.http.getUnreadMessages(this.chat.id,this.userService.currentUser.id,100,0).subscribe(r => {
       r.forEach(element => {
         const isCurrentMessage = element.sender.user.id === this.userService.currentUser.id;
         if((!isCurrentMessage && (!element.readBy || !element.readBy?.some(x => x.user.id === this.userService.currentUser.id)))){
-          console.log(this.chat.members);
           const member = this.chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
           if(!member){
             return;
@@ -52,6 +52,7 @@ export class ChatItemComponent implements OnInit {
           element.status = MessageStatus.Delivered;
         }
 
+
         this.chat.messages.push(element);
       });
       
@@ -59,6 +60,8 @@ export class ChatItemComponent implements OnInit {
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
     });
   }
+
+  
  
   getUnreadMessage(members:ChatMemberDto[]){
     const u = members.find(x => x.user.id === this.userService.currentUser.id);
@@ -72,7 +75,7 @@ export class ChatItemComponent implements OnInit {
   messagesToLoad = 20;
   @Input() chat!: ChatDto;
   onClick(){
-    if(this.userService.selectedChat?.value.id === this.chat.id){
+    if(this.userService.selectedChat?.id === this.chat.id){
       return;
     }
 
@@ -106,4 +109,6 @@ export class ChatItemComponent implements OnInit {
     this.displayedImageUrl = this.chat?.imageUrl || "";
   }
 
+  
 }
+

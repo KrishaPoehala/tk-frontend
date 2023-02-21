@@ -1,3 +1,4 @@
+import { GoogleAuthDto } from './../dtos/GoogleAuthDto';
 import { ChatDetailsComponent } from './../components/chats/chat-details/chat-details.component';
 import { PermissionDto } from '../dtos/PermissionDto';
 import { ChatMemberDto } from '../dtos/ChatMemberDto';
@@ -25,17 +26,22 @@ export class HttpService{
 
 
     constructor(private http: HttpClient){}
-    public getUserChats(id:number){
+    public getUserChats(id:string){
         return this.http.get<ChatDto[]>(environment.api + '/Chats/chats/' + id);
     }
 
-    public getChatMessages(chatId : number, userId : number,
-         pageNumber: number, messagesToLoad: number,isPagination = true){
+    public getUnreadMessages(chatId : string, userId : string, messagesToLoad: number,page:number){
             const params = new HttpParams()
-            .set('isPagination',isPagination)
-            .set('pageNumber',pageNumber)
-            .set('messagesToLoad', messagesToLoad);
+            .set('messagesToLoad', messagesToLoad)
+            .set('pageNumber', page);
         return this.http.get<MessageDto[]>(environment.api + '/Chats/messages/' + `${chatId}/${userId}`,
+         {params:params});
+    }
+
+    public getPaginationMessage(messageId:string, messagesToLoad:number){
+        const params = new HttpParams()
+        .set('messagesToLoad', messagesToLoad);
+        return this.http.get<MessageDto[]>(environment.api + `/Chats/paginationMessages/${messageId}`,
          {params:params});
     }
 
@@ -44,7 +50,7 @@ export class HttpService{
     }
     
    
-    public editMessage(messageId: number, newText: string){
+    public editMessage(messageId: string, newText: string){
         const param = {
             messageId : messageId,
             editedText: newText,
@@ -53,7 +59,7 @@ export class HttpService{
         return this.http.put(environment.api + "/Messages/edit", param);
     }
 
-    public deleteMessage(id : number, isDeleteOnlyForSender = false){
+    public deleteMessage(id : string, isDeleteOnlyForSender = false){
         return this.http.delete(environment.api + '/Messages/delete/' + id +'/'+ isDeleteOnlyForSender);
     }
 
@@ -86,11 +92,11 @@ export class HttpService{
         return this.http.put(environment.api + '/Members/addMembers', dto);
     }
 
-    public getPublicGroups(userId:number){
+    public getPublicGroups(userId:string){
         return this.http.get<ChatDto[]>(environment.api + `/Chats/publicGroups/${userId}`);
     }
 
-    public joinUser(userId:number, groups:ChatDto[]){
+    public joinUser(userId:string, groups:ChatDto[]){
         const dto = {
             userId:userId,
             groupsIds:groups.map(x => x.id),
@@ -118,20 +124,24 @@ export class HttpService{
         return this.http.put(environment.api + "/Permissions/update", model);
     }
 
-    public removeUser(memberId:number){
+    public removeUser(memberId:string){
         return this.http.delete(environment.api + `/Members/removeMember/${memberId}`);
     }
 
-    public getUserById(userId:number){
+    public getUserById(userId:string){
         return this.http.get<UserDto>(environment.api + `/Users/user/${userId}`);
     }
 
-    public saveReadMessages(memberId:number, messages:MessageDto[]){
+    public saveReadMessages(memberId:string, messages:MessageDto[]){
         const model= {
             memberId:memberId,
             messageIds:messages.map(x => x.id),
         }
 
         return this.http.put(environment.api + '/Users/saveReadMessages', model);
+    }
+
+    public authWithGoogle(dto:GoogleAuthDto){
+        return this.http.post<AuthRepsonseDto>(environment.api + '/Accounts/googleAuth',dto);
     }
 }

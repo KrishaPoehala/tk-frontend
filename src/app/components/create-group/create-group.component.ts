@@ -31,7 +31,7 @@ export class CreateGroupComponent implements OnInit {
   }
 
   members!:UserDto[];
-  selectedMembers!:{ [id:number]:boolean};
+  selectedMembers!:{ [id:string]:boolean};
   onClick(memberToAdd:UserDto){
     if(this.selectedMembers[memberToAdd.id]){
       const indexToDelete = this.members.findIndex(x => x.id === memberToAdd.id);

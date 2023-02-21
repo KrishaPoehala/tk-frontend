@@ -24,12 +24,12 @@ export class ChatListComponent implements OnInit {
     var diff = 1;
 
     this.chats.forEach(x => {
-        let count = x.name.includes('Boyer') ? 50: 2;
+        let count = x.name.includes('Boyer') ? 1000: 2;
         const member = x.members[0];
         for (let i = 0; i < count; i += 1) {
           const date = new Date();
           date.setSeconds(diff++);
-          const newMessage = new NewMessageDto(`TEST TEXT ${i}`, member, x.id, date
+          const newMessage = new NewMessageDto(`${i}`, member, x.id, date
           ,null);
           this.http.sendMessage(newMessage).subscribe();
         }

@@ -33,7 +33,7 @@ export class ChatDetailsComponent implements OnInit {
   }
 
   isGroup(){
-    const isGroup = this.userService.selectedChat?.value.isGroup;
+    const isGroup = this.userService.selectedChat!.isGroup;
     if(isGroup === null || isGroup === true){
       return true;
     }
@@ -44,7 +44,7 @@ export class ChatDetailsComponent implements OnInit {
   onRigthClick(eventInfo:any){
     const event = eventInfo.event;
     const selectedMember = eventInfo.selectedMember as ChatMemberDto;
-    const currentUserAsMember = this.userService.selectedChat.value.members.find(x =>
+    const currentUserAsMember = this.userService.selectedChat!.members.find(x =>
       x.user.id === this.userService.currentUser.id);
     if(!currentUserAsMember){
       return;
@@ -63,7 +63,7 @@ export class ChatDetailsComponent implements OnInit {
     modalRef.componentInstance.selectedMember = selectedMember
   }
 
-  getPresenceInfoFor(member:ChatMemberDto, usersOnline:number[]){
+  getPresenceInfoFor(member:ChatMemberDto, usersOnline:string[]){
     if(!usersOnline){
       return 'last seen recently';
     }

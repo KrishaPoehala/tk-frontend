@@ -31,11 +31,11 @@ import { OrderChatPipe } from './pipes/order-chat.pipe';
     ],
     imports: [
         NgbDropdownModule,
-        MatIconModule,
         CommonModule,
         MessagesModule,
         ReactiveFormsModule,
         DatePipe,
+        MatIconModule,
     ]
 })
 export class ChatsModule { }

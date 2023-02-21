@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MessagesListComponent } from './messages-list/messages-list.component';
 import { MessageItemComponent } from './message-item/message-item.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatIcon, MatIconModule, MatMenuModule, MatTooltipModule } from '@angular/material';
+import { MatIconModule, MatMenuModule, MatTooltipModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageMenuComponent } from './message-menu/message-menu.component';
 import {ScrollingModule} from '@angular/cdk/scrolling';

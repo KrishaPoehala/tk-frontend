@@ -34,8 +34,8 @@ export class PermissionsMenuComponent implements OnInit {
   }
 
   onRemoveUserClick(){
-    const memberIndex = this.userService.selectedChat.value.members.findIndex(X => X.id === this.selectedMember.id);
-    this.userService.selectedChat.value.members.splice(memberIndex,1);
+    const memberIndex = this.userService.selectedChat!.members.findIndex(X => X.id === this.selectedMember.id);
+    this.userService.selectedChat!.members.splice(memberIndex,1);
     this.modal.dismissAll();
     this.http.removeUser(this.selectedMember.id).subscribe();
   }

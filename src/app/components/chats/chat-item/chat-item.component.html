@@ -1,5 +1,5 @@
 <div class="chat-container" (click)="onClick()" id="c-{{chat.id}}" 
-    [ngClass]="{'active': userService.selectedChat && userService.selectedChat.value.id === chat.id}">
+    [ngClass]="{'active': userService.selectedChat && userService.selectedChat.id === chat.id}">
     <div class="d-flex p-1 m-1">
         <div class="chat-photo">
             <img src="{{displayedImageUrl}}" alt="chatPhoto" 
@@ -22,9 +22,9 @@
                 <div *ngIf="getUnreadMessage(chat.members) !== undefined &&
                 getUnreadMessage(chat.members) > 0" 
                 [ngClass]="{'subtitle-unread-messages': getUnreadMessage(chat.members) !== undefined &&
-                userService.selectedChat?.value?.id !== chat.id}"
+                userService.selectedChat?.id !== chat.id}"
                 [ngClass]="{'subtitle-unread-messages-active':getUnreadMessage(chat.members) !== undefined &&
-                 userService.selectedChat?.value?.id === chat.id}">
+                 userService.selectedChat?.id === chat.id}">
                  {{getUnreadMessage(chat.members)}}
                 </div>
             </div>

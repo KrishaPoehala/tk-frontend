@@ -6,13 +6,13 @@ import { UserDto } from 'src/app/dtos/UserDto';
 
 @Injectable()
 export class UserService{
-    public selectedChat! : Wrapper<ChatDto>;
+    public selectedChat! : ChatDto | null;
     public currentUser!:UserDto;
     public chats!: Wrapper<ChatDto[]>;
     setSelectedPrivateChat(sender: UserDto) {
         for(let i = 0; i < this.chats.value.length; ++i){
             if(this.isPrivateChat(this.chats.value[i], sender)){
-                this.selectedChat.value = this.chats.value[i];
+                this.selectedChat = this.chats.value[i];
                 return true;
             }
         }
@@ -56,7 +56,7 @@ export class UserService{
         for (let i = 0; i < this.chats.value.length; i++) {
             const element = this.chats.value[i];
             if(element.id === chat.id){
-                this.selectedChat = Wrapper.wrap(this.chats.value[i]);
+                this.selectedChat = this.chats.value[i];
                 this.setSelectedChatValues();
                 this.setCurrentUserAsMember();
                 return;
@@ -65,14 +65,14 @@ export class UserService{
     }
 
     setfirstChatAsSelected(chatNumber:number){
-        this.selectedChat =Wrapper.wrap(this.chats.value[chatNumber]);
+        this.selectedChat = this.chats.value[chatNumber];
         this.setSelectedChatValues();
         this.setCurrentUserAsMember();
     }
 
     currentUserAsMember!:ChatMemberDto;
     setCurrentUserAsMember(){
-        this.currentUserAsMember = this.selectedChat.value.members.find(x => x.user.id === this.currentUser.id)!;
+        this.currentUserAsMember = this.selectedChat?.members.find(x => x.user.id === this.currentUser.id)!;
     }
 
     setSelectedChatValues() {
@@ -81,13 +81,6 @@ export class UserService{
         this.selectedChatPhotoUrl = selectedChatValues[1];
     }
 
-    setCurrentUserFromToken(decodedToken:any){
-        const id = decodedToken['id'];
-        const name= decodedToken['name'];
-        const email = decodedToken['email'];
-        this.currentUser = new UserDto(Number.parseInt(id),name,email, '');
-    }
-    
     getContacts(){
         const privateChats = this.chats.value.filter(x => x.isGroup === false);
         const contacts = [];
@@ -103,12 +96,12 @@ export class UserService{
     selectedChatName!:string;
     selectedChatPhotoUrl!:string;
     private _getSelectedChatInfo(){
-        const isGroup = this.selectedChat?.value.isGroup;
+        const isGroup = this.selectedChat?.isGroup;
         if(isGroup || isGroup === null){
-            return [this.selectedChat.value.name, this.selectedChat.value.imageUrl];
+            return [this.selectedChat!.name, this.selectedChat!.imageUrl];
         }
 
-        const theOtherUser =  this.selectedChat.value.members
+        const theOtherUser =  this.selectedChat!.members
         .filter(x => x.user.id !== this.currentUser.id)[0];
        return [theOtherUser.user.name, theOtherUser.user.profilePhotoUrl];
     }

@@ -3,9 +3,9 @@ import { ChatMemberDto } from './ChatMemberDto';
 import { MessageDto } from "./MessageDto";
 
 export class ChatDto{
-    public usersOnlineIds:number[] = [];
+    public usersOnlineIds:string[] = [];
     constructor(
-    public id:number,
+    public id:string,
     public name:string,
     public messages: MessageDto[],
     public members: ChatMemberDto[],

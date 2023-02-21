@@ -1,3 +1,4 @@
+import { GoogleAuthDto } from './../../dtos/GoogleAuthDto';
 import { AuthService } from '../../services/auth.service';
 import { NetworkService } from '../../services/network.service';
 import { UserService } from 'src/app/services/user.service';
@@ -8,6 +9,7 @@ import { LoginModel } from '../../dtos/LoginModel';
 import { HttpService } from 'src/app/services/http.service';
 import { FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { SocialAuthService, GoogleLoginProvider, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 export class LoginComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private http:HttpService, 
-    private authService:AuthService) { }
+    private authService:AuthService,private googleAuth:SocialAuthService) { }
   loginForm = this.fb.group({
     email:[''],
     password:[''],
@@ -44,6 +46,26 @@ export class LoginComponent implements OnInit {
     (errorResult) => {
       const error = errorResult.error.errors![0].split(':') as string[];
       this.loginForm.get(error[0].toLowerCase())?.setErrors({'error':error[1]});
+    });
+  }
+
+  loginWithGoogle(){
+    this.googleAuth.signIn(GoogleLoginProvider.PROVIDER_ID)
+    .then(user => {
+      console.log(user);
+      this.handleGoogleAuth(user);
+    });
+  }
+
+  private handleGoogleAuth(user: SocialUser) {
+    const googleAuth: GoogleAuthDto = {
+      provider: user.provider,
+      token: user.idToken,
+    };
+    this.http.authWithGoogle(googleAuth).subscribe({
+      next: (r) => {
+        this.authService.logIn(r);
+      }
     });
   }
 }

@@ -25,7 +25,7 @@ export class JoinGroupModalComponent implements OnInit {
     this.groups = [];
   }
 
-  selectedGroups!: { [id:number]:boolean};
+  selectedGroups!: { [id:string]:boolean};
   groups!:ChatDto[];
   onAddGroupClick(group:ChatDto){
     this.groups.push(group);
@@ -59,7 +59,7 @@ export class JoinGroupModalComponent implements OnInit {
 
   addMember(){
     this.groups.forEach(x => {
-      x.members.push(...[new ChatMemberDto(0, this.userService.currentUser, null,[],x.id)]);
+      x.members.push(...[new ChatMemberDto('', this.userService.currentUser, null,[],'')]);
     })
   }
 }

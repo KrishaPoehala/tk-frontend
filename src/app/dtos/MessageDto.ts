@@ -5,10 +5,11 @@ import { UserDto } from "./UserDto";
 export class MessageDto{
     public status!:MessageStatus;
     constructor(
-    public id:number,
+    public id:string,
     public text:string,
+    public order:string, 
     public sender: ChatMemberDto,
-    public chatId: number,
+    public chatId: string,
     public  sentAt: Date,
     public isDeletedOnlyForSender: boolean | null,
     public replyMessage: MessageDto | null,

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class CursorPositionsService {
-  isAtTheBottom(id: number) {
+  isAtTheBottom(id: string) {
     if(this.set[id]){
       return true;
     }
@@ -16,5 +16,5 @@ export class CursorPositionsService {
     this.set = {};
    }
 
-  public set:{[chatId:number]:boolean};
+  public set:{[chatId:string]:boolean};
 }

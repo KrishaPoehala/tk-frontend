@@ -1,8 +1,8 @@
 import { UserDto } from 'src/app/dtos/UserDto';
 export class NewPrivateChatDto{
     public name:string;
-    public leftUserId!:number;
-    public rightUserId!:number;
+    public leftUserId!:string;
+    public rightUserId!:string;
     constructor(
         leftUser: UserDto,
         rightUser: UserDto,
@@ -14,7 +14,7 @@ export class NewPrivateChatDto{
     }
 }
 
-function getGroupName(left: number, rigth: number): string {
+function getGroupName(left: string, rigth: string): string {
     if(left < rigth){
         return 'group/' + left.toString() + '---' + rigth.toString();
     }

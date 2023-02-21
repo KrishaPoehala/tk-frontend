@@ -8,7 +8,8 @@ export const environment = {
   origin:origin,
   api: origin + "api",
   gyazoAccessToken: "pFhYP7Ke_VKSLEfG3PFUsBcmCZffUYJdKaROd_1Ws1k",
-  signalR:"https://localhost:7139/chat"
+  signalR:"https://localhost:7139/chat",
+  clientId:'110222553449-i6hghjeusq2mgnvv9mm2gddb3gfadlcm.apps.googleusercontent.com',
 };
 
 /*

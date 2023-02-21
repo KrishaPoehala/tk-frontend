@@ -6,11 +6,11 @@ import { UserDto } from './UserDto';
 export class ChatMemberDto{
     public unreadMessagesLength:number =0;
     constructor(
-        public id:number, 
+        public id:string, 
         public user:UserDto,
         public role:RoleDto | null,
         public permissions:PermissionDto[], 
-        public chatId:number,
+        public chatId:string,
         )
     {
     }

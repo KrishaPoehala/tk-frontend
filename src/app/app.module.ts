@@ -1,6 +1,8 @@
+import { environment } from 'src/environments/environment';
+import { GroupIdInterceptor } from './interceptors/group-id.interceptor';
 import { PermissionsMenuComponent } from './components/permissions-menu/permissions-menu';
 import { MatIconModule } from '@angular/material/icon';
-import { JwtInterceptor } from './jwt.interceptor';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { AuthGuard as AuthGuard } from './auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,7 +19,6 @@ import { DeleteMessageModalComponent } from './components/delete-message-modal/d
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-import { MenuComponent } from './components/menu/menu.component';
 import { CreateGroupComponent } from './components/create-group/create-group.component';
 import { AddMembersComponent } from './components/add-members/add-members.component';
 import { JoinGroupModalComponent } from './components/join-group-modal/join-group-modal.component';
@@ -25,6 +26,7 @@ import { MessagesModule } from "./components/messages/messages.module";
 import { ChatsModule } from "./components/chats/chats.module";
 import { UpdatePermissionsComponent } from './components/update-permissions/update-permissions.component';
 import { MessageSeenListComponent } from './components/message-seen-list/message-seen-list.component';
+import { GoogleLoginProvider, SocialAuthService, GoogleInitOptions } from '@abacritt/angularx-social-login';
 const routes:Routes=[
   {path:'', component: MainPageComponent, canActivate:[AuthGuard]},
   {path:'login', component: LoginComponent},
@@ -38,7 +40,6 @@ const routes:Routes=[
         LoginComponent,
         RegisterComponent,
         MainPageComponent,
-        MenuComponent,
         CreateGroupComponent,
         AddMembersComponent,
         JoinGroupModalComponent,
@@ -48,10 +49,25 @@ const routes:Routes=[
         
         
     ],
-    providers: [HttpService, UserService,
+    providers: [HttpService, UserService,SocialAuthService,
         { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
         JwtHelperService,
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: GroupIdInterceptor, multi: true },
+        {
+            provide:'SocialAuthServiceConfig',
+            useValue:{
+                autoLogin:true,
+                providers:[{
+                    id:GoogleLoginProvider.PROVIDER_ID,
+                    provider:new GoogleLoginProvider(environment.clientId,
+                        {
+                            scopes:'profile email',
+                        })
+                }]
+            }
+        }
+
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -60,11 +76,10 @@ const routes:Routes=[
         AppRoutingModule,
         NgbModule,
         ChatsModule,
+        MessagesModule,
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        MatIconModule,
-        MessagesModule,
     ]
 })
 export class AppModule { }

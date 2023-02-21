@@ -18,5 +18,9 @@
         <br/>
         <button class="btn btn-lg btn-primary m-2" [disabled]="!loginForm.valid">Log in</button>
         <a routerLink="../register">Sign up</a>
-  </form>
+        <hr/>
+      </form>
+      <button (click)="loginWithGoogle()" mat-raised-button class="btn google-login-btn">
+        Google
+      </button>
 </div>

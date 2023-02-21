@@ -7,7 +7,7 @@ import { MessageDto } from '../dtos/MessageDto';
 export class UnreadMessagesService {
   constructor() { }
 
-  intersectionObjects:{[id:number]:IntersectionObserver} = {};
+  intersectionObjects:{[id:string]:IntersectionObserver} = {};
 
-  messagesReadSet: {[chatId:number]:MessageDto[]} = {};
+  messagesReadSet: {[chatId:string]:MessageDto[]} = {};
 }

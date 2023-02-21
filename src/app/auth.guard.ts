@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       const refreshToken = this.jwtFacade.getRefreshToken();
       const isNotExpired = !this.jwtFacade.isTokenExpired(accessToken);
       if(accessToken && isNotExpired){
-        const userId = Number(this.jwtFacade.decodeToken(accessToken)['id']);
+        const userId = this.jwtFacade.decodeToken(accessToken)['id'];
         this.userService.currentUser = new UserDto(userId, "","","");
         this.http.getUserById(userId).subscribe(user => {
           this.userService.currentUser = user;
@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
         isRefreshingSuccessfull = result.isRefreshingSuccessfull;
         if(isRefreshingSuccessfull){
           this.jwtFacade.setTokens(result.accessToken!, result.refreshToken!);
-          const userId = Number(this.jwtFacade.decodeToken(result.accessToken!)['id']);
+          const userId = this.jwtFacade.decodeToken(result.accessToken!)['id'];
          this.userService.currentUser = new UserDto(userId, "","","");
           this.http.getUserById(userId).subscribe(user => {
           this.userService.currentUser = user;

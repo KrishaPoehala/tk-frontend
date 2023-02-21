@@ -8,7 +8,7 @@ export class NewMessageDto{
     constructor(
         public text:string,
         public sender: ChatMemberDto,
-        public chatId: number,
+        public chatId: string,
         public sentAt: Date,
         public replyMessage:MessageDto | null,
     ){}

@@ -5,12 +5,12 @@
     </div>
     <div class="d-flex flex-column justify-content-between">
         <p style="margin:0">{{userService.selectedChatName}}</p>
-        <div *ngIf="(userService.selectedChat.value?.isGroup === undefined ||
-        userService.selectedChat.value?.isGroup) && userService.selectedChat.value.usersOnlineIds">
-            {{userService.selectedChat.value.members.length}} members,
-            {{userService.selectedChat.value.usersOnlineIds.length}} online
+        <div *ngIf="(userService.selectedChat?.isGroup === undefined ||
+        userService.selectedChat?.isGroup) && userService.selectedChat?.usersOnlineIds">
+            {{userService.selectedChat.members.length}} members,
+            {{userService.selectedChat.usersOnlineIds.length}} online
         </div>
-        <div *ngIf="!userService.selectedChat.value?.isGroup && userService.selectedChat.value.usersOnlineIds">
+        <div *ngIf="!userService.selectedChat?.isGroup && userService.selectedChat?.usersOnlineIds">
             {{isPrivateUserOnline()}}
         </div>
     </div>

@@ -4,5 +4,5 @@ import { UserDto } from './UserDto';
 
 export interface UserJoinedDto{
     joinedMember:ChatMemberDto,
-    groupId:number,
+    groupId:string,
 }

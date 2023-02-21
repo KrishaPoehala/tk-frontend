@@ -40,9 +40,9 @@ export class NetworkService {
   }
 
   async setOnlineUsersFor(chat: ChatDto) {
-    chat.usersOnlineIds = await this.connection?.invoke<number[]>('GetOnlineUsers', chat)!;
+    chat.usersOnlineIds = await this.connection?.invoke<string[]>('GetOnlineUsers', chat)!;
   }
-  async isOnline(userId:number){
+  async isOnline(userId:string){
     const isOnline = await this.connection?.invoke<boolean>('IsOnline', userId.toString());
     return isOnline as boolean;
   }
@@ -72,7 +72,7 @@ export class NetworkService {
     return startConnectionPromise;
   }
   userDisconnectedSetUp() {
-    this.connection?.on('UserDisconnected', (userId: number) => {
+    this.connection?.on('UserDisconnected', (userId: string) => {
         this.userService.chats.value.forEach(x => {
           if(!x.members.some(m => m.user.id === userId)){
             return;
@@ -85,7 +85,7 @@ export class NetworkService {
     });
   }
 
-  async connectNewUserTo(userId:number, chatId:number){
+  async connectNewUserTo(userId:string, chatId:string){
     return await this.connection?.invoke('NotifyNewUserConnected', chatId.toString(), userId);
   }
 
@@ -115,7 +115,7 @@ export class NetworkService {
         if(this.userService.chats.value[i].id === dto.groupId){
           const chat = this.userService.chats.value[i];
           const userToRemoveIndex = chat.members
-          .findIndex(x => x.id === 0);
+          .findIndex(x => x.id === '');
           chat.members.splice(userToRemoveIndex, 1);
           chat.members.push(dto.joinedMember);
         }
@@ -168,10 +168,11 @@ export class NetworkService {
 
   private messageSentSetUp() {
     this.connection?.on("MessageSent", (message: MessageDto) => {
+      console.log(message);
       const chat = this.userService.chats.value.find(x => x.id === message.chatId)!;
       if(message.sender.user.id === this.userService.currentUser.id){
         for(let i =chat.messages.length - 1;i >= 0; --i){
-          if(chat.messages[i].id === -1){
+          if(chat.messages[i].id === ''){
             message.status = MessageStatus.Delivered;
             chat.messages.splice(i, 1, message);
             return;
@@ -182,7 +183,7 @@ export class NetworkService {
 
       const atBottom = this.cursorPositions.isAtTheBottom(chat.id);
       const isCurrent = this.userService.selectedChat !== undefined 
-      && chat.id === this.userService.selectedChat.value.id;
+      && chat.id === this.userService.selectedChat?.id;
       const member = chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
       if(isCurrent === false || (isCurrent === true && atBottom === false)){
         if(isNaN(member.unreadMessagesLength)){
@@ -226,10 +227,13 @@ export class NetworkService {
   }
 
   private userRemovedSetUp(){
-    this.connection?.on("UserRemoved", (memberId:number)=>{
+    this.connection?.on("UserRemoved", (memberId:string)=>{
       const chatIndex = this.userService.chats.value.findIndex(x => x.members.some(y => y.id === memberId));
       const memberIndex = this.userService.chats.value[chatIndex].members.findIndex(x => x.id === memberId);
       this.userService.chats.value[chatIndex].members.splice(memberIndex, 1);
+      if(this.userService.currentUserAsMember.id === memberId){
+        this.userService.selectedChat = null;
+      }
     });
   }
 
@@ -237,7 +241,7 @@ export class NetworkService {
     this.connection?.on('MessagesRead',({chatId,memberId,messageIds}) =>{
       const chat = this.userService.chats.value.find(x => x.id === chatId)!;
       const member = chat.members.find(x => x.id === memberId)!;
-      messageIds.forEach((id:number) => {
+      messageIds.forEach((id:string) => {
         const messageIndex = chat.messages.findIndex(x => x.id === id);
         chat.messages[messageIndex].status = MessageStatus.Seen;
         chat.messages[messageIndex].isSeen = true;

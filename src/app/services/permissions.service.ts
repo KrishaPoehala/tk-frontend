@@ -30,7 +30,7 @@ export class PermissionsService {
       return true;
     }
     
-    if(chatMember.role!.order > message.sender.role!.order){
+    if(chatMember.role.name === Roles[Roles.Owner]){
       return true;
     }
 

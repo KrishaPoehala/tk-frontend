@@ -4,12 +4,12 @@
     <div class="chat-info_container" style="flex-shrink:0">
         <img class="photo-url" src="{{userService.selectedChatPhotoUrl}}" alt="">
         <div class="chat-info_text">{{userService.selectedChatName}}
-            <div *ngIf="userService.selectedChat?.value?.isGroup || userService.selectedChat?.value?.isGroup === null"
+            <div *ngIf="userService.selectedChat?.isGroup || userService.selectedChat?.isGroup === null"
                  class="members-info">
-                {{userService.selectedChat.value.members.length}} members
+                {{userService.selectedChat?.members?.length}} members
             </div>
     
-            <div *ngIf="userService.selectedChat?.value?.isGroup === false"
+            <div *ngIf="userService.selectedChat?.isGroup === false"
                 class="members-info">
                 last seen recently
             </div>
@@ -23,7 +23,7 @@
     </div>
     <div class="border">Members</div>
     <div class="members-container">
-        <div *ngFor="let member of userService.selectedChat.value.members" class="member d-flex justify-content-between"
+        <div *ngFor="let member of userService.selectedChat?.members" class="member d-flex justify-content-between"
         (contextmenu)="onRigthClick({event:$event,selectedMember:member})"
         (click)="onMemberClicked(member.user)">
             <div class="d-flex justify-content-start m-2">
@@ -31,7 +31,7 @@
                 <div>
                     <p *ngIf="userService.currentUser.id !== member.user.id">{{member.user.name}}</p>
                     <p *ngIf="userService.currentUser.id === member.user.id">You</p>
-                    <div>{{getPresenceInfoFor(member, userService.selectedChat.value.usersOnlineIds)}}</div>
+                    <div>{{getPresenceInfoFor(member, userService.selectedChat!.usersOnlineIds)}}</div>
                 </div>
             </div>
             <div class="role" *ngIf="member.role?.order && member.role!.order > 0">{{member.role?.name }}</div>

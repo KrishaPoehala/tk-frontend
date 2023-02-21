@@ -13,7 +13,7 @@
         (click)="onDeleteClick()">
             <mat-icon class="icon">restore_from_trash</mat-icon>Delete
         </button>
-        <button *ngIf="message.readBy && message.readBy.length > 0 && currentUsersMessage()" class="seen" (click)="onSeenClick()">
+        <button *ngIf="message.readBy && message.readBy.length > 0 " class="seen" (click)="onSeenClick()">
             <mat-icon  class="icon" *ngIf="message.isSeen">check_circle</mat-icon> 
             {{message.readBy.length}} seen
         </button>

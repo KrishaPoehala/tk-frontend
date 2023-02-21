@@ -1,3 +1,4 @@
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { HttpService } from './http.service';
 import { Router } from '@angular/router';
 import { NetworkService } from './network.service';
@@ -14,7 +15,8 @@ import { Wrapper } from './wraper.service';
 export class AuthService {
 
   constructor(private jwt:JwtFacadeService, private userService:UserService,
-    private router:Router, private network: NetworkService, private http:HttpService) { }
+    private router:Router, private network: NetworkService, private http:HttpService,
+    private googleAuth:SocialAuthService) { }
 
   public logIn(authDto : AuthRepsonseDto){
     if(authDto.isAuthSuccessfull === false){
@@ -23,7 +25,7 @@ export class AuthService {
 
     this.jwt.setTokens(authDto.accessToken!,authDto.refreshToken!);
     const decodedToken = this.jwt.decodeToken(authDto.accessToken!);
-    const userId = Number(decodedToken['id']);
+    const userId = decodedToken['id'];
     this.userService.currentUser = new UserDto(userId, "","","");
     this.http.getUserById(userId).subscribe(user => {
         this.userService.currentUser = user;
@@ -41,6 +43,7 @@ export class AuthService {
   }
 
   logOut(){
+    this.googleAuth.signOut();
     this.jwt.removeTokens();
     this.network.disconnect();
   }

@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 export class PresenceService {
   constructor(private network:NetworkService) { }
 
-  setNewMembersPresence(chat:ChatDto,newMemberIds: number[]) {
+  setNewMembersPresence(chat:ChatDto,newMemberIds: string[]) {
     if(!chat.usersOnlineIds){
       chat.usersOnlineIds = [];
     }
