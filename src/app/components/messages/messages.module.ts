@@ -1,3 +1,4 @@
+import { SocialLoginModule } from '@abacritt/angularx-social-login';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
@@ -27,6 +28,7 @@ import { LastReadComponent } from './last-read/last-read.component';
         ScrollingModule,
         BrowserAnimationsModule,
         MatMenuModule,
+        SocialLoginModule,
         CommonModule,
         ReactiveFormsModule,
     ]

@@ -16,8 +16,7 @@ import { ChatMemberDto } from 'src/app/dtos/ChatMemberDto';
 export class JoinGroupModalComponent implements OnInit {
 
   constructor(public userService:UserService, private http:HttpService,
-    private modal:NgbActiveModal,private network:NetworkService,
-    private selectedChatService: SelectedChatChangedService) { }
+    private modal:NgbActiveModal,private network:NetworkService) { }
   publicGroups!: ChatDto[];
   ngOnInit(): void {
     this.http.getPublicGroups(this.userService.currentUser.id).subscribe(result => this.publicGroups = result);

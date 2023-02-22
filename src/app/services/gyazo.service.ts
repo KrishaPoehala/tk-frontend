@@ -3,7 +3,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn:'any'
 })
 export class GyazoService {
 

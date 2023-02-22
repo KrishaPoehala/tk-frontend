@@ -7,7 +7,7 @@ export class MessageDto{
     constructor(
     public id:string,
     public text:string,
-    public order:string, 
+    public order:number, 
     public sender: ChatMemberDto,
     public chatId: string,
     public  sentAt: Date,

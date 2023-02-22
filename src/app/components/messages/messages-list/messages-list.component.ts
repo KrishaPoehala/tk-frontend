@@ -1,5 +1,5 @@
-import { ChatMemberDto } from './../../../dtos/ChatMemberDto';
-import { LastReadComponent } from './../last-read/last-read.component';
+import { NetworkService } from './../../../services/network.service';
+import { v4 as uuidv4 } from 'uuid';
 import { MessageSentDto } from './../../../dtos/MessageSentDto';
 import { UnreadMessagesService } from './../../../services/unread-messages.service';
 import { CursorPositionsService } from './../../../services/cursor-positions.service';
@@ -13,16 +13,12 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { MessageService } from './../../../services/message-sender.service';
 import { UserService } from 'src/app/services/user.service';
 import { HttpService } from 'src/app/services/http.service';
-import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, ElementRef, Input, IterableDiffers, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren, EventEmitter } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, IterableDiffers, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageDto } from 'src/app/dtos/MessageDto';
 import { MessageStatus } from 'src/app/enums/message-status';
-import { NewMessageDto } from 'src/app/dtos/NewMessageDto';
-import { __values } from 'tslib';
 import { SelectedChatChangedService } from 'src/app/services/selected-chat-changed.service';
-import { Observer } from 'rxjs';
 import { ChatDto } from 'src/app/dtos/ChatDto';
-
 @Component({
   selector: 'app-messages-list',
   templateUrl: './messages-list.component.html',
@@ -35,7 +31,8 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     public readonly userService: UserService,private messageService:MessageService,
     private overlay:Overlay,private redirectionService:RedirectionService,
     readonly permissionsService:PermissionsService,private cursorPositions:CursorPositionsService,
-    private selectedChatService:SelectedChatChangedService,private unreadService:UnreadMessagesService) {
+    private selectedChatService:SelectedChatChangedService,private unreadService:UnreadMessagesService,
+    private network:NetworkService) {
      }
 
   $(id:string){
@@ -193,7 +190,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
 
   messageToReply:MessageDto | null = null;
   diff = 0;
-  send(){
+  async send(){
     if(!this.userService.selectedChat || this.messageForm.invalid){
       return;
     }
@@ -219,13 +216,11 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     }
 
     this.sendingMessage = true;
-    const date = new Date();
-    date.setMilliseconds(this.diff++);
     let newMessage = this.getNewMessage(text);
-    this.userService.selectedChat!.messages = Array.prototype.concat(this.userService.selectedChat.messages);
     this.userService.selectedChat!.messages.push(newMessage);
+    await this.network.sendMessage(newMessage);
     this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
-    this.http.sendMessage(newMessage).subscribe(_ => {
+    this.http.saveMessage(newMessage).subscribe(_ => {
       this.sendingMessage = false
     });
     this.userService.currentUserAsMember.unreadMessagesLength = 0;
@@ -234,20 +229,27 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   }
   getNewMessage(text:string):MessageDto {
     let message:MessageDto={
-      id:"",
-      text:text,
-      order:this.messages![this.messages!.length - 1].order + 1,
-      sender:this.userService.currentUserAsMember,
-      chatId:this.userService.selectedChat!.id,
-      sentAt:new Date(),
-      isDeletedOnlyForSender:null,
-      replyMessage:this.messageToReply,
-      isSeen:false,
-      status:MessageStatus.InProgress,
-      readBy:[],
+      id: uuidv4(),
+      text: text,
+      order: this.getNextOrder(),
+      sender: this.userService.currentUserAsMember,
+      chatId: this.userService.selectedChat!.id,
+      sentAt: new Date(),
+      isDeletedOnlyForSender: null,
+      replyMessage: this.messageToReply,
+      isSeen: false,
+      status: MessageStatus.InProgress,
+      readBy: [],
     }
 
     return message;
+  }
+  getNextOrder(): number {
+    if(!this.messages || this.messages.length === 0){
+      return 1;
+    }
+
+    return this.messages[this.messages.length - 1].order + 1;
   }
 
   messagesToLoad=100;
@@ -283,6 +285,10 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollframe', {static: false}) scrollFrame!: ElementRef;
   @ViewChildren('item') itemElements!: QueryList<ElementRef>;
   private fillWithNewMessages() {
+    if(!this.messages || this.messages.length === 0){
+      return;
+    }
+
     const top = this.scrollFrame.nativeElement.scrollTop;
     this.scrollFrame.nativeElement.scrollTop = top;
     if(this.isWorking){
@@ -293,7 +299,7 @@ export class MessagesListComponent implements OnInit, AfterViewInit {
     this.http.getPaginationMessage(this.messages![0].id, this.messagesToLoad)
     .subscribe(r => {
       console.log(r);
-      if (r.length === 0) {
+      if (!r || r.length === 0) {
         return;
       }
       

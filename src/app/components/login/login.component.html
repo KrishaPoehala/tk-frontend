@@ -20,7 +20,8 @@
         <a routerLink="../register">Sign up</a>
         <hr/>
       </form>
-      <button (click)="loginWithGoogle()" mat-raised-button class="btn google-login-btn">
-        Google
-      </button>
+      <asl-google-signin-button type='standard' size="large"
+      logo_alignment="center" width="380"
+      text='signin_with'></asl-google-signin-button>
+   
 </div>

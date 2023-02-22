@@ -30,9 +30,15 @@ export class ChatItemComponent implements OnInit {
 
     this.setDisplayedValues();
     this.http.getUnreadMessages(this.chat.id,this.userService.currentUser.id,100,0).subscribe(r => {
+      if(r.length === 0){
+        return;
+      }
+      
+      const isLastSentByCurrentUser = r[r.length - 1].sender.user.id === this.userService.currentUser.id;
       r.forEach(element => {
         const isCurrentMessage = element.sender.user.id === this.userService.currentUser.id;
-        if((!isCurrentMessage && (!element.readBy || !element.readBy?.some(x => x.user.id === this.userService.currentUser.id)))){
+        const isReadByCurrentUser = element.readBy && element.readBy?.some(x => x.user.id === this.userService.currentUser.id);
+        if(!isCurrentMessage && !isReadByCurrentUser && !isLastSentByCurrentUser){
           const member = this.chat.members.find(x => x.user.id === this.userService.currentUser.id)!;
           if(!member){
             return;
@@ -43,7 +49,6 @@ export class ChatItemComponent implements OnInit {
           else{
             member.unreadMessagesLength++;
           }
-          
         }
         else if(element.isSeen){
           element.status = MessageStatus.Seen;
@@ -51,8 +56,6 @@ export class ChatItemComponent implements OnInit {
         else if(isCurrentMessage){
           element.status = MessageStatus.Delivered;
         }
-
-
         this.chat.messages.push(element);
       });
       
@@ -81,6 +84,7 @@ export class ChatItemComponent implements OnInit {
 
     this.userService.setSelectedChat(this.chat);
     setTimeout(() => {
+      console.log(this.chat);
       this.selectedChatService.chatSelectionChangedEmitter.emit(new MessageSentDto(this.chat,true));
     }, 20);
   } 

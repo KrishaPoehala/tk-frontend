@@ -32,11 +32,11 @@ export class NetworkService {
   async connectUserTo(groups: ChatDto[]) {  
     const list:Promise<any>[] = [];
     groups.forEach(async x => {
-      list.push(this.connection?.invoke('JoinGroup', x.id.toString())!);
+      list.push(this.connection?.invoke('JoinGroup', x.id)!);
       await this.setOnlineUsersFor(x);
     });
-    await Promise.all(list)
-    await this.connection?.invoke('NotifyUserConnected', groups.map(x => x.id.toString()));
+    await Promise.all(list);
+    await this.connection?.invoke('NotifyUserConnected', groups.map(x => x.id));
   }
 
   async setOnlineUsersFor(chat: ChatDto) {
@@ -47,10 +47,14 @@ export class NetworkService {
     return isOnline as boolean;
   }
 
+  async sendMessage(message:MessageDto){
+    await this.connection?.invoke('SendMessage',message.chatId,message);
+  }
+
   configureHub(){
     this.connection = new HubConnectionBuilder().withUrl(environment.signalR,
       {skipNegotiation:true, transport: signalR.HttpTransportType.WebSockets,
-      accessTokenFactory: () => this.jwt.getAccessToken() || ''}
+      accessTokenFactory: () => this.jwt.getAccessToken()!}
       )
     .build();
     const startConnectionPromise = this.connection?.start().then(async () =>{
@@ -69,18 +73,22 @@ export class NetworkService {
     this.userConnectedSetUp();
     this.userDisconnectedSetUp();
     this.messagesReadSentUp();
+    this.connection?.onclose(async _ => {
+      await this.connection?.invoke('NotifyUserDisconected',this.userService.chats.value.map(x => x.id));
+    })
+
     return startConnectionPromise;
   }
   userDisconnectedSetUp() {
     this.connection?.on('UserDisconnected', (userId: string) => {
-        this.userService.chats.value.forEach(x => {
-          if(!x.members.some(m => m.user.id === userId)){
-            return;
-          }
-          
-          const userIndex = x.usersOnlineIds.findIndex(x => x === userId);
-          x.usersOnlineIds.splice(userIndex,1);
-          x.usersOnlineIds = Array.prototype.concat(x.usersOnlineIds);
+      if(this.userService.currentUser.id === userId){
+        return;
+      }
+
+      this.userService.chats.value.forEach(x => {
+        const userIndex = x.usersOnlineIds.findIndex(x => x === userId);
+        x.usersOnlineIds.splice(userIndex,1);
+        x.usersOnlineIds = Array.prototype.concat(x.usersOnlineIds);
       })
     });
   }
@@ -90,18 +98,14 @@ export class NetworkService {
   }
 
   userConnectedSetUp() {
-    this.connection?.on('UserConnected', ({userId, groupId}) => {
-      if(userId === this.userService.currentUser.id){
+    this.connection?.on('UserConnected', (userId) => {
+      if(this.userService.currentUser.id === userId){
         return;
       }
-
-      const chat = this.userService.chats.value.find(x => x.id === groupId)!;
-      if(!chat.usersOnlineIds){
-        chat.usersOnlineIds = [userId];
-        return;
-      }
-
-      chat.usersOnlineIds.push(userId);
+      
+      this.userService.chats.value.forEach(x => {
+        x.usersOnlineIds.push(userId);
+      })
     });
   }
 
@@ -168,14 +172,11 @@ export class NetworkService {
 
   private messageSentSetUp() {
     this.connection?.on("MessageSent", (message: MessageDto) => {
-      console.log(message);
       const chat = this.userService.chats.value.find(x => x.id === message.chatId)!;
       if(message.sender.user.id === this.userService.currentUser.id){
-        for(let i =chat.messages.length - 1;i >= 0; --i){
-          if(chat.messages[i].id === ''){
-            message.status = MessageStatus.Delivered;
-            chat.messages.splice(i, 1, message);
-            return;
+        for(let i = chat.messages.length - 1; i>=0;--i){
+          if(chat.messages[i].id === message.id){
+            chat.messages[i].status = MessageStatus.Delivered;
           }
         }
         return;
@@ -202,7 +203,6 @@ export class NetworkService {
       chat.messages.push(message);
       this.userService.chats.value = Array.prototype.concat(this.userService.chats.value);
       chat.messages = Array.prototype.concat(chat.messages);
-
       if(isCurrent === true && atBottom){
         this.http.saveReadMessages(member.id, [message]).subscribe();
       }

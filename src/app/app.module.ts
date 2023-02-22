@@ -27,6 +27,7 @@ import { ChatsModule } from "./components/chats/chats.module";
 import { UpdatePermissionsComponent } from './components/update-permissions/update-permissions.component';
 import { MessageSeenListComponent } from './components/message-seen-list/message-seen-list.component';
 import { GoogleLoginProvider, SocialAuthService, GoogleInitOptions } from '@abacritt/angularx-social-login';
+import {SocialLoginModule} from '@abacritt/angularx-social-login'
 const routes:Routes=[
   {path:'', component: MainPageComponent, canActivate:[AuthGuard]},
   {path:'login', component: LoginComponent},
@@ -61,9 +62,9 @@ const routes:Routes=[
                 providers:[{
                     id:GoogleLoginProvider.PROVIDER_ID,
                     provider:new GoogleLoginProvider(environment.clientId,
-                        {
-                            scopes:'profile email',
-                        })
+                    {
+                        scopes:'profile email',
+                    })
                 }]
             }
         }
@@ -73,9 +74,11 @@ const routes:Routes=[
     imports: [
         RouterModule.forRoot(routes),
         BrowserModule,
+        SocialLoginModule,
         AppRoutingModule,
         NgbModule,
         ChatsModule,
+        MatIconModule,
         MessagesModule,
         HttpClientModule,
         FormsModule,

@@ -1,3 +1,4 @@
+import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { GoogleAuthDto } from './../../dtos/GoogleAuthDto';
 import { AuthService } from '../../services/auth.service';
 import { NetworkService } from '../../services/network.service';
@@ -9,8 +10,6 @@ import { LoginModel } from '../../dtos/LoginModel';
 import { HttpService } from 'src/app/services/http.service';
 import { FormBuilder } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { SocialAuthService, GoogleLoginProvider, SocialUser } from '@abacritt/angularx-social-login';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -27,6 +26,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     //this.jwt.removeTokens();
+    this.googleAuth.authState.subscribe(user=>{
+      this.handleGoogleAuth(user);
+    })
   }
 
   login(){
@@ -49,13 +51,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loginWithGoogle(){
-    this.googleAuth.signIn(GoogleLoginProvider.PROVIDER_ID)
-    .then(user => {
-      console.log(user);
-      this.handleGoogleAuth(user);
-    });
-  }
 
   private handleGoogleAuth(user: SocialUser) {
     const googleAuth: GoogleAuthDto = {

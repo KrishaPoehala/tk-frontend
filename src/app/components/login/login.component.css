@@ -2,25 +2,3 @@
     color:red
 }
 
-.google-login-btn {
-    background-image: url('../../../assets/google-logo.png');
-    background-repeat: no-repeat;
-    background-size: 14%;
-    border:1px solid black;
-    padding-top:1%;
-    
-    font-size: 17px;
-    width: 18%;
-    padding-bottom: 1%;
-    background-position: 10%;
-    padding-left: 3%;
-  }
-  
-  mat-card {
-    margin: 10% auto;
-    width: 50%;
-  }
-  
-  mat-form-field {
-    width: 100%;
-  }

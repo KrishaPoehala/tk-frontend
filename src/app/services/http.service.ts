@@ -45,7 +45,7 @@ export class HttpService{
          {params:params});
     }
 
-    public sendMessage(dto : NewMessageDto){
+    public saveMessage(dto : NewMessageDto){
         return this.http.post(environment.api + '/Messages/send',dto);
     }
     

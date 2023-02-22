@@ -31,7 +31,7 @@ export class ChatListComponent implements OnInit {
           date.setSeconds(diff++);
           const newMessage = new NewMessageDto(`${i}`, member, x.id, date
           ,null);
-          this.http.sendMessage(newMessage).subscribe();
+          this.http.saveMessage(newMessage).subscribe();
         }
   
       });

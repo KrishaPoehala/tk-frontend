@@ -4,7 +4,9 @@ import { Injectable } from "@angular/core";
 import { ChatDto } from "src/app/dtos/ChatDto";
 import { UserDto } from 'src/app/dtos/UserDto';
 
-@Injectable()
+@Injectable({
+    providedIn:'root',
+})
 export class UserService{
     public selectedChat! : ChatDto | null;
     public currentUser!:UserDto;
